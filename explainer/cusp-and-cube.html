@@ -336,6 +336,31 @@
         <div class="sign-rule"><span class="sign">&Delta;<sub>3</sub> = 0</span> a repeated root (all roots real)</div>
         <div class="sign-rule"><span class="sign neg">&Delta;<sub>3</sub> &lt; 0</span> one real root, two complex-conjugate roots</div>
       </div>
+
+      <p style="margin:18px 0 4px;font-size:14px;">
+        <b>Worked example: the monic quadratic.</b> Even one level down
+        &mdash; before cubics at all &mdash; the same moves already work.
+        <b>Drag the point.</b>
+      </p>
+      <div class="fig-row" style="margin-top:10px;">
+        <div class="panel">
+          <canvas id="cv-quad" width="230" height="230" style="width:100%;max-width:230px;cursor:grab;"></canvas>
+          <div class="canvas-label">b right, c up &middot; drag anywhere</div>
+        </div>
+        <div class="panel" style="flex:1;min-width:220px;">
+          <div class="readout" id="ro-quad">&nbsp;</div>
+          <p style="margin:10px 0 0;font-size:13.5px;color:var(--ink-2);">
+            &Delta;<sub>2</sub> &ge; 0 exactly when c &le; b&sup2;/4 &mdash;
+            the teal parabola. For fixed b the favorable c runs from the
+            floor &minus;1 up to b&sup2;/4 (the parabola never reaches the
+            ceiling c=1, so nothing needs clipping), a length of
+            b&sup2;/4&nbsp;+&nbsp;1; integrating over b&nbsp;&isin;&nbsp;[&minus;1,1]
+            gives area 13/6, and dividing by the square&rsquo;s area 4:
+            <span class="mono">P(real roots) = 13/24 &asymp; 0.5417</span>.
+          </p>
+        </div>
+      </div>
+
       <p class="bridge">
         Set a=1, b=0, c=p, d=q &mdash; the depressed cubic below &mdash; and
         &Delta;<sub>3</sub> collapses to exactly the &minus;4p&sup3;&minus;27q&sup2;
@@ -715,6 +740,96 @@
     }
     return sum;
   }
+
+  /* ---------------- primer: quadratic worked example ---------------- */
+  var cvQ = document.getElementById("cv-quad");
+  var roQ = document.getElementById("ro-quad");
+  var Q = { b: 0.4, c: -0.3 };
+
+  function planeToPxQ(bv, cv, w, h) {
+    return [(bv + 1) / 2 * w, (1 - (cv + 1) / 2) * h];
+  }
+  function pxToPlaneQ(x, y, w, h) {
+    return [x / w * 2 - 1, (1 - y / h) * 2 - 1];
+  }
+
+  function drawQuad() {
+    var ctx = cvQ.getContext("2d");
+    var w = cvQ.width, h = cvQ.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--complex-soft");
+    ctx.fillRect(0, 0, w, h);
+
+    /* region c <= b^2/4, clipped to the square */
+    ctx.beginPath();
+    var n = 100, i, bv, cv, pt;
+    for (i = 0; i <= n; i++) {
+      bv = -1 + 2 * i / n;
+      cv = Math.min(bv * bv / 4, 1);
+      pt = planeToPxQ(bv, cv, w, h);
+      if (i === 0) ctx.moveTo(pt[0], pt[1]); else ctx.lineTo(pt[0], pt[1]);
+    }
+    pt = planeToPxQ(1, -1, w, h); ctx.lineTo(pt[0], pt[1]);
+    pt = planeToPxQ(-1, -1, w, h); ctx.lineTo(pt[0], pt[1]);
+    ctx.closePath();
+    ctx.fillStyle = tok("--real-soft");
+    ctx.fill();
+    ctx.strokeStyle = tok("--real");
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.strokeStyle = tok("--line");
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+    ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+    ctx.stroke();
+
+    ctx.font = "10.5px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--real");
+    ctx.fillText("real roots", w * 0.06, h * 0.88);
+    ctx.fillStyle = tok("--complex");
+    ctx.fillText("complex roots", w * 0.5, h * 0.13);
+    ctx.fillStyle = tok("--ink-3");
+    ctx.fillText("b", w - 12, h / 2 - 6);
+    ctx.fillText("c", w / 2 + 6, 12);
+
+    pt = planeToPxQ(Q.b, Q.c, w, h);
+    ctx.beginPath();
+    ctx.arc(pt[0], pt[1], 6, 0, 2 * Math.PI);
+    ctx.fillStyle = tok("--ink");
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = tok("--surface");
+    ctx.stroke();
+  }
+
+  function updateQuadReadout() {
+    var disc = Q.b * Q.b - 4 * Q.c;
+    var real = disc >= 0;
+    roQ.innerHTML =
+      "b = <b>" + Q.b.toFixed(2) + "</b> &nbsp; c = <b>" + Q.c.toFixed(2) + "</b><br>" +
+      "&Delta;<sub>2</sub> = b&sup2; &minus; 4c = <b>" + disc.toFixed(3) + "</b> &nbsp; " +
+      (real ? '<span class="badge real3">real roots</span>'
+            : '<span class="badge real1">complex roots</span>');
+  }
+
+  function quadPointer(ev) {
+    var rect = cvQ.getBoundingClientRect();
+    var x = (ev.clientX - rect.left) * (cvQ.width / rect.width);
+    var y = (ev.clientY - rect.top) * (cvQ.height / rect.height);
+    var bc = pxToPlaneQ(x, y, cvQ.width, cvQ.height);
+    Q.b = Math.max(-1, Math.min(1, bc[0]));
+    Q.c = Math.max(-1, Math.min(1, bc[1]));
+    drawQuad();
+    updateQuadReadout();
+  }
+  var draggingQ = false;
+  cvQ.addEventListener("pointerdown", function (ev) {
+    draggingQ = true; cvQ.setPointerCapture(ev.pointerId); quadPointer(ev);
+  });
+  cvQ.addEventListener("pointermove", function (ev) { if (draggingQ) quadPointer(ev); });
+  cvQ.addEventListener("pointerup", function () { draggingQ = false; });
 
   /* ---------------- figure 1 ---------------- */
   var cvP = document.getElementById("cv-plane");
@@ -1360,7 +1475,7 @@
   tSlider.addEventListener("input", fig3);
 
   /* ---------------- theme redraw ---------------- */
-  function redraw() { fig1(); fig2(); fig3(); }
+  function redraw() { drawQuad(); updateQuadReadout(); fig1(); fig2(); fig3(); }
   try {
     window.matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", redraw);
