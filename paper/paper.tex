@@ -1,0 +1,597 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black,
+  pdfauthor={Vit Planocka},
+  pdftitle={The real-rootedness probability of a random cubic polynomial}
+}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\vol}{vol}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand{\disc}{\Delta}
+
+\title[Real-rootedness of a random cubic]{The real-rootedness probability of a random cubic polynomial: three closed forms}
+
+\author{Vít Plánočka}
+\thanks{With assistance from Claude (Anthropic). Machinery, proofs, and their
+verification (symbolic, numerical, and partially machine-checked in Lean~4 /
+Mathlib) are recorded in the accompanying repository.}
+
+\date{August 2026}
+
+\begin{document}
+
+\begin{abstract}
+We compute, in closed form, the probability that a random cubic polynomial has
+three real roots, in three related models. For a \emph{monic} cubic
+$x^3+ax^2+bx+c$ with $(a,b,c)$ independent and uniform on $[-1,1]$, this
+probability is $\tfrac{383}{4860}+\tfrac{\ln 3}{48}$; on $[0,1]$ it is exactly
+$\tfrac{1}{2880}$. For the \emph{non-monic} cubic $ax^3+bx^2+cx+d$ with all four
+coefficients independent and uniform on $[-1,1]$, it is
+$\tfrac{641}{2430}-\tfrac{\ln 3}{24}$. The first two values appear to be new.
+The third confirms, with a first proof, a closed form that had circulated
+unproved in an informal online forum thread since June~2026. All three
+results are verified by independent symbolic and
+numerical computation; the monic-cubic theorems are additionally verified by a
+complete, zero-\texttt{sorry} machine-checked proof in Lean~4 / Mathlib, and a
+machine-checked proof of the non-monic theorem is in progress at the time of
+writing. We record the reduction technique for each case -- an elementary
+band/discriminant-sign argument for the monic case, and a divergence-theorem
+argument exploiting the homogeneity of the discriminant for the non-monic case
+-- since both appear to generalize to related open problems, which we list.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+How likely is a ``random'' polynomial to have all of its roots real? For
+degree~$2$ this is classical. For a monic quadratic $x^2+bx+c$ with $(b,c)$
+uniform on $[-1,1]^2$, real roots occur exactly when $c\le b^2/4$, giving
+probability $13/24$; for the full quadratic $ax^2+bx+c$ the answer involves a
+logarithm, $\tfrac{41}{72}+\tfrac{\ln 2}{12}$ on $[-1,1]^3$ and
+$\tfrac{5}{36}+\tfrac{\ln 2}{6}$ on $[0,1]^3$, the latter apparently first
+recorded (without derivation) by J.~D'Aurizio and rederived in
+\cite{haldar-chakraborty}. For the analogous \emph{cubic} question the
+literature is far thinner. The only paper we could locate that claims exact
+results for random cubics with general coefficient distributions is
+Li~\cite{li1988}, which is effectively unobtainable (two citations in
+thirty-eight years, neither reproducing a value) and, per the recovered
+\emph{Mathematical Reviews} notice \cite{li1988-mr}, treats a family of
+symmetric-interval distributions that does not include the one-sided case of
+our Theorem~\ref{thm:unit-cube} at all, and reaches our Theorem~\ref{thm:sym-cube}
+only as an unverifiable special case.
+
+This note settles three instances of the cubic question completely.
+
+\begin{theorem}[Monic cubic, symmetric cube] \label{thm:sym-cube}
+Let $(a,b,c)$ be independent and uniform on $[-1,1]$. Then
+\[
+  \Prb\bigl(x^3+ax^2+bx+c \text{ has three real roots}\bigr)
+  = \frac{383}{4860}+\frac{\ln 3}{48}
+  = 0.10169434037605886959954086\ldots
+\]
+\end{theorem}
+
+\begin{theorem}[Monic cubic, unit cube] \label{thm:unit-cube}
+Let $(a,b,c)$ be independent and uniform on $[0,1]$. Then
+\[
+  \Prb\bigl(x^3+ax^2+bx+c \text{ has three real roots}\bigr) = \frac{1}{2880}.
+\]
+\end{theorem}
+
+\begin{theorem}[Non-monic cubic] \label{thm:nonmonic}
+Let $(a,b,c,d)$ be independent and uniform on $[-1,1]$. Then
+\[
+  \Prb\bigl(ax^3+bx^2+cx+d \text{ has three real roots}\bigr)
+  = \frac{641}{2430}-\frac{\ln 3}{24}
+  = 0.21801049620261477108898412335868\ldots
+\]
+\end{theorem}
+
+Theorems~\ref{thm:sym-cube} and \ref{thm:unit-cube} are, to our knowledge, new:
+an eight-agent literature sweep together with a targeted search for the exact
+constants (Section~\ref{sec:novelty}) found no prior publication of either
+value, digit string, or exact expression. Theorem~\ref{thm:nonmonic} is more
+subtle. The exact value $\tfrac{641}{2430}-\tfrac{\ln3}{24}$ already existed,
+unproved, as the terminus of a long, informally written, partly AI-assisted
+derivation posted to a Russian mathematics forum (\texttt{dxdy.ru}) in June
+2026. Section~\ref{sec:nonmonic} gives the first proof of this value, together
+with five independent lines of numerical and symbolic corroboration.
+
+\subsection*{Motivation and context}
+The cubic question is the tractable sibling of a harder open problem: for an
+$n\times n$ matrix with i.i.d.\ uniform entries, what is the probability that
+all $n$ eigenvalues are real? For $n=2$ this is classical
+($49/72$ for entries uniform on $[-1,1]$, \cite{hetzel-liew-morrison}), but
+already for $n=3$ no closed form or rigorous nontrivial bound is known; the
+canonical statement of the question, posted to Mathematics Stack Exchange in
+2020, has $153$ upvotes and, as of this writing, zero answers
+\cite{mse-eigenvalue-question}. The obstruction is structural: for Gaussian
+entries, orthogonal invariance gives Edelman's exact
+$2^{-n(n-1)/4}$ \cite{edelman1997}, but the uniform cube has no such symmetry
+to exploit. Moving from matrix-entry space to \emph{coefficient} space --
+asking instead for the probability that a random \emph{characteristic
+polynomial} is real-rooted -- keeps the same underlying object (the volume of
+a semialgebraic region cut out by a discriminant) while dropping the ambient
+dimension from $9$ (a $3\times3$ matrix) to $3$--$4$ (a cubic's coefficients),
+where it becomes tractable by elementary means. This note is the result of
+attacking that lower-dimensional sibling.
+
+\subsection*{Machine verification}
+Every calculus step in the proofs of Theorems~\ref{thm:sym-cube} and
+\ref{thm:unit-cube} is checked twice over in exact arithmetic (once by hand
+below, once independently by computer algebra), confirmed by high-precision
+quadrature and by direct Monte Carlo sampling, and -- new for a paper at this
+level of the literature -- verified by a \emph{complete, zero-\texttt{sorry}
+machine-checked proof} in Lean~4 against Mathlib, described in
+Section~\ref{sec:lean}. A machine-checked statement (and partial proof) of
+Theorem~\ref{thm:nonmonic} is in progress at the time of writing; we report
+its status honestly rather than claim completion prematurely.
+
+\section{Preliminaries}
+
+Throughout, $\disc$ denotes the discriminant of a cubic. For the general cubic
+$ax^3+bx^2+cx+d$,
+\begin{equation} \label{eq:disc4}
+  \disc(a,b,c,d) = 18abcd - 4b^3d + b^2c^2 - 4ac^3 - 27a^2d^2,
+\end{equation}
+and classically, for $a\ne0$: $\disc>0$ iff the cubic has three distinct real
+roots; $\disc=0$ iff it has a repeated root (all real); $\disc<0$ iff it has
+one real root and a complex-conjugate pair. For the monic case $a=1$ we write
+$\disc_3(b,c,d)$ for $\disc(1,b,c,d)$; abusing notation slightly to match the
+variable names used in Theorems~\ref{thm:sym-cube}--\ref{thm:unit-cube} (whose
+monic cubic is $x^3+ax^2+bx+c$, i.e.\ our $(b,c,d)\mapsto(a,b,c)$),
+\begin{equation} \label{eq:disc3}
+  \disc_3(a,b,c) = 18abc - 4a^3c + a^2b^2 - 4b^3 - 27c^2.
+\end{equation}
+
+\section{The monic cubic}
+
+\subsection{The band reduction}
+
+Write $f(x)=x^3+ax^2+bx+c$ and $g(x)=x^3+ax^2+bx=f(x)-c$. For
+$b<a^2/3$, put $s=\sqrt{a^2-3b}$; the critical points of $f$ (equivalently of
+$g$) are
+\[
+  x_-=\frac{-a-s}{3}\ (\text{local max}), \qquad x_+=\frac{-a+s}{3}\ (\text{local min}).
+\]
+$f$ has three real roots iff $f(x_-)\ge 0\ge f(x_+)$, i.e.\ iff $c$ lies in the
+band
+\[
+  c\in[c_{\mathrm{lo}},c_{\mathrm{hi}}], \qquad
+  c_{\mathrm{lo}}=-g(x_-),\quad c_{\mathrm{hi}}=-g(x_+),\qquad
+  c_{\mathrm{hi}}-c_{\mathrm{lo}}=\frac{4}{27}s^3.
+\]
+This is not merely an implication but captures the discriminant exactly: as a
+polynomial in $c$,
+\begin{equation} \label{eq:disc-factor}
+  \disc_3(a,b,c) = -27\,(c-c_{\mathrm{lo}})(c-c_{\mathrm{hi}}).
+\end{equation}
+\eqref{eq:disc-factor} is verified by direct expansion (and, independently, by
+\texttt{sympy}). For $b>a^2/3$ the right-hand quadratic in $c$ has no real
+roots and $\disc_3<0$ identically (one real root). Hence for any $c$-window
+$[w_{\mathrm{lo}},w_{\mathrm{hi}}]$,
+\begin{equation} \label{eq:vol-formula}
+  \vol = \iint_{b<a^2/3} \operatorname{len}\bigl([c_{\mathrm{lo}},c_{\mathrm{hi}}]\cap[w_{\mathrm{lo}},w_{\mathrm{hi}}]\bigr)\,db\,da.
+\end{equation}
+
+\subsection{Proof of Theorem~\ref{thm:sym-cube}}
+
+\begin{lemma}[Never-clipped] \label{lem:never-clipped}
+On $D=\{(a,b): a\in[-1,1],\ b\in[-1,a^2/3]\}$, $c_{\mathrm{hi}}\le 1$, with
+equality only at $(a,b)=(-1,-1)$.
+\end{lemma}
+
+\begin{proof}
+Since $\partial g/\partial a$ at fixed $x$ equals $x^2$ and $g'(x_+)=0$ kills
+the chain-rule term at the critical point, $\partial c_{\mathrm{hi}}/\partial a
+= -x_+^2\le0$; so $c_{\mathrm{hi}}$ is non-increasing in $a$. As
+$b\le a^2/3\le 1/3$ for $a\in[-1,1]$, the point $(-1,b)$ is also in $D$ for
+every $(a,b)\in D$, so $c_{\mathrm{hi}}(a,b)\le c_{\mathrm{hi}}(-1,b)$. On the
+edge $a=-1$: $\partial c_{\mathrm{hi}}/\partial b=-x_+$ with
+$x_+=(1+\sqrt{1-3b})/3>0$, so $c_{\mathrm{hi}}$ is strictly decreasing in $b$
+there, with maximum at $b=-1$: $c_{\mathrm{hi}}(-1,-1)=1$ exactly.
+\end{proof}
+
+The map $(a,b,c)\mapsto(-a,b,-c)$ preserves $\disc_3$ (direct expansion) and
+the cube, and sends $c_{\mathrm{hi}}$ to $-c_{\mathrm{lo}}$; hence
+$c_{\mathrm{lo}}\ge-1$ on $D$ as well. \textbf{The band never exits the window
+$[-1,1]$}: it touches the boundary only at the two corner points
+$(\mp1,-1,\pm1)$, of measure zero. Therefore, using
+\eqref{eq:vol-formula} with no clipping correction,
+\[
+  \vol = \int_{-1}^{1}\int_{-1}^{a^2/3}\frac{4}{27}(a^2-3b)^{3/2}\,db\,da
+       = \frac{8}{405}\int_{-1}^{1}(a^2+3)^{5/2}\,da
+       = \frac{3064}{1215}+\frac{8}{3}\operatorname{arsinh}\!\frac{1}{\sqrt3}.
+\]
+Since $\operatorname{arsinh}(1/\sqrt3)=\ln(1/\sqrt3+2/\sqrt3)=\tfrac12\ln 3$,
+\[
+  \Prb = \vol/8 = \frac{383}{4860}+\frac{\ln 3}{48}. \qedhere
+\]
+
+\begin{remark}
+The corner-touching geometry is exactly why this is solvable in closed form:
+the naive ``main term plus clipping corrections'' program has \emph{all}
+corrections identically zero, so the trivial upper bound already equals the
+answer. High-precision quadrature landing on that upper bound to sixteen
+digits was, in practice, the signal that this was happening.
+\end{remark}
+
+\subsection{Proof of Theorem~\ref{thm:unit-cube}}
+
+Now the domain is $a\in[0,1]$, $b\in[0,a^2/3]$, window $[0,1]$.
+Since $b\ge0$ forces $s\le a$, both critical points satisfy $x_-\le0\le$
+(the argument of the local max) and $x_+\le0$; and $c_{\mathrm{hi}}\ge0$
+because $g(0)=0$, $g'(0)=b\ge0$, and $x_+\le0$ is the local minimum, so
+$g(x_+)\le0$. A short computation shows $c_{\mathrm{hi}}\le1/27$ throughout the
+domain, so the top of the window $[0,1]$ never binds. The bottom does:
+$\partial c_{\mathrm{lo}}/\partial b=-x_-\ge0$, and $c_{\mathrm{lo}}=0$ exactly
+on the curve $b=a^2/4$ (where $x_-=-a/2$ and $g(-a/2)=0$); so
+$c_{\mathrm{lo}}\le0$ for $b\le a^2/4$ and $c_{\mathrm{lo}}\ge0$ for
+$a^2/4\le b\le a^2/3$ -- a single sign change. Hence the overlap length is
+$c_{\mathrm{hi}}$ on $[0,a^2/4]$ and the full band width on
+$[a^2/4,a^2/3]$, and, remarkably, all fractional powers cancel:
+\[
+  \int_0^{a^2/4}c_{\mathrm{hi}}\,db+\int_{a^2/4}^{a^2/3}\frac{4}{27}(a^2-3b)^{3/2}\,db = \frac{a^5}{480}.
+\]
+Integrating over $a\in[0,1]$,
+\[
+  \Prb = \int_0^1\frac{a^5}{480}\,da = \frac{1}{2880}. \qedhere
+\]
+
+\section{The non-monic cubic} \label{sec:nonmonic}
+
+Dropping the monic restriction -- letting the leading coefficient $a$ range
+uniformly over $[-1,1]$, including near $0$ -- makes the problem genuinely
+four-dimensional, and Lemma~\ref{lem:never-clipped}'s trick does not
+generalize directly: it is special to a symmetric window of half-width
+\emph{exactly} $1$ around a \emph{fixed} leading coefficient.
+
+Writing $V(t)$ for the volume of the real-rooted region inside the cube
+$[-t,t]^3$ in the monic-cubic coefficient space (so $V(1)=8\cdot\Prb$ of
+Theorem~\ref{thm:sym-cube}), the natural attack conditions on the leading
+coefficient and rescales:
+\begin{equation} \label{eq:naive-integral}
+  \Prb(\text{non-monic}) = \int_0^1 \frac{a^3}{8}\,V(1/a)\,da.
+\end{equation}
+This requires $V(t)$ for every $t\ge1$, and \eqref{eq:naive-integral} turns
+out to be a dead end: high-precision numerics for $p(a):=a^3V(1/a)/8$
+(computed to $40$ digits; e.g.\ $p(1/2)=0.1732556347784\ldots$ and
+$p(1/3)=0.2277312312100\ldots$) show no recognizable closed form under a
+blind PSLQ search against $\{1,\ln2,\ln3,\ln5,\sqrt2,\sqrt3,\pi\}$. $V(1)$ is
+elementary only because $t=1$ is exactly where the corner-touching geometry of
+Lemma~\ref{lem:never-clipped} applies -- not because $V(t)$ is nice in
+general.
+
+\subsection{The discriminant region is a cone}
+
+The route that works is structural rather than a direct generalization of the
+band calculus. The discriminant \eqref{eq:disc4} is homogeneous of degree $4$:
+$\disc(\lambda x)=\lambda^4\disc(x)$ for $x=(a,b,c,d)$, so the real-rooted set
+$R=\{\disc>0\}$ is invariant under $x\mapsto\lambda x$ ($\lambda>0$) --
+a cone. Apply the divergence theorem to $F=x/4$ (so $\operatorname{div}F=1$)
+on $R\cap[-1,1]^4$. Euler's identity gives $x\cdot\nabla\disc=4\disc$, which
+vanishes identically on the lateral boundary $\{\disc=0\}$; so that part of
+the surface integral is zero, and only the eight faces of the cube
+contribute:
+\[
+  \vol_4(R\cap[-1,1]^4) = \tfrac14\oint_{\partial(R\cap[-1,1]^4)} F\cdot n\,dS
+  = \tfrac12(S_a+S_b+S_c+S_d),
+\]
+where $S_a,S_b,S_c,S_d$ are the (signed, outward) contributions of the four
+faces $a=\pm1,\ldots$ paired by central symmetry
+$x\mapsto-x$ (which preserves $\disc$ and the cube). The coefficient reversal
+$(a,b,c,d)\mapsto(d,c,b,a)$ -- sending each root $x$ to its reciprocal $1/x$ --
+also preserves both $R$ and the cube, and identifies $S_a=S_d$, $S_b=S_c$.
+Hence
+\begin{equation} \label{eq:cone-reduction}
+  \vol_4(R\cap[-1,1]^4)=V(1)+S_b, \qquad \Prb(\text{non-monic})=\frac{V(1)+S_b}{16},
+\end{equation}
+where $V(1)=S_a=\tfrac{766}{1215}+\tfrac{\ln3}{6}$ (eight times
+Theorem~\ref{thm:sym-cube}) and
+\[
+  S_b = \vol_3\bigl\{(a,c,d)\in[-1,1]^3 : ax^3+x^2+cx+d \text{ has three real roots}\bigr\}
+\]
+is the volume on the face where the \emph{second} coefficient is pinned to
+$1$ -- a genuinely new, but purely three-dimensional, problem, with neither a
+$t\to\infty$ tail nor an $a\to0$ endpoint singularity to contend with.
+
+\begin{remark}
+We verified the reduction step \eqref{eq:cone-reduction} itself against a case
+with an independently known answer: applied to $q^2>4pr$ on $[-1,1]^3$ (also a
+cone, the quadratic discriminant being homogeneous), the three faces give
+$S_p=S_r=13/6$, $S_q=5/2+\ln2$, and $\tfrac13\cdot2(S_p+S_q+S_r)$ works out to
+$\tfrac{41}{9}+\tfrac23\ln2$ -- exactly eight times the known full-quadratic
+volume $\tfrac{41}{72}+\tfrac{\ln2}{12}$. The reduction is an identity, not an
+approximation.
+\end{remark}
+
+\subsection{Computing $S_b$}
+
+Substitute $s=\sqrt{1-3ac}$ (so $c=(1-s^2)/(3a)$). The admissible-$d$ band on
+this face is $[-K_-/u,\,K_+/u]$ with
+\[
+  K_+=(s-1)^2(2s+1),\qquad K_-=(s+1)^2(2s-1),\qquad u=27a^2,\qquad K_++K_-=4s^3,
+\]
+on the domain $\{s\in(0,2),\ a\in[|s^2-1|/3,1]\}$. Integrating over $a$
+\emph{first}, at fixed $s$, is elementary, since $a$ enters only through
+$u=27a^2$; two lemmas make it precise.
+
+\begin{lemma}[Never clips above] \label{lem:L1}
+$d_{\mathrm{hi}}\le1$ throughout: $\alpha_+:=\sqrt{K_+/27}<a_0:=|s^2-1|/3$
+reduces to $2s+1<3(s+1)^2$, true for all $s$. This is the exact analogue of
+Lemma~\ref{lem:never-clipped}.
+\end{lemma}
+
+\begin{lemma}[Clips below exactly for $s\in(2/3,2)$] \label{lem:L2}
+$\alpha_-:=\sqrt{K_-/27}>a_0$ reduces to $(3s-2)(s-2)<0$; and $\alpha_-<1$
+reduces to $(s+1)^2(2s-1)<27$, i.e.\ $s<2$, with equality precisely at
+$s=2$.
+\end{lemma}
+
+With Lemmas~\ref{lem:L1}--\ref{lem:L2}, $F(s):=\int_{a_0}^1 L(a,s)/a\,da$ (the
+$a$-integral of the band length) is elementary -- the term
+$-K_+/(2K_-)+2s^3/K_-$ collapses to the constant $1/2$ via $K_++K_-=4s^3$ --
+giving the piecewise closed form
+\[
+  F(s)=
+  \begin{cases}
+    \dfrac{2s^3}{27}\left(\dfrac{1}{a_0^2}-1\right), & s\le2/3, \\[2ex]
+    \dfrac{K_+}{54a_0^2}+\dfrac12+\ln\dfrac{\alpha_-}{a_0}-\dfrac{2s^3}{27}, & 2/3<s<2,
+  \end{cases}
+\]
+continuous at $s=2/3$ (both branches equal $11264/18225$ there). Then
+\[
+  S_b = \frac43\int_0^2 s\,F(s)\,ds = \frac{1454}{405}-\frac56\ln3
+      = 2.674613216233365\ldots,
+\]
+and, substituting into \eqref{eq:cone-reduction} with
+$V(1)=\tfrac{766}{1215}+\tfrac{\ln3}{6}$,
+\[
+  \Prb(\text{non-monic}) = \frac{1}{16}\left(\frac{766}{1215}+\frac{\ln3}{6}+\frac{1454}{405}-\frac56\ln3\right)
+  = \frac{641}{2430}-\frac{\ln3}{24}. \qedhere
+\]
+(Confirmed to hold exactly by direct symbolic simplification in \texttt{sympy}.)
+
+\subsection{Independent verification}
+
+Two of the checks below are fully independent of each other and of the
+derivation above; the rest are internal consistency checks of the
+computation.
+
+\begin{enumerate}
+\item \textbf{Exact symbolic evaluation} (as above) -- \texttt{sympy} confirms
+  $\Prb-(\tfrac{641}{2430}-\tfrac{\ln3}{24})=0$ identically.
+\item \textbf{An independent numerical route, sharing no step with the
+  derivation above}: fixing the leading coefficient $a$ and integrating $a$
+  out \emph{last} (rather than first, as in \eqref{eq:cone-reduction}) --
+  effectively a direct high-precision evaluation of
+  \eqref{eq:naive-integral}, with the $a\to0$ endpoint singularity and the
+  migrating clipping breakpoints of the inner integral carefully handled --
+  reproduces $0.21801049620261477102\ldots$, agreeing with the exact value to
+  \emph{nineteen} significant digits (Gauss--Legendre and tanh--sinh
+  quadrature, several degrees each, spread $1.6\times10^{-18}$).
+\item \textbf{Blind PSLQ}: given only the $22$-digit numeric value of $S_b$,
+  a PSLQ integer-relation search (no closed form supplied) recovers
+  $S_b=\tfrac{1454}{405}-\tfrac56\ln3$ unprompted.
+\item \textbf{Monte Carlo}, $4\times10^{10}$ samples on the raw sign of
+  \eqref{eq:disc4} (using no theory from this paper): $0.218008985\pm2.1\times10^{-6}$,
+  $-0.73\sigma$ from the exact value.
+\item Double-precision brute-force quadrature (no special handling of any
+  kind): $0.2180105004$, $4.2\times10^{-9}$ from the exact value -- at that
+  method's own precision limit.
+\end{enumerate}
+
+\begin{remark}
+This integrand carries three numerical hazards worth recording, all
+concentrated at small leading coefficient $a$ and all invisible to a
+quadrature routine's own convergence estimate: (i) the conditional
+probability given the leading coefficient has a \emph{square-root} endpoint
+singularity as $a\to0$, $p(a)=p(0)-\tfrac23\sqrt a+O(a)$ with
+$p(0)=\tfrac12+\tfrac{5}{72}+\tfrac{\ln2}{12}$ (the random-quadratic limit,
+since as $a\to0$ the third root escapes to $-b/a$), on which a fixed-degree
+Gauss rule loses roughly seven digits while reporting no warning; (ii) the
+clipping/kink structure in the inner variable migrates to scale
+$\sim\sqrt{3a}$ as $a\to0$, so any fixed panel layout eventually walks past
+it; and (iii) floating-point arithmetic loses the clipping breakpoints
+altogether for small $a$, since the relevant breakpoint cubic has a
+near-double root whose branches separate by only $O(\sqrt a)$. All three had
+to be identified and handled to reach the nineteen-digit confirmation above.
+\end{remark}
+
+\subsection{Relation to the \texttt{dxdy.ru} thread}
+The forum thread's stated intermediate volume,
+$V_0=\tfrac{766}{1215}+\tfrac{\ln3}{6}$, agrees with $V(1)=8\cdot$
+Theorem~\ref{thm:sym-cube}, and its final claimed value,
+$\tfrac{641}{2430}-\tfrac{\ln3}{24}$, is confirmed exactly by
+Theorem~\ref{thm:nonmonic}. Its remaining steps therefore do reach the right
+answer, though nothing in the present paper validates the specific route the
+thread took to get there; the derivation above is independent.
+
+\section{Formal verification in Lean} \label{sec:lean}
+
+Theorems~\ref{thm:sym-cube} and \ref{thm:unit-cube} have been formalized and
+\emph{completely, machine-checked proved} in Lean~4 against Mathlib
+(toolchain \texttt{v4.33.0}), with \textbf{zero} uses of \texttt{sorry} and no
+unexpected axioms. The formal statements are volume/measure statements about
+the discriminant \eqref{eq:disc3} on the relevant cube, matching
+\eqref{eq:disc-factor}--\eqref{eq:vol-formula} directly; the accompanying
+repository contains the full source (\texttt{NonmonicCubic/Basic.lean},
+\texttt{Theorem1.lean}, \texttt{Theorem2.lean}, \texttt{Integrals.lean}).
+
+One presentational difference is worth recording. The informal proof above
+derives the band via the critical points $x_\pm$ of $g$. In Lean, it proved
+cheaper to skip $x_\pm$ entirely and use the single \texttt{ring}-provable
+identity
+\[
+  -27\,\disc_3(a,b,c) = (27c-9ab+2a^3)^2 - 4(a^2-3b)^3,
+\]
+which yields both branches of \eqref{eq:disc-factor} at once, and to prove
+Lemma~\ref{lem:never-clipped} from the closed forms
+$27c_{\mathrm{hi}}=(a-s)^2(a+2s)$, $27c_{\mathrm{lo}}=(a+s)^2(a-2s)$ directly,
+reducing the whole lemma to a single scalar inequality on $a\in[-1,1]$,
+$s\in[0,2]$ that \texttt{nlinarith} discharges automatically with product
+hints. Both routes are the same mathematics; only the presentation differs,
+and nothing in the informal proof was found to be incorrect in the process of
+formalizing it.
+
+A machine-checked statement of Theorem~\ref{thm:nonmonic} is in progress; at
+the time of writing, the file \texttt{Theorem3\allowbreak Statement.lean}
+type-checks and states the theorem precisely, and work continues on a full
+proof following the
+elementary (non-divergence-theorem) numerical route of the paper's
+verification item~2 above, which is expected to be substantially more
+tractable to formalize than the geometric argument of
+\S\ref{sec:nonmonic}. We will update the accompanying repository as this
+progresses, and report the final status -- complete or partial, with any
+remaining \texttt{sorry}s explicitly enumerated -- rather than claim
+completion here.
+
+\section{Novelty and prior art} \label{sec:novelty}
+
+An eight-agent parallel literature sweep (arXiv, journal databases, Math
+StackExchange and MathOverflow's own search indices, OEIS, and general web
+search), followed by a targeted search on the exact constants derived here,
+found:
+
+\begin{itemize}
+\item \textbf{Theorem~\ref{thm:sym-cube}}: no prior statement of this
+  probability anywhere searchable (OEIS direct digit-sequence query: no
+  match; Math StackExchange/MathOverflow site search for the monic cubic:
+  zero threads; web search for the exact fraction and decimal: empty). Two
+  caveats. First, the \emph{unnormalized} volume $V_0=\tfrac{766}{1215}+\tfrac{\ln3}{6}$
+  (i.e.\ eight times our value) appears, uninterpreted as a probability, as an
+  intermediate step of the \texttt{dxdy.ru} thread discussed above -- an
+  unrefereed, partly AI-assisted forum derivation of the \emph{non-monic}
+  cubic, dated June 2026, not indexed by any search engine at the time of our
+  search. Second, Li~\cite{li1988} claims an exact expression for the cubic
+  family $x^3+3ax^2+3bx+2c$ with $(a,b,c)$ uniform on symmetric intervals
+  $[-h,h]\times[-k,k]\times[-l,l]$; at $h=k=1/3$, $l=1/2$ this specializes to
+  exactly our model. The paper itself is paywalled and, per its recovered
+  \emph{Mathematical Reviews} notice \cite{li1988-mr}, no numerical or
+  symbolic value from it has ever been reproduced by either of its two
+  citations; whether it correctly reduces to Theorem~\ref{thm:sym-cube}
+  cannot be checked without the original text.
+\item \textbf{Theorem~\ref{thm:unit-cube}}: likely new without caveat -- Li's
+  furnished special cases are all symmetric intervals, and the value does not
+  appear in the \texttt{dxdy.ru} thread or anywhere else searched.
+\item \textbf{Theorem~\ref{thm:nonmonic}}: the \emph{value} is not new (see
+  above); the \emph{proof} and its independent verification are.
+\end{itemize}
+
+We regard the Li~\cite{li1988} question as the one genuinely open item in this
+account.
+
+\section{Open problems}
+
+The reduction techniques used here appear to generalize.
+
+\begin{enumerate}
+\item \textbf{Monic quartic.} The quartic discriminant is homogeneous of
+  degree~$6$, so the divergence-theorem argument of \S\ref{sec:nonmonic}
+  should apply, reducing the $4$-dimensional all-real-roots volume to a sum
+  over $2\times4=8$ three-dimensional face volumes (with the further reduction
+  each of those face volumes admits still to be worked out); our current
+  Monte Carlo estimate for the monic case is $0.0054749\pm9.0\times10^{-6}$.
+\item \textbf{Gaussian coefficients.} For the monic cubic with $(a,b,c)$
+  i.i.d.\ standard normal, there is no cube to bound the band, so
+  Lemma~\ref{lem:never-clipped} does not apply in any form; the natural
+  object is $\mathbb{E}[\Phi(c_{\mathrm{hi}})-\Phi(c_{\mathrm{lo}})]$, a smooth
+  two-dimensional integral with no case splits, but a priori no reason to
+  expect an elementary closed form. Current Monte Carlo estimate:
+  $0.169962\pm4.2\times10^{-5}$.
+\item \textbf{General degree $n$.} The probability of no real roots for a
+  degree-$n$ Kac polynomial decays as $n^{-3/4}$ exactly
+  (Poplavskyi--Schehr~\cite{poplavskyi-schehr}); the corresponding rate
+  constant for \emph{all} $n$ roots real, under speed-$n^2$ large-deviation
+  scaling, is not known in closed form for uniform (or Kac-Gaussian)
+  coefficients.
+\item \textbf{The parent matrix problem.} For an $n\times n$ matrix with
+  i.i.d.\ uniform entries, the all-real-eigenvalue probability remains open
+  for $n\ge3$; the striking empirical near-coincidence
+  $\Prb_n(\text{uniform})\approx2^{-(n-1)(n-2)/4}$ (Edelman's Gaussian
+  probability at rank $n-1$), first observed numerically on Math
+  StackExchange, has no known explanation.
+\end{enumerate}
+
+\appendix
+\section{Numerical verification summary}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lccc}
+\hline
+ & Theorem~\ref{thm:sym-cube} & Theorem~\ref{thm:unit-cube} & Theorem~\ref{thm:nonmonic} \\
+\hline
+Symbolic (\texttt{sympy}, exact) & PASS & PASS & PASS ($\Prb-\text{cand.}=0$) \\
+Independent numerical route & $\sim10^{-16}$ & $\sim10^{-13}$ & 19 sig.\ digits ($7.0\times10^{-20}$) \\
+Blind PSLQ / \texttt{identify} & --- & --- & recovers exact form \\
+Monte Carlo & $2\times10^8$: $+1.3\sigma$ & $2\times10^8$: $-0.5\sigma$ & $4\times10^{10}$: $-0.73\sigma$ \\
+Lean~4 / Mathlib & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & in progress \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{Data and code availability}
+All source code (Python: \texttt{sympy}/\texttt{mpmath}/\texttt{numpy}/\texttt{scipy};
+Lean~4: Mathlib \texttt{v4.33.0}), raw numerical results, the literature-sweep
+records underlying \S\ref{sec:novelty}, and an interactive visual explainer of
+the monic-cubic case are available in the accompanying repository.
+
+\begin{thebibliography}{9}
+
+\bibitem{li1988}
+Hung C.~Li, \emph{The exact probability that the roots of quadratic, cubic,
+and quartic equations are all real if the equation coefficients are random},
+Comm.\ Statist.\ Theory Methods \textbf{17} (1988), no.~2, 395--409.
+
+\bibitem{li1988-mr}
+G.~Samal, review of \cite{li1988}, Mathematical Reviews MR89j:60069 (1989).
+
+\bibitem{haldar-chakraborty}
+S.~Haldar and S.~Chakraborty, \emph{On the Probability of Real Roots in a
+Quadratic Equation with Coefficients as i.i.d.\ $U(-\theta,\theta)$
+Variates}, J.\ Appl.\ Math.\ Comput.\ \textbf{5} (2021), no.~1, 48--55.
+
+\bibitem{hetzel-liew-morrison}
+A.~J.~Hetzel, J.~S.~Liew, and K.~E.~Morrison, \emph{The Probability that a
+Matrix of Integers Is Diagonalizable}, Amer.\ Math.\ Monthly \textbf{114}
+(2007), 491--499.
+
+\bibitem{edelman1997}
+A.~Edelman, \emph{The Probability that a Random Real Gaussian Matrix has $k$
+Real Eigenvalues, Related Distributions, and the Circular Law}, J.\
+Multivariate Anal.\ \textbf{60} (1997), no.~2, 203--232.
+
+\bibitem{mse-eigenvalue-question}
+\emph{Probability for an $n\times n$ matrix to have only real eigenvalues},
+Mathematics Stack Exchange, question 3770846, asked 2020-07-27.
+
+\bibitem{poplavskyi-schehr}
+M.~Poplavskyi and G.~Schehr, \emph{Exact Persistence Exponent for the
+2d-Diffusion Equation and Related Kac Polynomials}, Phys.\ Rev.\ Lett.\
+\textbf{121} (2018), 150601.
+
+\end{thebibliography}
+
+\end{document}

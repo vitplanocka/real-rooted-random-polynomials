@@ -1,0 +1,19 @@
+{
+  "continuity_at_s_2_3": {
+    "from_below": "11264/18225",
+    "from_above": "11264/18225",
+    "equal": true
+  },
+  "I1": "27638/32805 - log(5)/2",
+  "I2a": "log(sqrt(10)*3**(11/16)/6) + 58819/131220",
+  "I2b": "-5*log(3)/16 + log(2)/2 + 757/540",
+  "S_b_exact": "1454/405 - 5*log(3)/6",
+  "S_b_numeric": "2.67461321623336538062741909269",
+  "V1_exact": "log(3)/6 + 766/1215",
+  "P_exact": "641/2430 - log(3)/24",
+  "P_numeric": "0.218010496202614771088984123359",
+  "dxdy_candidate": "641/2430 - log(3)/24",
+  "P_minus_dxdy_symbolic": "0",
+  "P_equals_dxdy": true,
+  "P_minus_sweep_numeric": "1.72712026148e-5"
+}

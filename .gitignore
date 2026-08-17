@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+
+# Lean / Lake build artifacts (regenerate via `lake exe cache get && lake build`)
+lean/.lake/
+lean/**/.lake/
+
+# OS
+.DS_Store
+Thumbs.db

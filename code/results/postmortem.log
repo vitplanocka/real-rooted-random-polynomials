@@ -1,0 +1,38 @@
+/home/vit-planocka/math/real-rooted-random-polynomials/src/sweep_postmortem.py:48: IntegrationWarning: The maximum number of subdivisions (50) has been achieved.
+  If increasing the limit yields no improvement it is advised to analyze 
+  the integrand in order to determine the difficulties.  If the position of a 
+  local difficulty can be determined (singularity, discontinuity) one will 
+  probably gain from splitting up the interval and calling the integrator 
+  on the subranges.  Perhaps a special-purpose integrator should be used.
+  return quad(f_c, -1.0, 1.0, args=(a, b), epsabs=eps, epsrel=eps,
+/home/vit-planocka/math/real-rooted-random-polynomials/src/sweep_postmortem.py:52: IntegrationWarning: The occurrence of roundoff error is detected, which prevents 
+  the requested tolerance from being achieved.  The error may be 
+  underestimated.
+  return quad(f_b, -1.0, 1.0, args=(a,), epsabs=eps, epsrel=eps,
+/home/vit-planocka/math/real-rooted-random-polynomials/src/sweep_postmortem.py:48: IntegrationWarning: The occurrence of roundoff error is detected, which prevents 
+  the requested tolerance from being achieved.  The error may be 
+  underestimated.
+  return quad(f_c, -1.0, 1.0, args=(a, b), epsabs=eps, epsrel=eps,
+/home/vit-planocka/math/real-rooted-random-polynomials/src/sweep_postmortem.py:52: IntegrationWarning: The maximum number of subdivisions (50) has been achieved.
+  If increasing the limit yields no improvement it is advised to analyze 
+  the integrand in order to determine the difficulties.  If the position of a 
+  local difficulty can be determined (singularity, discontinuity) one will 
+  probably gain from splitting up the interval and calling the integrator 
+  on the subranges.  Perhaps a special-purpose integrator should be used.
+  return quad(f_b, -1.0, 1.0, args=(a,), epsabs=eps, epsrel=eps,
+eps=1e-08 limit=50: P=0.218010497101  scipy err est 1.4e-09  P-exact=+8.986e-10  P-sweep=+1.727e-05  (233.3s)
+/home/vit-planocka/math/real-rooted-random-polynomials/src/sweep_postmortem.py:52: IntegrationWarning: The maximum number of subdivisions (100) has been achieved.
+  If increasing the limit yields no improvement it is advised to analyze 
+  the integrand in order to determine the difficulties.  If the position of a 
+  local difficulty can be determined (singularity, discontinuity) one will 
+  probably gain from splitting up the interval and calling the integrator 
+  on the subranges.  Perhaps a special-purpose integrator should be used.
+  return quad(f_b, -1.0, 1.0, args=(a,), epsabs=eps, epsrel=eps,
+eps=1e-10 limit=100: P=0.218010497197  scipy err est 2.0e-11  P-exact=+9.943e-10  P-sweep=+1.727e-05  (671.5s)
+/home/vit-planocka/math/real-rooted-random-polynomials/src/sweep_postmortem.py:52: IntegrationWarning: The maximum number of subdivisions (200) has been achieved.
+  If increasing the limit yields no improvement it is advised to analyze 
+  the integrand in order to determine the difficulties.  If the position of a 
+  local difficulty can be determined (singularity, discontinuity) one will 
+  probably gain from splitting up the interval and calling the integrator 
+  on the subranges.  Perhaps a special-purpose integrator should be used.
+  return quad(f_b, -1.0, 1.0, args=(a,), epsabs=eps, epsrel=eps,

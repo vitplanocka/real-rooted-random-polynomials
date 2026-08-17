@@ -1,0 +1,146 @@
+{
+  "quantity": "P(a x^3 + b x^2 + c x + d has 3 real roots), (a,b,c,d) iid U[-1,1]",
+  "anchors": {
+    "V(1)": {
+      "computed": "0.813554723008470956796326881051",
+      "exact_766_1215_plus_log3_6": "0.813554723008470956796326881051",
+      "abs_err": "1.1479e-41"
+    },
+    "depressed_cubic": {
+      "computed": "0.0769800358919501019345531707336",
+      "exact_2sqrt3_over_45": "0.0769800358919501019345531707336",
+      "abs_err": "0.0"
+    },
+    "p(1)": {
+      "computed": "0.101694340376058869599540860131",
+      "exact_383_4860_plus_log3_48": "0.101694340376058869599540860131",
+      "abs_err": "1.4349e-42"
+    },
+    "p(0+)_limit_exact_1_2+5_72+log2_12": "0.627206709491106553562547121233",
+    "note": "p(a) = p(0+) - (2/3) sqrt(a) + ... ; the sqrt endpoint is why plain Gauss nodes must not be used on the outer a-integral"
+  },
+  "V_of_t_table": [
+    {
+      "t": 1,
+      "V_direct_A_order": "0.8135547230084709567963268811",
+      "V_via_p_b_order": "0.8135547230084709567963268811",
+      "rel_diff": "4.0301e-42"
+    },
+    {
+      "t": 1.25,
+      "V_direct_A_order": "1.896072321154865367226615489",
+      "V_via_p_b_order": "1.896072321154865367226615489",
+      "rel_diff": "1.136e-41"
+    },
+    {
+      "t": 1.5,
+      "V_direct_A_order": "3.779704487957479836999049389",
+      "V_via_p_b_order": "3.779704487957479836999049389",
+      "rel_diff": "2.4363e-41"
+    },
+    {
+      "t": 2,
+      "V_direct_A_order": "11.08836062582113115207303504",
+      "V_via_p_b_order": "11.08836062582113115207303504",
+      "rel_diff": "5.6861e-42"
+    },
+    {
+      "t": 3,
+      "V_direct_A_order": "49.18994594136796017449959017",
+      "V_via_p_b_order": "49.18994594136796017449959017",
+      "rel_diff": "1.9166e-41"
+    },
+    {
+      "t": 4,
+      "V_direct_A_order": "139.7419412621896295580285365",
+      "V_via_p_b_order": "139.7419412621130994304177318",
+      "rel_diff": "5.4765e-13"
+    },
+    {
+      "t": 5,
+      "V_direct_A_order": "311.2172038051331163525332138",
+      "V_via_p_b_order": "311.2172038042818798493448202",
+      "rel_diff": "2.7352e-12"
+    },
+    {
+      "t": 7,
+      "V_direct_A_order": "1000.247167047178665595386684",
+      "V_via_p_b_order": "1000.247167045055697539819694",
+      "rel_diff": "2.1224e-12"
+    },
+    {
+      "t": 10,
+      "V_direct_A_order": "3283.333305767248138792908545",
+      "V_via_p_b_order": "3283.333305772980494564386809",
+      "rel_diff": "1.7459e-12"
+    },
+    {
+      "t": 20,
+      "V_direct_A_order": "30486.39338271009878517463871",
+      "V_via_p_b_order": "30486.39338273806319771375332",
+      "rel_diff": "9.1728e-13"
+    },
+    {
+      "t": 50,
+      "V_direct_A_order": "532535.7307625854041985236554",
+      "V_via_p_b_order": "532535.7307625853782351954782",
+      "rel_diff": "4.8754e-17"
+    }
+  ],
+  "route1_leading_coefficient": {
+    "description": "P = (1/6) int db int sigma G(b,sigma) dsigma, the V(t)/leading-coefficient integral with the a-integral in closed form; uses no part of the face decomposition",
+    "b_panels": 56,
+    "P_by_method_and_degree": {
+      "gauss-legendre_deg5": "0.218010496202614769578850684778839182",
+      "gauss-legendre_deg6": "0.218010496202614771186280767569990715",
+      "gauss-legendre_deg7": "0.218010496202614770896727194507463389",
+      "tanh-sinh_deg5": "0.218010496202614770731237427650885106",
+      "tanh-sinh_deg6": "0.218010496202614771018504937142472413"
+    },
+    "P": "0.218010496202614771018504937142472413",
+    "method_spread": "1.60743e-18",
+    "P_minus_exact": "-7.04792e-20",
+    "P_minus_sweep": "1.72712e-5"
+  },
+  "route2_face_decomposition": {
+    "description": "P = (V(1)+S_b)/16 by the cone/divergence identity; S_b evaluated in closed form",
+    "S_b_exact": "1454/405 - 5*log(3)/6",
+    "P_exact": "641/2430 - log(3)/24",
+    "P_numeric": "0.218010496202614771088984123359",
+    "P_equals_dxdy_symbolically": true
+  },
+  "route2_verification": {
+    "cone_identity_exact_on_quadratic_analogue": true,
+    "S_b_by_quadrature_minus_exact": "-3.9443e-31",
+    "S_b_blind_pslq": [
+      -810,
+      2908,
+      -675,
+      0,
+      0,
+      0
+    ]
+  },
+  "monte_carlo": {
+    "n_samples": 40000000000,
+    "raw_discriminant": {
+      "p": 0.218008985275,
+      "se": 2.0644676530183567e-06,
+      "z_vs_dxdy": -0.7318727481809104,
+      "z_vs_sweep": 7.63406245525631
+    },
+    "conditional": {
+      "p": 0.21800910696159023,
+      "se": 1.2011270849920196e-06,
+      "z_vs_dxdy": -1.1566145180494634,
+      "z_vs_sweep": 13.22254887818553
+    }
+  },
+  "ANSWER": {
+    "closed_form": "641/2430 - log(3)/24",
+    "value_30_digits": "0.218010496202614771088984123359",
+    "dxdy_candidate": "641/2430 - log(3)/24  -> CONFIRMED (identical)",
+    "literature_sweep_value": "0.217993225 +- 5e-8  -> REFUTED",
+    "sweep_error": "1.72712e-5"
+  }
+}

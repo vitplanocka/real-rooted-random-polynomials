@@ -1,0 +1,1373 @@
+<title>Cusp and Cube</title>
+<style>
+  /* ---------- tokens: light (bare :root), dark via media + stamp ---------- */
+  :root {
+    --bg: #f2f4f6;
+    --surface: #ffffff;
+    --ink: #182430;
+    --ink-2: #4a5a68;
+    --ink-3: #7b8894;
+    --line: #d8dee4;
+    --line-soft: #e7ebef;
+    --real: #078772;          /* region: three real roots */
+    --real-soft: rgba(7, 135, 114, 0.16);
+    --complex: #7b58b8;       /* region: one real root (complex pair) */
+    --complex-soft: rgba(123, 88, 184, 0.10);
+    --accent: #078772;
+    --good-bg: rgba(7, 135, 114, 0.10);
+    --card-shadow: 0 1px 2px rgba(24, 36, 48, 0.06), 0 4px 16px rgba(24, 36, 48, 0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10161e;
+      --surface: #1a2531;
+      --ink: #e8edf2;
+      --ink-2: #a9b6c2;
+      --ink-3: #7d8b98;
+      --line: #2b3947;
+      --line-soft: #223140;
+      --real: #14957e;
+      --real-soft: rgba(20, 149, 126, 0.22);
+      --complex: #8e6bcb;
+      --complex-soft: rgba(142, 107, 203, 0.14);
+      --accent: #2fae96;
+      --good-bg: rgba(20, 149, 126, 0.14);
+      --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10161e;
+    --surface: #1a2531;
+    --ink: #e8edf2;
+    --ink-2: #a9b6c2;
+    --ink-3: #7d8b98;
+    --line: #2b3947;
+    --line-soft: #223140;
+    --real: #14957e;
+    --real-soft: rgba(20, 149, 126, 0.22);
+    --complex: #8e6bcb;
+    --complex-soft: rgba(142, 107, 203, 0.14);
+    --accent: #2fae96;
+    --good-bg: rgba(20, 149, 126, 0.14);
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  /* ---------- base ---------- */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 17px;
+    line-height: 1.62;
+  }
+  .mono {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: 0.86em;
+  }
+  main { max-width: 1000px; margin: 0 auto; padding: 0 20px 96px; }
+  .prose { max-width: 680px; }
+  h1, h2, h3 { line-height: 1.2; text-wrap: balance; margin: 0; }
+  p { margin: 0 0 1em; }
+  a { color: var(--accent); }
+  em.v { font-style: italic; }
+
+  .eyebrow {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* ---------- hero ---------- */
+  header.hero { padding: 72px 0 20px; }
+  header.hero h1 {
+    font-size: clamp(40px, 7vw, 62px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 10px 0 18px;
+  }
+  header.hero .thesis {
+    font-size: clamp(19px, 2.6vw, 23px);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 640px;
+  }
+  .hero-rule {
+    height: 1px; background: var(--line);
+    margin: 40px 0 0;
+  }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 64px; }
+  section > h2 {
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  section > .eyebrow { display: block; margin-bottom: 6px; }
+
+  /* ---------- figure cards ---------- */
+  .fig {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    padding: 22px 24px 18px;
+    margin: 26px 0;
+  }
+  .fig .fig-title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .fig .fig-sub { font-size: 13.5px; color: var(--ink-2); margin-bottom: 14px; }
+  .fig-row { display: flex; flex-wrap: wrap; gap: 26px; align-items: flex-start; }
+  .fig canvas { display: block; touch-action: none; }
+  .panel { display: flex; flex-direction: column; gap: 10px; }
+  .canvas-label {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: 11.5px; color: var(--ink-3);
+    margin-top: 6px;
+  }
+  .readout {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 8px 12px;
+    line-height: 1.7;
+  }
+  .readout b { color: var(--ink); font-weight: 600; }
+  .badge {
+    display: inline-block; border-radius: 99px;
+    padding: 1px 10px; font-size: 11.5px; font-weight: 600;
+  }
+  .badge.real3 { background: var(--real-soft); color: var(--real); }
+  .badge.real1 { background: var(--complex-soft); color: var(--complex); }
+  .caption {
+    font-size: 13.5px; color: var(--ink-2);
+    border-top: 1px solid var(--line-soft);
+    margin-top: 16px; padding-top: 12px;
+    max-width: 760px;
+  }
+
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .slider-row { display: flex; align-items: center; gap: 12px; }
+  .slider-row .mono { white-space: nowrap; }
+
+  /* ---------- pipeline diagram ---------- */
+  .pipe { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin: 20px 0 6px; }
+  .pipe .step {
+    flex: 1 1 180px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13.5px; color: var(--ink-2);
+  }
+  .pipe .step b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 3px; }
+  .pipe .step.dead { border-style: dashed; }
+  .pipe .arrow { align-self: center; color: var(--ink-3); font-size: 18px; }
+
+  /* ---------- theorem ---------- */
+  .theorem {
+    background: var(--good-bg);
+    border: 1px solid var(--real);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 26px 0;
+  }
+  .theorem .eyebrow { color: var(--real); margin-bottom: 10px; display: block; }
+  .theorem .stmt { font-size: 18px; margin-bottom: 4px; }
+  .theorem .formula {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: clamp(16px, 3vw, 21px);
+    font-variant-numeric: tabular-nums;
+    margin: 12px 0 4px;
+    color: var(--ink);
+  }
+  .theorem .dec { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+  /* ---------- primer (neutral reference box) ---------- */
+  .primer {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin: 22px 0 28px;
+  }
+  .primer .eyebrow { margin-bottom: 10px; display: block; }
+  .primer .intro { margin: 0 0 4px; font-size: 14.5px; color: var(--ink-2); }
+  .primer .formula-row {
+    display: flex; flex-wrap: wrap; gap: 6px 28px; align-items: baseline;
+    margin: 14px 0;
+  }
+  .primer .formula-row .label {
+    font-size: 13px; color: var(--ink-3); min-width: 96px; line-height: 1.4;
+  }
+  .primer .formula-row .label .mono { display: block; color: var(--ink-2); }
+  .primer .formula-row .expr {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: 15px; font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+  .primer .sign-rules { margin-top: 16px; border-top: 1px solid var(--line-soft); padding-top: 14px; }
+  .primer .sign-rule {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 14px; color: var(--ink-2); padding: 4px 0;
+  }
+  .primer .sign-rule .sign {
+    font-family: ui-monospace, Consolas, monospace; font-weight: 600;
+    min-width: 70px; font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+  .primer .sign-rule .sign.pos { color: var(--real); }
+  .primer .sign-rule .sign.neg { color: var(--complex); }
+  .primer .bridge {
+    margin: 14px 0 0; font-size: 13.5px; color: var(--ink-3);
+    border-top: 1px solid var(--line-soft); padding-top: 12px;
+  }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap { overflow-x: auto; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  th, td {
+    text-align: left; padding: 9px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  th {
+    font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+    border-bottom: 1px solid var(--line);
+  }
+  tr:last-child td { border-bottom: none; }
+  td.num { font-family: ui-monospace, Consolas, monospace; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ok { color: var(--real); font-weight: 600; }
+  .open-tag { color: var(--complex); font-weight: 600; }
+
+  .footnote { font-size: 13px; color: var(--ink-3); margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<main>
+  <header class="hero">
+    <span class="eyebrow">Real-rooted random polynomials &middot; project explainer</span>
+    <h1>Cusp and Cube</h1>
+    <p class="thesis">
+      &ldquo;What is the chance that a random cubic has all real roots?&rdquo;
+      is secretly a geometry question: it asks for the <em>volume of a shape</em>
+      carved out of coefficient space by the discriminant.
+      This page shows the shape &mdash; and the two closed forms our first
+      session of machinery pulled out of it.
+    </p>
+    <div class="hero-rule"></div>
+  </header>
+
+  <!-- ================================================================ -->
+  <section class="prose">
+    <span class="eyebrow">1 &middot; Where this came from</span>
+    <h2>From nine dimensions down to three</h2>
+    <p>
+      The original question was about matrices: pick a 3&times;3 matrix with
+      nine independent uniform entries &mdash; what is the probability that all
+      three eigenvalues are real? That is the volume of a blob cut out of a
+      <b>9-dimensional</b> cube by a degree-6 discriminant surface. The Gaussian
+      version has a beautiful answer (2<sup>&minus;n(n&minus;1)/4</sup>, Edelman)
+      because Gaussian measure has orthogonal symmetry; the uniform cube has
+      none, and the problem stalls at simulation
+      (<span class="mono">P &asymp; 0.7076</span>, our own 10<sup>7</sup>-sample run).
+    </p>
+    <p>
+      The fix is not to try harder in nine dimensions &mdash; it is to move the
+      question to where it becomes geometric: <em>coefficient space</em>. A monic
+      cubic <em class="v">x</em>&sup3; + <em class="v">a</em><em class="v">x</em>&sup2; +
+      <em class="v">b</em><em class="v">x</em> + <em class="v">c</em> is a point
+      (<em class="v">a</em>,&nbsp;<em class="v">b</em>,&nbsp;<em class="v">c</em>) in a
+      <b>3-dimensional</b> cube, and &ldquo;all roots real&rdquo; is a region in that cube.
+      Same mathematical species as the matrix problem &mdash; a discriminant
+      volume &mdash; but small enough to see, integrate, and prove things about.
+    </p>
+    <div class="pipe">
+      <div class="step dead"><b>9D: matrix entries</b>
+        3&times;3 uniform matrix; no symmetry to exploit; simulation only, ~0.7076</div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><b>3D: cubic coefficients</b>
+        (a, b, c) uniform in a cube; the real-rooted set is a concrete region</div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><b>Volume = probability</b>
+        P(3 real roots) = vol{ &Delta; &ge; 0 } / vol(cube)</div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section>
+    <span class="eyebrow">2 &middot; The shape in two dimensions</span>
+    <h2>The discriminant divides the plane</h2>
+
+    <div class="primer">
+      <span class="eyebrow">Reference &middot; the discriminant, in general</span>
+      <p class="intro">
+        Every polynomial has a discriminant &mdash; one number built from its
+        coefficients that is zero exactly when the polynomial has a repeated
+        root. Away from zero, its sign sorts how many of the roots are real.
+      </p>
+      <div class="formula-row">
+        <span class="label">quadratic<span class="mono">ax&sup2;+bx+c</span></span>
+        <span class="expr">&Delta;<sub>2</sub> = b&sup2; &minus; 4ac</span>
+      </div>
+      <div class="formula-row">
+        <span class="label">cubic<span class="mono">ax&sup3;+bx&sup2;+cx+d</span></span>
+        <span class="expr">&Delta;<sub>3</sub> = b&sup2;c&sup2; &minus; 4ac&sup3; &minus; 4b&sup3;d &minus; 27a&sup2;d&sup2; + 18abcd</span>
+      </div>
+      <div class="sign-rules">
+        <div class="sign-rule"><span class="sign pos">&Delta;<sub>3</sub> &gt; 0</span> three distinct real roots</div>
+        <div class="sign-rule"><span class="sign">&Delta;<sub>3</sub> = 0</span> a repeated root (all roots real)</div>
+        <div class="sign-rule"><span class="sign neg">&Delta;<sub>3</sub> &lt; 0</span> one real root, two complex-conjugate roots</div>
+      </div>
+      <p class="bridge">
+        Set a=1, b=0, c=p, d=q &mdash; the depressed cubic below &mdash; and
+        &Delta;<sub>3</sub> collapses to exactly the &minus;4p&sup3;&minus;27q&sup2;
+        used in Figure 1. Every &ldquo;3 real roots&rdquo; region on this page,
+        from the cusp to Theorem&nbsp;1&rsquo;s cube to Figure&nbsp;3&rsquo;s
+        clipped tongue, is this same quantity staying nonnegative.
+      </p>
+    </div>
+
+    <p class="prose">
+      Start with the <em>depressed</em> cubic
+      <em class="v">x</em>&sup3; + <em class="v">p</em><em class="v">x</em> + <em class="v">q</em>
+      (no square term), so coefficient space is just the (<em class="v">p</em>,&nbsp;<em class="v">q</em>) plane.
+      The discriminant &Delta; = &minus;4<em class="v">p</em>&sup3; &minus; 27<em class="v">q</em>&sup2;
+      is positive inside a cusp-shaped region and negative outside.
+      <b>Drag the point</b> and watch the cubic&rsquo;s graph: inside the cusp it
+      crosses the axis three times; outside, only once.
+    </p>
+
+    <div class="fig">
+      <div class="fig-title">Figure 1 &middot; The cusp region &Delta; &ge; 0, and the cubic it controls</div>
+      <div class="fig-sub">Left: coefficient plane (p, q) with the region of three real roots. Right: the graph of x&sup3; + px + q with its real roots.</div>
+      <div class="fig-row">
+        <div class="panel">
+          <canvas id="cv-plane" width="400" height="400" style="width:100%;max-width:400px;cursor:grab;"></canvas>
+          <div class="canvas-label">coefficient plane &middot; p right, q up &middot; drag anywhere</div>
+        </div>
+        <div class="panel" style="flex:1;min-width:280px;">
+          <canvas id="cv-graph" width="400" height="300" style="width:100%;max-width:400px;"></canvas>
+          <div class="canvas-label">graph of f(x) = x&sup3; + px + q</div>
+          <div class="readout" id="ro-fig1">&nbsp;</div>
+        </div>
+      </div>
+      <div class="caption">
+        The teal region is bounded by the cusp curve 4p&sup3; + 27q&sup2; = 0.
+        Its area inside the square, divided by the square&rsquo;s area 4, is the probability
+        that a random depressed cubic with (p, q) uniform on [&minus;1, 1]&sup2; has three real
+        roots: exactly <span class="mono">2&radic;3/45 = 0.076980&hellip;</span>
+        This exact value is the calibration anchor for all of our machinery
+        (our 2&times;10<sup>8</sup>-sample Monte Carlo lands within 0.1&sigma; of it).
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section>
+    <span class="eyebrow">3 &middot; The shape in three dimensions</span>
+    <h2>Slicing the cube</h2>
+    <p class="prose">
+      Now the full monic cubic: (<em class="v">a</em>, <em class="v">b</em>, <em class="v">c</em>)
+      uniform in [&minus;1, 1]&sup3;. Fix <em class="v">a</em> and you get a 2D slice
+      of the cube; the real-rooted region in each slice is a curved tongue in the
+      (<em class="v">b</em>, <em class="v">c</em>) square. The whole probability is the
+      average tongue area over all slices. <b>Move the slider.</b>
+    </p>
+
+    <div class="fig">
+      <div class="fig-title">Figure 2 &middot; Slices of the real-rooted region in the (a, b, c) cube</div>
+      <div class="fig-sub">Left: the (b, c) slice at your chosen a. Middle: the same region as a solid, in 3D &mdash; drag to rotate. Right: the slice area as a function of a &mdash; the volume is the area under this curve.</div>
+      <div class="fig-row">
+        <div class="panel">
+          <canvas id="cv-slice" width="400" height="400" style="width:100%;max-width:400px;"></canvas>
+          <div class="canvas-label">slice at fixed a &middot; b right, c up</div>
+        </div>
+        <div class="panel">
+          <canvas id="cv-3d" width="400" height="400" style="width:100%;max-width:400px;cursor:grab;"></canvas>
+          <div class="canvas-label">the solid, in 3D &middot; drag to rotate &middot; grey plane = current slice</div>
+        </div>
+        <div class="panel" style="flex:1;min-width:280px;">
+          <div class="slider-row">
+            <span class="mono">a = <b id="a-val">-1.00</b></span>
+            <input type="range" id="a-slider" min="-1" max="1" step="0.01" value="-1" aria-label="slice position a">
+          </div>
+          <div class="readout" id="ro-fig2">&nbsp;</div>
+          <canvas id="cv-area" width="400" height="220" style="width:100%;max-width:400px;"></canvas>
+          <div class="canvas-label">slice area A(a) &middot; marker = current slice</div>
+        </div>
+      </div>
+      <div class="caption">
+        <b>The key reduction.</b> For fixed (a, b) with b &lt; a&sup2;/3, the values of c
+        giving three real roots form an <em>interval</em> [c<sub>lo</sub>, c<sub>hi</sub>]
+        of width (4/27)(a&sup2; &minus; 3b)<sup>3/2</sup> &mdash; because the discriminant
+        factors as &Delta; = &minus;27 (c &minus; c<sub>lo</sub>)(c &minus; c<sub>hi</sub>)
+        (verified symbolically). So the 3D volume collapses to a 2D integral of explicit
+        band widths. And one geometric miracle makes it exactly solvable: the band
+        <em>never leaves the cube</em>. It touches the ceiling c = 1 at exactly one corner
+        point, (a, b, c) = (&minus;1, &minus;1, 1) &mdash; set a = &minus;1 above and look at the
+        top-left corner of the slice &mdash; so the messy &ldquo;clipping corrections&rdquo;
+        everyone would expect are identically zero. Rotate the 3D view toward that corner
+        and you can watch the solid&rsquo;s tip touch it exactly, with no gap and no overflow.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section>
+    <span class="eyebrow">4 &middot; What the machinery found</span>
+    <h2>Two closed forms, on day one</h2>
+    <p class="prose">
+      The research memo listed this as an open problem with &ldquo;no published closed
+      form.&rdquo; The pipeline &mdash; exact reduction, high-precision quadrature,
+      constant recognition, then a full symbolic proof &mdash; closed it in the first
+      session. Every step below is verified three independent ways.
+    </p>
+
+    <div class="theorem">
+      <span class="eyebrow">Theorem 1 &middot; symmetric cube</span>
+      <div class="stmt">For (a, b, c) i.i.d. uniform on [&minus;1, 1]:</div>
+      <div class="formula">P( x&sup3; + ax&sup2; + bx + c has 3 real roots ) &nbsp;=&nbsp; 383/4860 + ln(3)/48</div>
+      <div class="dec">= 0.10169434037605886959954086&hellip;</div>
+    </div>
+
+    <div class="theorem">
+      <span class="eyebrow">Theorem 2 &middot; unit cube</span>
+      <div class="stmt">For (a, b, c) i.i.d. uniform on [0, 1]:</div>
+      <div class="formula">P( x&sup3; + ax&sup2; + bx + c has 3 real roots ) &nbsp;=&nbsp; 1/2880</div>
+      <div class="dec">= 0.000347222&hellip; &mdash; a plain rational: every algebraic term in the integral cancels.</div>
+    </div>
+
+    <p class="prose">
+      Why so clean? Theorem 1&rsquo;s integral is the &ldquo;no clipping&rdquo; integral
+      plus the identity asinh(1/&radic;3) = ln(3)/2. Theorem 2 splits at the curve
+      b = a&sup2;/4, where the lower band edge c<sub>lo</sub> changes sign; on each side
+      the fractional powers cancel and the slice integral is the polynomial a&#8309;/480.
+    </p>
+
+    <div class="tbl-wrap">
+    <table>
+      <tr><th>verification</th><th>Theorem 1</th><th>Theorem 2</th></tr>
+      <tr>
+        <td>sympy symbolic proof (12 lemma steps)</td>
+        <td class="num"><span class="ok">PASS</span></td>
+        <td class="num"><span class="ok">PASS</span></td>
+      </tr>
+      <tr>
+        <td>independent adaptive quadrature (mpmath)</td>
+        <td class="num">agrees to ~10<sup>&minus;16</sup></td>
+        <td class="num">agrees to ~10<sup>&minus;13</sup></td>
+      </tr>
+      <tr>
+        <td>Monte Carlo, 2&times;10<sup>8</sup> samples</td>
+        <td class="num">0.10172336 &plusmn; 2.3e-5 &nbsp;(+1.3&sigma;)</td>
+        <td class="num">0.00034664 &plusmn; 1.3e-6 &nbsp;(&minus;0.5&sigma;)</td>
+      </tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section>
+    <span class="eyebrow">5 &middot; Calibration</span>
+    <h2>The anchor values</h2>
+    <p class="prose">
+      Every piece of machinery is tested against ground truth before it touches an
+      open case. These are the exact anchors, all re-derived symbolically in this
+      project (one memo erratum found: 2&radic;3/45 is 0.0770, not the memo&rsquo;s 0.0684).
+    </p>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th>quantity</th><th>exact value</th><th>decimal</th></tr>
+      <tr><td>depressed cubic, (p,q) ~ U[&minus;1,1]&sup2;</td>
+          <td class="num">2&radic;3/45</td><td class="num">0.0769800359</td></tr>
+      <tr><td>monic quadratic x&sup2;+bx+c, U[&minus;1,1]&sup2;</td>
+          <td class="num">13/24</td><td class="num">0.5416666667</td></tr>
+      <tr><td>full quadratic ax&sup2;+bx+c, U[&minus;1,1]&sup3;</td>
+          <td class="num">41/72 + ln(2)/12</td><td class="num">0.6272067095</td></tr>
+      <tr><td>full quadratic, U[0,1]&sup3;</td>
+          <td class="num">5/36 + ln(2)/6</td><td class="num">0.2544134190</td></tr>
+      <tr><td>2&times;2 matrix, entries U[&minus;1,1]</td>
+          <td class="num">49/72</td><td class="num">0.6805555556</td></tr>
+      <tr><td>n&times;n Gaussian matrix (Ginibre)</td>
+          <td class="num">2<sup>&minus;n(n&minus;1)/4</sup></td><td class="num">0.3535533906 (n=3)</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section>
+    <span class="eyebrow">6 &middot; The frontier</span>
+    <h2>What stays open</h2>
+    <p class="prose">
+      The same pipeline now points at the cases that did not fall on day one.
+      Current best values from our runs:
+    </p>
+    <div class="tbl-wrap">
+    <table>
+      <tr><th>target</th><th>status</th><th>best value</th></tr>
+      <tr>
+        <td>non-monic cubic, all 4 coefficients U[&minus;1,1]</td>
+        <td><span class="ok">SOLVED</span> &mdash; Theorem 3, see section 7 below</td>
+        <td class="num">641/2430 &minus; ln(3)/24 (exact)</td>
+      </tr>
+      <tr>
+        <td>monic cubic, coefficients N(0,1)</td>
+        <td><span class="open-tag">open</span> &mdash; Gaussian tails leave the cube-free geometry; needs a different integral</td>
+        <td class="num">0.169962 &plusmn; 4.2e-5 (MC)</td>
+      </tr>
+      <tr>
+        <td>monic quartic, all 4 roots real, U[&minus;1,1]&#8308;</td>
+        <td><span class="open-tag">open</span> &mdash; 4D discriminant region; sign conditions validated (0/200k mismatch vs root-finder)</td>
+        <td class="num">0.0054749 &plusmn; 9.0e-6 (MC)</td>
+      </tr>
+      <tr>
+        <td>3&times;3 matrix, entries U[0,1] (the parent problem)</td>
+        <td><span class="open-tag">open</span> &mdash; the 9D case this project walked away from, deliberately</td>
+        <td class="num">0.70755 &plusmn; 1.4e-4 (MC)</td>
+      </tr>
+    </table>
+    </div>
+    <p class="prose" style="margin-top:18px;">
+      The method that worked here &mdash; <b>reduce &rarr; integrate precisely &rarr;
+      recognize the constant &rarr; prove symbolically</b> &mdash; is the template for the
+      quartic: its band structure in the leading slice coordinates is richer, but the same
+      never-clipped question is the first thing to ask.
+    </p>
+  </section>
+
+  <!-- ================================================================ -->
+  <section>
+    <span class="eyebrow">7 &middot; Resolved: Theorem 3</span>
+    <h2>Dropping the monic restriction</h2>
+    <p class="prose">
+      Theorems 1 and 2 both fixed the leading coefficient at 1. The more natural
+      question drops that restriction: for
+      <em class="v">a</em><em class="v">x</em>&sup3; + <em class="v">b</em><em class="v">x</em>&sup2; +
+      <em class="v">c</em><em class="v">x</em> + <em class="v">d</em>, all four
+      coefficients i.i.d. uniform on [&minus;1, 1] &mdash; including <em class="v">a</em>
+      itself, which can land anywhere near zero &mdash; what is P(3 real roots)?
+    </p>
+    <p class="prose">
+      Dividing through by <em class="v">a</em> turns this into the same monic cubic
+      already solved, just evaluated on a bigger box: (<em class="v">b</em>/<em class="v">a</em>,
+      <em class="v">c</em>/<em class="v">a</em>, <em class="v">d</em>/<em class="v">a</em>) is
+      uniform on [&minus;1/<em class="v">a</em>, 1/<em class="v">a</em>]&sup3;. Writing
+      <b>V(t)</b> for the volume of the real-rooted region inside the cube
+      [&minus;t,&nbsp;t]&sup3; (so V(1) is exactly 8&times;Theorem&nbsp;1), the whole
+      problem becomes one integral:
+    </p>
+    <div class="readout" style="max-width:540px;">
+      P(non-monic, 3 real roots) &nbsp;=&nbsp; &int;<sub>0</sub><sup>1</sup>
+      (<em class="v">a</em>&sup3;/8) &middot; V(1/<em class="v">a</em>) d<em class="v">a</em>
+    </div>
+    <p class="prose" style="margin-top:16px;">
+      That needs V(t) for every <b>t &ge; 1</b>, not just t = 1 &mdash; and the
+      never-clipped miracle behind Theorem 1 was an exact coincidence <em>at</em>
+      t&nbsp;=&nbsp;1 (the band touched the corner precisely there, no more, no less).
+      Past that window the band spills over the edge and the clean closed form breaks.
+      <b>Drag the slider</b> to see why &mdash; then read on for how it got solved
+      anyway.
+    </p>
+
+    <div class="fig">
+      <div class="fig-title">Figure 3 &middot; The corner-touch stops protecting you once the window grows</div>
+      <div class="fig-sub">The extremal slice a = &minus;t, frame [&minus;t, t]&sup2;, as t grows past the Theorem&nbsp;1 boundary.</div>
+      <div class="fig-row">
+        <div class="panel">
+          <canvas id="cv-slice2" width="400" height="400" style="width:100%;max-width:400px;"></canvas>
+          <div class="canvas-label">slice at a = &minus;t &middot; b right, c up &middot; frame = [&minus;t,t]&sup2;</div>
+        </div>
+        <div class="panel" style="flex:1;min-width:280px;">
+          <div class="slider-row">
+            <span class="mono">t = <b id="t-val">1.00</b></span>
+            <input type="range" id="t-slider" min="0.4" max="2.4" step="0.01" value="1.00" aria-label="window half-width t">
+          </div>
+          <div class="readout" id="ro-fig3">&nbsp;</div>
+          <canvas id="cv-vcurve" width="400" height="220" style="width:100%;max-width:400px;"></canvas>
+          <div class="canvas-label">V(t)/(2t)&sup3; &middot; coarse on-page estimate, marker = current t</div>
+        </div>
+      </div>
+      <div class="caption">
+        Below t = 1 the tongue sits fully inside the frame. Right at t = 1 its corner
+        just kisses the frame&rsquo;s edge &mdash; the exact configuration Theorem 1 exploits.
+        Push past t = 1 and that corner is visibly sheared off: the missing sliver is
+        the &ldquo;clipping correction&rdquo; that made Theorem 1 easy to avoid and makes
+        this integral hard. (This on-page curve is a coarse illustrative estimate,
+        not a precision result &mdash; the exact value is below.)
+      </div>
+    </div>
+
+    <p class="prose">
+      V(t) itself turns out <em>not</em> to have a nice closed form for t &ne; 1 &mdash;
+      a blind search for one (PSLQ, against every constant that shows up elsewhere
+      on this page) comes back empty. So integrating this way is a dead end. The
+      route that actually worked is structural, not calculus: the discriminant is
+      <em>homogeneous</em> &mdash; scale a, b, c, d by the same &lambda; and &Delta;
+      scales by &lambda;&#8308; &mdash; so the real-rooted region is a <b>cone</b>.
+      The divergence theorem turns the volume of a cone intersected with a cube into
+      a sum over the cube&rsquo;s <b>8 faces</b>, and symmetry collapses those 8
+      faces to exactly Theorem&nbsp;1&rsquo;s volume plus one new, purely
+      3-dimensional piece &mdash; which has an elementary closed form once the
+      leading coefficient is integrated out first.
+    </p>
+
+    <div class="theorem">
+      <span class="eyebrow">Theorem 3 &middot; non-monic cube &middot; resolved 2026-08-17</span>
+      <div class="stmt">For (a, b, c, d) i.i.d. uniform on [&minus;1, 1]:</div>
+      <div class="formula">P( ax&sup3; + bx&sup2; + cx + d has 3 real roots ) &nbsp;=&nbsp; 641/2430 &minus; ln(3)/24</div>
+      <div class="dec">= 0.21801049620261477108898412335868&hellip;</div>
+    </div>
+
+    <p class="prose">
+      This is exactly the value the dxdy.ru forum thread had guessed back in June
+      2026 &mdash; but nobody, including that thread, had proved it. Verified five
+      independent ways: sympy confirms the closed form exactly; a second numerical
+      route sharing <em>no</em> step with the derivation agrees to 19 significant
+      digits; a blind PSLQ search recovers the same closed form straight from
+      22-digit numerics; and 4&times;10<sup>10</sup> Monte Carlo samples land
+      within 0.8&sigma;. A conflicting value this project had itself produced
+      &mdash; a literature-sweep quadrature of <span class="mono">0.217993225 &plusmn; 5e-8</span>
+      &mdash; is <b>refuted</b>: wrong by 1.7&times;10<sup>&minus;5</sup>, about
+      345&times; its own claimed error bar.
+      A genuine attempt to pin down exactly what went wrong in that computation
+      came up empty, and that is recorded honestly rather than guessed at &mdash;
+      though two real hazards in this family of integrals turned up along the
+      way: a &radic;a endpoint singularity as the leading coefficient vanishes,
+      and float64 silently losing track of the clipping boundary nearby.
+    </p>
+  </section>
+
+  <div class="footnote">
+    Machinery and proofs live in <span class="mono">Math/real-rooted-random-polynomials/</span>
+    (src: exact_anchors.py, mc_engine.py, reduce_monic.py, closed_form.py,
+    face_exact.py, face_verify.py, route1_closed_a.py; results as JSON;
+    literature review in LITERATURE.md; Theorem 3&rsquo;s full investigation
+    record in VERDICT.md and PROGRESS.md).
+    Prior-art status (8-agent sweep + targeted constants search, 2026-08-17): the
+    Theorem 1 probability has never been stated or published anywhere findable (OEIS,
+    MSE/MO, digit searches all empty) &mdash; though its unnormalized volume appears in an
+    obscure AI-derived forum post (dxdy.ru, June 2026), and the unobtainable Li (1988)
+    paper treats a family containing this model; 1/2880 appears to be genuinely new.
+    Theorem 3&rsquo;s value is the same forum post&rsquo;s guess for the non-monic
+    case, confirmed here with a proof and independent five-way verification.
+  </div>
+</main>
+
+<noscript><p style="max-width:680px;margin:20px auto;color:#888;">The two figures on this page are interactive and need JavaScript; the text and results are complete without them.</p></noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  function tok(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  /* ---------------- math ---------------- */
+  function depressedRoots(p, q) {
+    var disc = -4 * p * p * p - 27 * q * q;
+    if (disc >= 0 && p < 0) {
+      var m = 2 * Math.sqrt(-p / 3);
+      var arg = 3 * q / (p * m);
+      arg = Math.max(-1, Math.min(1, arg));
+      var t = Math.acos(arg) / 3;
+      var r = [];
+      for (var k = 0; k < 3; k++) r.push(m * Math.cos(t - 2 * Math.PI * k / 3));
+      r.sort(function (x, y) { return x - y; });
+      return r;
+    }
+    var A = -q / 2, B = Math.sqrt(Math.max(q * q / 4 + p * p * p / 27, 0));
+    return [Math.cbrt(A + B) + Math.cbrt(A - B)];
+  }
+
+  function cBand(a, b) { /* requires b <= a*a/3 */
+    var s = Math.sqrt(Math.max(a * a - 3 * b, 0));
+    var xm = (-a - s) / 3, xp = (-a + s) / 3;
+    function g(x) { return ((x + a) * x + b) * x; }
+    return [-g(xm), -g(xp)];
+  }
+
+  function sliceArea(a) { /* area of clamped band region in [-1,1]^2 slice */
+    var bHi = a * a / 3, n = 600, sum = 0, db = (bHi + 1) / n;
+    for (var i = 0; i < n; i++) {
+      var b = -1 + (i + 0.5) * db;
+      var band = cBand(a, b);
+      var lo = Math.max(band[0], -1), hi = Math.min(band[1], 1);
+      if (hi > lo) sum += (hi - lo) * db;
+    }
+    return sum;
+  }
+
+  /* ---------------- figure 1 ---------------- */
+  var cvP = document.getElementById("cv-plane");
+  var cvG = document.getElementById("cv-graph");
+  var ro1 = document.getElementById("ro-fig1");
+  var P = { p: -0.72, q: 0.10 };
+
+  function planeToPx(p, q, w, h) {
+    return [(p + 1) / 2 * w, (1 - (q + 1) / 2) * h];
+  }
+  function pxToPlane(x, y, w, h) {
+    return [x / w * 2 - 1, (1 - y / h) * 2 - 1];
+  }
+
+  function drawPlane() {
+    var ctx = cvP.getContext("2d");
+    var w = cvP.width, h = cvP.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--complex-soft");
+    ctx.fillRect(0, 0, w, h);
+
+    /* region 4p^3+27q^2 <= 0 : |q| <= 2(-p)^{3/2}/sqrt(27) */
+    ctx.beginPath();
+    var n = 220, i, p, qb, pt;
+    for (i = 0; i <= n; i++) {          /* upper branch, p: 0 -> -1 */
+      p = -i / n;
+      qb = 2 * Math.pow(-p, 1.5) / Math.sqrt(27);
+      pt = planeToPx(p, qb, w, h);
+      if (i === 0) ctx.moveTo(pt[0], pt[1]); else ctx.lineTo(pt[0], pt[1]);
+    }
+    for (i = n; i >= 0; i--) {          /* lower branch, p: -1 -> 0 */
+      p = -i / n;
+      qb = -2 * Math.pow(-p, 1.5) / Math.sqrt(27);
+      pt = planeToPx(p, qb, w, h);
+      ctx.lineTo(pt[0], pt[1]);
+    }
+    ctx.closePath();
+    ctx.fillStyle = tok("--real-soft");
+    ctx.fill();
+    ctx.strokeStyle = tok("--real");
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    /* axes */
+    ctx.strokeStyle = tok("--line");
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+    ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+    ctx.stroke();
+
+    /* labels */
+    ctx.font = "12px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--real");
+    ctx.fillText("3 real roots", w * 0.06, h * 0.52 - 8);
+    ctx.fillStyle = tok("--complex");
+    ctx.fillText("1 real root", w * 0.62, h * 0.16);
+    ctx.fillStyle = tok("--ink-3");
+    ctx.fillText("p", w - 14, h / 2 - 6);
+    ctx.fillText("q", w / 2 + 6, 14);
+
+    /* drag point */
+    pt = planeToPx(P.p, P.q, w, h);
+    ctx.beginPath();
+    ctx.arc(pt[0], pt[1], 7, 0, 2 * Math.PI);
+    ctx.fillStyle = tok("--ink");
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = tok("--surface");
+    ctx.stroke();
+  }
+
+  function drawGraph() {
+    var ctx = cvG.getContext("2d");
+    var w = cvG.width, h = cvG.height;
+    var X = 2.1, Y = 3.2;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--surface");
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = tok("--line-soft");
+    ctx.lineWidth = 1;
+    var gx;
+    ctx.beginPath();
+    for (gx = -2; gx <= 2; gx++) {
+      var px = (gx / X + 1) / 2 * w;
+      ctx.moveTo(px, 0); ctx.lineTo(px, h);
+    }
+    for (gx = -3; gx <= 3; gx++) {
+      var py = (1 - (gx / Y + 1) / 2) * h;
+      ctx.moveTo(0, py); ctx.lineTo(w, py);
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = tok("--line");
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+    ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+    ctx.stroke();
+
+    var roots = depressedRoots(P.p, P.q);
+    var three = roots.length === 3;
+    ctx.strokeStyle = three ? tok("--real") : tok("--complex");
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var n = 240, i;
+    for (i = 0; i <= n; i++) {
+      var x = -X + 2 * X * i / n;
+      var y = x * x * x + P.p * x + P.q;
+      var px2 = (x / X + 1) / 2 * w;
+      var py2 = (1 - Math.max(-Y, Math.min(Y, y)) / Y) / 2 * h;
+      if (i === 0) ctx.moveTo(px2, py2); else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+
+    for (i = 0; i < roots.length; i++) {
+      var rx = (roots[i] / X + 1) / 2 * w;
+      ctx.beginPath();
+      ctx.arc(rx, h / 2, 5.5, 0, 2 * Math.PI);
+      ctx.fillStyle = three ? tok("--real") : tok("--complex");
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = tok("--surface");
+      ctx.stroke();
+    }
+
+    var disc = -4 * P.p * P.p * P.p - 27 * P.q * P.q;
+    ro1.innerHTML =
+      "p = <b>" + P.p.toFixed(3) + "</b> &nbsp; q = <b>" + P.q.toFixed(3) + "</b><br>" +
+      "&Delta; = &minus;4p&sup3; &minus; 27q&sup2; = <b>" + disc.toFixed(4) + "</b> &nbsp; " +
+      (three ? '<span class="badge real3">3 real roots</span>'
+             : '<span class="badge real1">1 real root</span>') + "<br>" +
+      "roots: <b>" + roots.map(function (r) { return r.toFixed(3); }).join(", ") + "</b>";
+  }
+
+  function fig1() { drawPlane(); drawGraph(); }
+
+  function planePointer(ev) {
+    var rect = cvP.getBoundingClientRect();
+    var x = (ev.clientX - rect.left) * (cvP.width / rect.width);
+    var y = (ev.clientY - rect.top) * (cvP.height / rect.height);
+    var pq = pxToPlane(x, y, cvP.width, cvP.height);
+    P.p = Math.max(-1, Math.min(1, pq[0]));
+    P.q = Math.max(-1, Math.min(1, pq[1]));
+    fig1();
+  }
+  var dragging = false;
+  cvP.addEventListener("pointerdown", function (ev) {
+    dragging = true; cvP.setPointerCapture(ev.pointerId); planePointer(ev);
+  });
+  cvP.addEventListener("pointermove", function (ev) { if (dragging) planePointer(ev); });
+  cvP.addEventListener("pointerup", function () { dragging = false; });
+
+  /* ---------------- figure 2 ---------------- */
+  var cvS = document.getElementById("cv-slice");
+  var cvA = document.getElementById("cv-area");
+  var slider = document.getElementById("a-slider");
+  var aVal = document.getElementById("a-val");
+  var ro2 = document.getElementById("ro-fig2");
+
+  var areaCurve = [];
+  (function () {
+    var n = 240;
+    for (var i = 0; i <= n; i++) {
+      var a = -1 + 2 * i / n;
+      areaCurve.push([a, sliceArea(a)]);
+    }
+  })();
+  var areaMax = areaCurve.reduce(function (m, d) { return Math.max(m, d[1]); }, 0);
+
+  function drawSlice(a) {
+    var ctx = cvS.getContext("2d");
+    var w = cvS.width, h = cvS.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--complex-soft");
+    ctx.fillRect(0, 0, w, h);
+
+    var bHi = a * a / 3;
+    var col, b, band, lo, hi, x0, y0, y1;
+    var firstX = null, lastX = null;
+    for (col = 0; col < w; col++) {
+      b = (col + 0.5) / w * 2 - 1;
+      if (b > bHi) break;
+      band = cBand(a, b);
+      lo = Math.max(band[0], -1);
+      hi = Math.min(band[1], 1);
+      if (hi <= lo) continue;
+      if (firstX === null) firstX = col;
+      lastX = col;
+      x0 = col;
+      y0 = (1 - (hi + 1) / 2) * h;
+      y1 = (1 - (lo + 1) / 2) * h;
+      ctx.fillStyle = tok("--real-soft");
+      ctx.fillRect(x0, y0, 1, y1 - y0);
+    }
+    /* band boundary curves */
+    ctx.strokeStyle = tok("--real");
+    ctx.lineWidth = 1.8;
+    var side;
+    for (side = 0; side < 2; side++) {
+      ctx.beginPath();
+      var started = false;
+      for (col = firstX === null ? 0 : firstX; col <= (lastX || 0); col++) {
+        b = (col + 0.5) / w * 2 - 1;
+        if (b > bHi) break;
+        band = cBand(a, b);
+        var cv2 = side === 0 ? band[1] : band[0];
+        if (cv2 > 1 || cv2 < -1) { started = false; continue; }
+        var py = (1 - (cv2 + 1) / 2) * h;
+        if (!started) { ctx.moveTo(col, py); started = true; }
+        else ctx.lineTo(col, py);
+      }
+      ctx.stroke();
+    }
+
+    /* parabola boundary b = a^2/3 */
+    var bx = ((bHi + 1) / 2) * w;
+    ctx.strokeStyle = tok("--ink-3");
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(bx, 0); ctx.lineTo(bx, h);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* labels */
+    ctx.font = "12px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--complex");
+    ctx.fillText("1 real root", w * 0.68, h * 0.10);
+    ctx.fillStyle = tok("--real");
+    ctx.fillText("3 real roots", w * 0.05, h * 0.90);
+    ctx.fillStyle = tok("--ink-3");
+    ctx.fillText("b = a\u00b2/3", Math.min(bx + 6, w - 70), h * 0.5);
+    ctx.fillText("b", w - 14, h - 8);
+    ctx.fillText("c", 6, 14);
+
+    /* corner-touch marker at a = -1 */
+    if (a < -0.985) {
+      var px = ((-1 + 1) / 2) * w, py2 = (1 - (1 + 1) / 2) * h;
+      ctx.beginPath();
+      ctx.arc(px + 5, py2 + 5, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = tok("--ink");
+      ctx.fill();
+      ctx.fillText("touches the corner!", 14, 26);
+    }
+  }
+
+  function drawArea(aCur) {
+    var ctx = cvA.getContext("2d");
+    var w = cvA.width, h = cvA.height;
+    var padL = 34, padB = 22, padT = 10, padR = 8;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--surface");
+    ctx.fillRect(0, 0, w, h);
+
+    var iw = w - padL - padR, ih = h - padT - padB;
+    function sx(a) { return padL + (a + 1) / 2 * iw; }
+    function sy(v) { return padT + (1 - v / (areaMax * 1.08)) * ih; }
+
+    ctx.strokeStyle = tok("--line-soft");
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    var g;
+    for (g = 0; g <= 4; g++) {
+      var gy = padT + ih * g / 4;
+      ctx.moveTo(padL, gy); ctx.lineTo(w - padR, gy);
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = tok("--line");
+    ctx.beginPath();
+    ctx.moveTo(padL, padT + ih); ctx.lineTo(w - padR, padT + ih);
+    ctx.stroke();
+
+    ctx.font = "10.5px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--ink-3");
+    ctx.fillText("-1", sx(-1) - 5, h - 8);
+    ctx.fillText("0", sx(0) - 3, h - 8);
+    ctx.fillText("1", sx(1) - 3, h - 8);
+    ctx.fillText(areaMax.toFixed(2), 4, sy(areaMax) + 4);
+    ctx.fillText("0", 18, padT + ih + 4);
+
+    /* fill under curve */
+    ctx.beginPath();
+    ctx.moveTo(sx(-1), sy(0));
+    areaCurve.forEach(function (d) { ctx.lineTo(sx(d[0]), sy(d[1])); });
+    ctx.lineTo(sx(1), sy(0));
+    ctx.closePath();
+    ctx.fillStyle = tok("--real-soft");
+    ctx.fill();
+
+    ctx.beginPath();
+    areaCurve.forEach(function (d, i) {
+      if (i === 0) ctx.moveTo(sx(d[0]), sy(d[1])); else ctx.lineTo(sx(d[0]), sy(d[1]));
+    });
+    ctx.strokeStyle = tok("--real");
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    var av = sliceArea(aCur);
+    ctx.beginPath();
+    ctx.arc(sx(aCur), sy(av), 5, 0, 2 * Math.PI);
+    ctx.fillStyle = tok("--ink");
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = tok("--surface");
+    ctx.stroke();
+  }
+
+  /* ---------------- figure 2b: the solid in 3D ---------------- */
+  var cv3D = document.getElementById("cv-3d");
+  var rot3d = { yaw: 0.6, pitch: -0.35 };
+
+  function hexToRgb(hex) {
+    var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec((hex || "").trim());
+    return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [7, 135, 114];
+  }
+  function shadeColor(hex, factor) {
+    var c = hexToRgb(hex);
+    return "rgba(" + Math.round(c[0] * factor) + "," + Math.round(c[1] * factor) +
+      "," + Math.round(c[2] * factor) + ",0.9)";
+  }
+
+  /* orbit camera: yaw spins around the c (up) axis, pitch tilts around b (right) */
+  function project3(a, b, c) {
+    var cosY = Math.cos(rot3d.yaw), sinY = Math.sin(rot3d.yaw);
+    var a1 = a * cosY - b * sinY;
+    var b1 = a * sinY + b * cosY;
+    var cosP = Math.cos(rot3d.pitch), sinP = Math.sin(rot3d.pitch);
+    var a2 = a1 * cosP - c * sinP;
+    var c2 = a1 * sinP + c * cosP;
+    var focal = 15, s = focal / (focal + a2);
+    return { sx: b1 * s, sy: -c2 * s, s: s };
+  }
+
+  var CUBE_EDGES = (function () {
+    var v = [];
+    [-1, 1].forEach(function (a) {
+      [-1, 1].forEach(function (b) {
+        [-1, 1].forEach(function (c) { v.push([a, b, c]); });
+      });
+    });
+    var e = [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]];
+    return e.map(function (pair) { return [v[pair[0]], v[pair[1]]]; });
+  })();
+
+  var SOLID_MESH = (function () {
+    var meshN = 32, meshM = 20, quads = [];
+    for (var i = 0; i < meshN; i++) {
+      var a0 = -1 + 2 * i / meshN, a1 = -1 + 2 * (i + 1) / meshN;
+      for (var j = 0; j < meshM; j++) {
+        var u0 = j / meshM, u1 = (j + 1) / meshM;
+        var b00 = -1 + u0 * (a0 * a0 / 3 + 1), b01 = -1 + u1 * (a0 * a0 / 3 + 1);
+        var b10 = -1 + u0 * (a1 * a1 / 3 + 1), b11 = -1 + u1 * (a1 * a1 / 3 + 1);
+        var c00 = cBand(a0, b00), c01 = cBand(a0, b01);
+        var c10 = cBand(a1, b10), c11 = cBand(a1, b11);
+        quads.push({ kind: "top",
+          p: [[a0,b00,c00[1]], [a0,b01,c01[1]], [a1,b11,c11[1]], [a1,b10,c10[1]]] });
+        quads.push({ kind: "bot",
+          p: [[a0,b00,c00[0]], [a0,b01,c01[0]], [a1,b11,c11[0]], [a1,b10,c10[0]]] });
+      }
+    }
+    return quads;
+  })();
+
+  function draw3D(aCur) {
+    var ctx = cv3D.getContext("2d");
+    var w = cv3D.width, h = cv3D.height;
+    var cx = w / 2, cy = h / 2, S = 92;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--surface");
+    ctx.fillRect(0, 0, w, h);
+
+    function P3(pt) {
+      var r = project3(pt[0], pt[1], pt[2]);
+      return { x: cx + r.sx * S, y: cy + r.sy * S, s: r.s };
+    }
+
+    ctx.strokeStyle = tok("--line");
+    ctx.lineWidth = 1;
+    CUBE_EDGES.forEach(function (edge) {
+      var p0 = P3(edge[0]), p1 = P3(edge[1]);
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.stroke();
+    });
+
+    var realHex = tok("--real");
+    var inkRgb = hexToRgb(tok("--ink-3"));
+    var drawables = [];
+    SOLID_MESH.forEach(function (q) {
+      var pts = q.p.map(P3);
+      var avgS = (pts[0].s + pts[1].s + pts[2].s + pts[3].s) / 4;
+      drawables.push({ pts: pts, avgS: avgS, kind: q.kind });
+    });
+    var planePts = [[aCur,-1,-1], [aCur,-1,1], [aCur,1,1], [aCur,1,-1]].map(P3);
+    var planeAvgS = (planePts[0].s + planePts[1].s + planePts[2].s + planePts[3].s) / 4;
+    drawables.push({ pts: planePts, avgS: planeAvgS, kind: "plane" });
+
+    drawables.sort(function (p, q) { return p.avgS - q.avgS; });
+
+    drawables.forEach(function (d) {
+      ctx.beginPath();
+      ctx.moveTo(d.pts[0].x, d.pts[0].y);
+      for (var k = 1; k < d.pts.length; k++) ctx.lineTo(d.pts[k].x, d.pts[k].y);
+      ctx.closePath();
+      if (d.kind === "plane") {
+        ctx.fillStyle = "rgba(" + inkRgb.join(",") + ",0.14)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(" + inkRgb.join(",") + ",0.55)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      } else {
+        var base = d.kind === "top" ? 1.0 : 0.72;
+        var depthT = Math.max(0, Math.min(1, (d.avgS - 0.88) / 0.26));
+        ctx.fillStyle = shadeColor(realHex, base * (0.55 + 0.45 * depthT));
+        ctx.fill();
+      }
+    });
+
+    ctx.font = "12px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--ink-3");
+    var la = P3([1.14, -1, -1]), lb = P3([-1, 1.14, -1]), lc = P3([-1, -1, 1.18]);
+    ctx.fillText("a", la.x, la.y);
+    ctx.fillText("b", lb.x, lb.y);
+    ctx.fillText("c", lc.x, lc.y);
+  }
+
+  var dragging3D = false, lastPX = 0, lastPY = 0;
+  cv3D.addEventListener("pointerdown", function (ev) {
+    dragging3D = true;
+    cv3D.setPointerCapture(ev.pointerId);
+    lastPX = ev.clientX; lastPY = ev.clientY;
+  });
+  cv3D.addEventListener("pointermove", function (ev) {
+    if (!dragging3D) return;
+    var dx = ev.clientX - lastPX, dy = ev.clientY - lastPY;
+    lastPX = ev.clientX; lastPY = ev.clientY;
+    rot3d.yaw += dx * 0.012;
+    rot3d.pitch = Math.max(-1.3, Math.min(1.3, rot3d.pitch - dy * 0.012));
+    draw3D(parseFloat(slider.value));
+  });
+  cv3D.addEventListener("pointerup", function () { dragging3D = false; });
+  cv3D.addEventListener("pointercancel", function () { dragging3D = false; });
+
+  function fig2() {
+    var a = parseFloat(slider.value);
+    aVal.textContent = a.toFixed(2);
+    drawSlice(a);
+    drawArea(a);
+    draw3D(a);
+    var av = sliceArea(a);
+    ro2.innerHTML =
+      "slice area A(a) = <b>" + av.toFixed(4) + "</b> &nbsp;(of 4)<br>" +
+      "share of slice: <b>" + (av / 4 * 100).toFixed(2) + "%</b><br>" +
+      "P = avg over a = <b>383/4860 + ln(3)/48 = 0.101694&hellip;</b>";
+  }
+  slider.addEventListener("input", fig2);
+
+  /* ---------------- figure 3 ---------------- */
+  var cvS2 = document.getElementById("cv-slice2");
+  var cvV = document.getElementById("cv-vcurve");
+  var tSlider = document.getElementById("t-slider");
+  var tVal = document.getElementById("t-val");
+  var ro3 = document.getElementById("ro-fig3");
+
+  function sliceAreaWindow(a, t) {
+    var bHi = Math.min(t, a * a / 3), bLo = -t;
+    if (bHi <= bLo) return 0;
+    var n = 160, sum = 0, db = (bHi - bLo) / n;
+    for (var i = 0; i < n; i++) {
+      var b = bLo + (i + 0.5) * db;
+      var band = cBand(a, b);
+      var lo = Math.max(band[0], -t), hi = Math.min(band[1], t);
+      if (hi > lo) sum += (hi - lo) * db;
+    }
+    return sum;
+  }
+
+  function windowVolume(t) {
+    var n = 90, sum = 0, da = (2 * t) / n;
+    for (var i = 0; i < n; i++) {
+      var a = -t + (i + 0.5) * da;
+      sum += sliceAreaWindow(a, t) * da;
+    }
+    return sum;
+  }
+
+  var vCurve = [];
+  (function () {
+    var n = 50, tMin = 0.4, tMax = 2.4;
+    for (var i = 0; i <= n; i++) {
+      var t = tMin + (tMax - tMin) * i / n;
+      vCurve.push([t, windowVolume(t) / Math.pow(2 * t, 3)]);
+    }
+  })();
+
+  function drawSlice2(t) {
+    var ctx = cvS2.getContext("2d");
+    var w = cvS2.width, h = cvS2.height;
+    var a = -t;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--complex-soft");
+    ctx.fillRect(0, 0, w, h);
+
+    function bx(bVal) { return (bVal + t) / (2 * t) * w; }
+    function cy(cVal) { return (1 - (cVal + t) / (2 * t)) * h; }
+
+    var bHi = Math.min(t, a * a / 3), bLo = -t;
+    var col, b, band, lo, hi;
+    if (bHi > bLo) {
+      for (col = 0; col < w; col++) {
+        b = bLo + (col + 0.5) / w * (bHi - bLo);
+        if (b > bHi) break;
+        band = cBand(a, b);
+        lo = Math.max(band[0], -t);
+        hi = Math.min(band[1], t);
+        if (hi <= lo) continue;
+        ctx.fillStyle = tok("--real-soft");
+        ctx.fillRect(bx(b), cy(hi), 1, cy(lo) - cy(hi));
+      }
+      ctx.strokeStyle = tok("--real");
+      ctx.lineWidth = 1.8;
+      var side;
+      for (side = 0; side < 2; side++) {
+        ctx.beginPath();
+        var started = false;
+        for (col = 0; col < w; col++) {
+          b = bLo + (col + 0.5) / w * (bHi - bLo);
+          if (b > bHi) break;
+          band = cBand(a, b);
+          var cv3 = side === 0 ? band[1] : band[0];
+          if (cv3 > t || cv3 < -t) { started = false; continue; }
+          var py = cy(cv3);
+          if (!started) { ctx.moveTo(col, py); started = true; }
+          else ctx.lineTo(col, py);
+        }
+        ctx.stroke();
+      }
+    }
+
+    ctx.strokeStyle = tok("--line");
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+
+    ctx.font = "12px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--ink-3");
+    ctx.fillText("a = -t = " + a.toFixed(2), 8, 16);
+    ctx.fillText("b", w - 14, h - 8);
+    ctx.fillText("c", 6, 14);
+
+    if (t > 1.002) {
+      ctx.fillStyle = tok("--complex");
+      ctx.fillText("clipped by the frame", 8, h - 10);
+    } else if (t < 0.998) {
+      ctx.fillStyle = tok("--real");
+      ctx.fillText("fits inside (t < 1)", 8, h - 10);
+    } else {
+      ctx.fillStyle = tok("--ink");
+      ctx.fillText("exactly the Theorem 1 corner", 8, h - 10);
+    }
+  }
+
+  function drawVCurve(tCur) {
+    var ctx = cvV.getContext("2d");
+    var w = cvV.width, h = cvV.height;
+    var padL = 40, padB = 22, padT = 10, padR = 8;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = tok("--surface");
+    ctx.fillRect(0, 0, w, h);
+
+    var tMin = 0.4, tMax = 2.4;
+    var ys = vCurve.map(function (d) { return d[1]; });
+    var yMin = Math.min.apply(null, ys), yMax = Math.max.apply(null, ys);
+    var pad = (yMax - yMin) * 0.15 || 0.01;
+    yMin -= pad; yMax += pad;
+
+    var iw = w - padL - padR, ih = h - padT - padB;
+    function sx(t) { return padL + (t - tMin) / (tMax - tMin) * iw; }
+    function sy(v) { return padT + (1 - (v - yMin) / (yMax - yMin)) * ih; }
+
+    ctx.strokeStyle = tok("--line-soft");
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + ih * g / 4;
+      ctx.moveTo(padL, gy); ctx.lineTo(w - padR, gy);
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = tok("--ink-3");
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(sx(1), padT); ctx.lineTo(sx(1), padT + ih);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle = tok("--line");
+    ctx.beginPath();
+    ctx.moveTo(padL, padT + ih); ctx.lineTo(w - padR, padT + ih);
+    ctx.stroke();
+
+    ctx.font = "10.5px ui-monospace, Consolas, monospace";
+    ctx.fillStyle = tok("--ink-3");
+    ctx.fillText("0.4", sx(0.4) - 8, h - 8);
+    ctx.fillText("1", sx(1) - 3, h - 8);
+    ctx.fillText("2.4", sx(2.4) - 12, h - 8);
+    ctx.fillText(yMax.toFixed(3), 4, sy(yMax) + 4);
+    ctx.fillText(yMin.toFixed(3), 4, sy(yMin) + 4);
+
+    ctx.beginPath();
+    vCurve.forEach(function (d, i) {
+      if (i === 0) ctx.moveTo(sx(d[0]), sy(d[1])); else ctx.lineTo(sx(d[0]), sy(d[1]));
+    });
+    ctx.strokeStyle = tok("--real");
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    var vAtT = windowVolume(tCur) / Math.pow(2 * tCur, 3);
+    ctx.beginPath();
+    ctx.arc(sx(tCur), sy(vAtT), 5, 0, 2 * Math.PI);
+    ctx.fillStyle = tok("--ink");
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = tok("--surface");
+    ctx.stroke();
+  }
+
+  function fig3() {
+    var t = parseFloat(tSlider.value);
+    tVal.textContent = t.toFixed(2);
+    drawSlice2(t);
+    drawVCurve(t);
+    var v = windowVolume(t);
+    var ratio = v / Math.pow(2 * t, 3);
+    ro3.innerHTML =
+      "V(t) &asymp; <b>" + v.toFixed(4) + "</b> &nbsp;(coarse estimate)<br>" +
+      "V(t)/(2t)&sup3; &asymp; <b>" + ratio.toFixed(4) + "</b><br>" +
+      (t <= 1.001
+        ? "at t=1 this should read <b>0.101694</b> (Theorem 1) &mdash; check the calibration."
+        : "past t=1: clipping is active, no closed form yet.");
+  }
+  tSlider.addEventListener("input", fig3);
+
+  /* ---------------- theme redraw ---------------- */
+  function redraw() { fig1(); fig2(); fig3(); }
+  try {
+    window.matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", redraw);
+  } catch (e) { /* older engines */ }
+  new MutationObserver(redraw).observe(document.documentElement,
+    { attributes: true, attributeFilter: ["data-theme"] });
+
+  redraw();
+})();
+</script>

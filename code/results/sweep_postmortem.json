@@ -1,0 +1,32 @@
+{
+  "purpose": "attempt to reproduce the literature sweep's 0.217993225 by running its recorded method (plain nested scipy adaptive quadrature on the d-interval-length reduction, no kink splitting, no endpoint treatment)",
+  "exact": 0.21801049620261476,
+  "sweep_claim": 0.217993225,
+  "runs": [
+    {
+      "epsabs_epsrel": 1e-08,
+      "limit": 50,
+      "value": 0.218010497101,
+      "scipy_error_estimate": 1.4e-09,
+      "value_minus_exact": 8.983852550770166e-10,
+      "value_minus_sweep": 1.7272100999998763e-05,
+      "seconds": 233.3
+    },
+    {
+      "epsabs_epsrel": 1e-10,
+      "limit": 100,
+      "value": 0.218010497197,
+      "scipy_error_estimate": 2e-11,
+      "value_minus_exact": 9.943852408156317e-10,
+      "value_minus_sweep": 1.72721969999845e-05,
+      "seconds": 671.5
+    },
+    {
+      "epsabs_epsrel": 1e-12,
+      "limit": 200,
+      "value": null,
+      "note": "abandoned after ~50 min without converging; the two completed settings already answer the question"
+    }
+  ],
+  "conclusion": "A naive scipy pipeline of the recorded shape lands 9.0e-10 from the exact value, NOT at 0.217993225. The sweep's error is therefore not explained by generic adaptive-quadrature trouble on this reduction, and its mechanism could not be reconstructed. Note however that scipy's own error estimate (2.0e-11) is ~50x optimistic even here."
+}

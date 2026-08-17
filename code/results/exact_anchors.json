@@ -1,0 +1,52 @@
+{
+  "A1_depressed_cubic": {
+    "exact": "2*sqrt(3)/45",
+    "value_30dps": "0.0769800358919501019345531707336",
+    "matches_expected": true,
+    "note": "P(3 real roots), x^3+px+q, (p,q) iid U[-1,1]"
+  },
+  "A2_monic_quadratic": {
+    "exact": "13/24",
+    "value_30dps": "0.541666666666666666666666666667",
+    "matches_expected": true,
+    "note": "P(real roots), x^2+bx+c, (b,c) iid U[-1,1]"
+  },
+  "A3_full_quadratic_sym": {
+    "exact": "log(2)/12 + 41/72",
+    "value_30dps": "0.627206709491106553562547121233",
+    "matches_expected": true,
+    "note": "P(real roots), ax^2+bx+c iid U[-1,1]"
+  },
+  "A4_full_quadratic_unit": {
+    "exact": "log(2)/6 + 5/36",
+    "value_30dps": "0.254413418982213107125094242465",
+    "matches_expected": true,
+    "note": "P(real roots), ax^2+bx+c iid U[0,1] (D'Aurizio ~0.2544134190)"
+  },
+  "S1_band_width": {
+    "holds": true,
+    "band_width": "4*(a**2 - 3*b)**(3/2)/27"
+  },
+  "S2_disc_factorization": {
+    "holds": true,
+    "disc": "-4*a**3*c + a**2*b**2 + 18*a*b*c - 4*b**3 - 27*c**2",
+    "note": "Disc>=0 <=> c in [c_lo, c_hi] when b < a^2/3; when b > a^2/3 the roots c_lo,c_hi are complex and Disc<0."
+  },
+  "S1_c_band": {
+    "c_lo": "-2*a**3/27 - 2*a**2*sqrt(a**2 - 3*b)/27 + a*b/3 + 2*b*sqrt(a**2 - 3*b)/9",
+    "c_hi": "-2*a**3/27 + 2*a**2*sqrt(a**2 - 3*b)/27 + a*b/3 - 2*b*sqrt(a**2 - 3*b)/9"
+  },
+  "S3_unclipped_main_term": {
+    "exact": "asinh(sqrt(3)/3)/3 + 766/1215",
+    "value_30dps": "0.813554723008470956796326881051",
+    "matches_expected": null,
+    "note": "Int of full band width over (a,b) in [-1,1]x[-1,a^2/3]; favourable volume <= this; P_upper_bound = W/8"
+  },
+  "S3_upper_bound_P": {
+    "exact": "asinh(sqrt(3)/3)/24 + 383/4860",
+    "value_30dps": "0.101694340376058869599540860131"
+  },
+  "quartic_discriminant": {
+    "expr": "-27*a**4*d**2 + 18*a**3*b*c*d - 4*a**3*c**3 - 4*a**2*b**3*d + a**2*b**2*c**2 + 144*a**2*b*d**2 - 6*a**2*c**2*d - 80*a*b**2*c*d + 18*a*b*c**3 - 192*a*c*d**2 + 16*b**4*d - 4*b**3*c**2 - 128*b**2*d**2 + 144*b*c**2*d - 27*c**4 + 256*d**3"
+  }
+}
