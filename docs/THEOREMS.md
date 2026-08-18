@@ -23,6 +23,21 @@ summarized below.*
 > P( ax³ + bx² + cx + d has three real roots ) = **641/2430 − ln(3)/24**
 > = 0.21801049620261477108898412335868…
 
+**Theorem 4.** Let (a,b,c) be i.i.d. **standard normal**. Then
+
+> P( x³ + ax² + bx + c has three real roots )
+> = **(1/π) ∫₀^∞ exp(−x⁴(x⁴+4x²+9) / (2(x⁴+4x²+1))) · 2(x⁴+6x²+3) / (√(x⁴+4x²+1)·(x⁴+4x²+9)) dx**
+> = 0.169929382623479502656443157132…
+
+*Theorem 4 added 2026-08-18. Proved by a Kac–Rice level-crossing argument with an
+exact Owen's-T cancellation; see the paper's Gaussian-cubic section for the
+derivation and `open-problems/VERDICT.md` for the full investigation record. It is
+a closed form in the sense that the integrand is elementary and the integral is a
+single definite integral — not a finite combination of named constants (a
+calibrated blind PSLQ search at 40 digits found no such combination). Fully
+machine-checked in Lean 4 / Mathlib, zero `sorry`, with Owen's T built from
+scratch and no appeal to any general Rice's formula.*
+
 Unlike Theorems 1 and 2, this *value* is not new — it is the closed form an
 unrefereed, AI-assisted forum thread (dxdy.ru, June 2026) had already guessed.
 What Theorem 3 supplies is the first verified derivation of it, and the

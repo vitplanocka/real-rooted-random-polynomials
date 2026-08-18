@@ -27,37 +27,41 @@
 \newcommand{\Prb}{\mathbb{P}}
 \newcommand{\disc}{\Delta}
 
-\title[Real-rootedness of a random cubic]{The real-rootedness probability of a random cubic polynomial: three closed forms}
+\title[Real-rootedness of a random cubic]{The real-rootedness probability of a random cubic polynomial: four closed forms}
 
 \author{Vít Plánočka}
 \thanks{With assistance from Claude (Anthropic). Machinery, proofs, and their
-verification (symbolic, numerical, and partially machine-checked in Lean~4 /
-Mathlib) are recorded in the accompanying repository.}
+verification (symbolic, numerical, and machine-checked in Lean~4 / Mathlib)
+are recorded in the accompanying repository.}
 
 \date{August 2026}
 
 \begin{document}
 
 \begin{abstract}
-We compute, in closed form, the probability that a random cubic polynomial has
-three real roots, in three related models. For a \emph{monic} cubic
+We compute, in closed form, the probability that a random cubic polynomial
+has three real roots, in four related models. For a \emph{monic} cubic
 $x^3+ax^2+bx+c$ with $(a,b,c)$ independent and uniform on $[-1,1]$, this
 probability is $\tfrac{383}{4860}+\tfrac{\ln 3}{48}$; on $[0,1]$ it is exactly
-$\tfrac{1}{2880}$. For the \emph{non-monic} cubic $ax^3+bx^2+cx+d$ with all four
-coefficients independent and uniform on $[-1,1]$, it is
-$\tfrac{641}{2430}-\tfrac{\ln 3}{24}$. The first two values appear to be new.
-The third confirms, with a first proof, a closed form that had circulated
-unproved in an informal online forum thread since June~2026. All three
-results are verified by independent symbolic and numerical computation, and
-by a complete, zero-\texttt{sorry} machine-checked proof of all three
-theorems in Lean~4 / Mathlib -- which along the way proves, from scratch, the
-classical fact connecting a real cubic's discriminant sign to its real-root
-count, seemingly absent from Mathlib until now. We record the reduction
-technique for each case -- an elementary band/discriminant-sign argument for
-the monic case, and a divergence-theorem argument exploiting the homogeneity
-of the discriminant for the non-monic case, which formalization showed can be
-replaced by a strictly more elementary slicing argument -- since both appear
-to generalize to related open problems, which we list.
+$\tfrac{1}{2880}$. For the \emph{non-monic} cubic $ax^3+bx^2+cx+d$ with all
+four coefficients independent and uniform on $[-1,1]$, it is
+$\tfrac{641}{2430}-\tfrac{\ln 3}{24}$. For the monic cubic with $(a,b,c)$
+i.i.d.\ \emph{standard normal}, it is a single one-dimensional integral of
+elementary functions, Theorem~\ref{thm:gaussian}, obtained via a Kac--Rice
+level-crossing argument with an exact Owen's-$T$-function cancellation. The
+first two values appear to be new; the third confirms, with a first proof, a
+closed form that had circulated unproved in an informal online forum thread
+since June~2026; the fourth resolves a question with no cube to bound any
+band, where the elementary methods of the first three do not apply at all.
+All four results are verified by independent symbolic and numerical
+computation and by a complete, zero-\texttt{sorry} machine-checked proof in
+Lean~4 / Mathlib -- which along the way proves, from scratch, the classical
+fact connecting a real cubic's discriminant sign to its real-root count
+(seemingly absent from Mathlib until now), and formalizes the Gaussian case's
+entire probabilistic argument without appeal to any general Rice's formula,
+coarea formula, or theory of stochastic processes -- none of which Mathlib
+has -- by exploiting that the relevant process is really just a fixed
+three-dimensional Gaussian vector composed with a deterministic curve.
 \end{abstract}
 
 \maketitle
@@ -83,7 +87,7 @@ symmetric-interval distributions that does not include the one-sided case of
 our Theorem~\ref{thm:unit-cube} at all, and reaches our Theorem~\ref{thm:sym-cube}
 only as an unverifiable special case.
 
-This note settles three instances of the cubic question completely.
+This note settles four instances of the cubic question completely.
 
 \begin{theorem}[Monic cubic, symmetric cube] \label{thm:sym-cube}
 Let $(a,b,c)$ be independent and uniform on $[-1,1]$. Then
@@ -110,46 +114,66 @@ Let $(a,b,c,d)$ be independent and uniform on $[-1,1]$. Then
 \]
 \end{theorem}
 
-Theorems~\ref{thm:sym-cube} and \ref{thm:unit-cube} are, to our knowledge, new:
-an eight-agent literature sweep together with a targeted search for the exact
-constants (Section~\ref{sec:novelty}) found no prior publication of either
-value, digit string, or exact expression. Theorem~\ref{thm:nonmonic} is more
-subtle. The exact value $\tfrac{641}{2430}-\tfrac{\ln3}{24}$ already existed,
-unproved, as the terminus of a long, informally written, partly AI-assisted
-derivation posted to a Russian mathematics forum (\texttt{dxdy.ru}) in June
-2026. Section~\ref{sec:nonmonic} gives the first proof of this value, together
-with five independent lines of numerical and symbolic corroboration.
+\begin{theorem}[Gaussian cubic] \label{thm:gaussian}
+Let $(a,b,c)$ be independent, standard normal. Then
+\begin{align*}
+  \Prb\bigl(x^3+ax^2+bx+c \text{ has three real roots}\bigr)
+  &= \frac{1}{\pi}\int_0^\infty
+    e^{-\frac{x^4(x^4+4x^2+9)}{2(x^4+4x^2+1)}}\,
+    \frac{2(x^4+6x^2+3)}{\sqrt{x^4+4x^2+1}\,(x^4+4x^2+9)}\,dx \\
+  &= 0.169929382623479502656443157132\ldots
+\end{align*}
+\end{theorem}
 
-\subsection*{Motivation and context}
+Theorems~\ref{thm:sym-cube}, \ref{thm:unit-cube} and \ref{thm:gaussian} are,
+to our knowledge, new: an eight-agent literature sweep together with a
+targeted search for the exact constants (Section~\ref{sec:novelty}) found no
+prior publication of any of the three values, digit strings, or exact
+expressions. Theorem~\ref{thm:nonmonic} is more subtle: the exact value
+$\tfrac{641}{2430}-\tfrac{\ln3}{24}$ already existed, unproved, as the
+terminus of a long, informally written, partly AI-assisted derivation posted
+to a Russian mathematics forum (\texttt{dxdy.ru}) in June 2026;
+Section~\ref{sec:nonmonic} gives the first proof.
+
+Theorem~\ref{thm:gaussian} is qualitatively different from the first three:
+with no cube to bound anything, the elementary band/discriminant argument
+behind Theorems~\ref{thm:sym-cube}--\ref{thm:nonmonic} does not apply in any
+form, and the natural object is instead a probabilistic level-crossing count.
+Its ``closed form'' is a single definite integral of elementary functions --
+the same sense in which the error function or Owen's $T$-function are
+accepted as closed forms in the literature -- rather than a finite
+combination of named constants; Section~\ref{sec:gaussian} gives the proof.
+
+\subsection*{Motivation}
 The cubic question is the tractable sibling of a harder open problem: for an
-$n\times n$ matrix with i.i.d.\ uniform entries, what is the probability that
-all $n$ eigenvalues are real? For $n=2$ this is classical
-($49/72$ for entries uniform on $[-1,1]$, \cite{hetzel-liew-morrison}), but
-already for $n=3$ no closed form or rigorous nontrivial bound is known; the
-canonical statement of the question, posted to Mathematics Stack Exchange in
-2020, has $153$ upvotes and, as of this writing, zero answers
-\cite{mse-eigenvalue-question}. The obstruction is structural: for Gaussian
-entries, orthogonal invariance gives Edelman's exact
-$2^{-n(n-1)/4}$ \cite{edelman1997}, but the uniform cube has no such symmetry
-to exploit. Moving from matrix-entry space to \emph{coefficient} space --
-asking instead for the probability that a random \emph{characteristic
-polynomial} is real-rooted -- keeps the same underlying object (the volume of
-a semialgebraic region cut out by a discriminant) while dropping the ambient
-dimension from $9$ (a $3\times3$ matrix) to $3$--$4$ (a cubic's coefficients),
-where it becomes tractable by elementary means. This note is the result of
-attacking that lower-dimensional sibling.
+$n\times n$ matrix with i.i.d.\ entries, what is the probability that all $n$
+eigenvalues are real? This is classical for $n=2$ but open for $n\ge3$, both
+for uniform entries (no known closed form, no nontrivial rigorous bound; the
+canonical Mathematics Stack Exchange statement of the question has $153$
+upvotes and zero answers \cite{mse-eigenvalue-question}) and, in the
+Gaussian case, for anything beyond Edelman's exact eigenvalue-count formula
+$2^{-n(n-1)/4}$ \cite{edelman1997}. Moving from matrix-entry space to
+\emph{coefficient} space -- the probability that a random \emph{characteristic
+polynomial} is real-rooted -- keeps the same underlying object (the measure
+of a region cut out by a discriminant) while dropping the ambient dimension
+from $9$ to $3$--$4$, where it becomes tractable. This note attacks that
+lower-dimensional sibling in both the uniform and Gaussian coefficient
+models.
 
 \subsection*{Machine verification}
-Every calculus step in the proofs of Theorems~\ref{thm:sym-cube}--\ref{thm:nonmonic}
-is checked twice over in exact arithmetic (once by hand below, once
-independently by computer algebra), confirmed by high-precision quadrature
-and by direct Monte Carlo sampling, and -- new for a paper at this level of
-the literature -- verified by a \emph{complete, zero-\texttt{sorry}
-machine-checked proof of all three theorems} in Lean~4 against Mathlib,
-described in Section~\ref{sec:lean}. That formalization also produced a
-result of independent interest: a from-scratch, calculus-free proof that a
-real cubic's discriminant sign determines its real-root count, a classical
-fact we could not find already in Mathlib.
+Every calculus step below is checked twice over in exact arithmetic (once by
+hand, once independently by computer algebra), confirmed by high-precision
+quadrature and direct Monte Carlo sampling, and -- new for a paper at this
+level of the literature -- verified by a \emph{complete, zero-\texttt{sorry}
+machine-checked proof of all four theorems} in Lean~4 against Mathlib,
+described in Section~\ref{sec:lean}. That formalization also produced two
+results of independent interest: a from-scratch, calculus-free proof that a
+real cubic's discriminant sign determines its real-root count (a classical
+fact we could not find already in Mathlib), and a complete formalization of
+Theorem~\ref{thm:gaussian}'s probabilistic argument that needs none of
+Rice's formula, the coarea formula, or a general theory of stochastic
+processes -- Mathlib has none of them -- built instead from first principles
+for this specific finite-dimensional Gaussian family.
 
 \section{Preliminaries} \label{sec:prelim}
 
@@ -378,72 +402,146 @@ $V(1)=\tfrac{766}{1215}+\tfrac{\ln3}{6}$,
 
 \subsection{Independent verification}
 
-Two of the checks below are fully independent of each other and of the
-derivation above; the rest are internal consistency checks of the
-computation.
+Beyond exact symbolic confirmation ($\texttt{sympy}$ verifies
+$\Prb-(\tfrac{641}{2430}-\tfrac{\ln3}{24})=0$ identically), two checks are
+fully independent of the derivation above. A numerical route sharing no step
+with it -- fixing the leading coefficient and integrating it out \emph{last}
+rather than first, i.e.\ a direct high-precision evaluation of
+\eqref{eq:naive-integral} -- reproduces the exact value to \emph{nineteen}
+significant digits; and blind PSLQ, given only the $22$-digit numeric value
+of $S_b$ and no closed form, recovers $S_b=\tfrac{1454}{405}-\tfrac56\ln3$
+unprompted. Monte Carlo on the raw sign of \eqref{eq:disc4}, using no theory
+from this paper, gives $0.218008985\pm2.1\times10^{-6}$ at $4\times10^{10}$
+samples ($-0.73\sigma$).
 
-\begin{enumerate}
-\item \textbf{Exact symbolic evaluation} (as above) -- \texttt{sympy} confirms
-  $\Prb-(\tfrac{641}{2430}-\tfrac{\ln3}{24})=0$ identically.
-\item \textbf{An independent numerical route, sharing no step with the
-  derivation above}: fixing the leading coefficient $a$ and integrating $a$
-  out \emph{last} (rather than first, as in \eqref{eq:cone-reduction}) --
-  effectively a direct high-precision evaluation of
-  \eqref{eq:naive-integral}, with the $a\to0$ endpoint singularity and the
-  migrating clipping breakpoints of the inner integral carefully handled --
-  reproduces $0.21801049620261477102\ldots$, agreeing with the exact value to
-  \emph{nineteen} significant digits (Gauss--Legendre and tanh--sinh
-  quadrature, several degrees each, spread $1.6\times10^{-18}$).
-\item \textbf{Blind PSLQ}: given only the $22$-digit numeric value of $S_b$,
-  a PSLQ integer-relation search (no closed form supplied) recovers
-  $S_b=\tfrac{1454}{405}-\tfrac56\ln3$ unprompted.
-\item \textbf{Monte Carlo}, $4\times10^{10}$ samples on the raw sign of
-  \eqref{eq:disc4} (using no theory from this paper): $0.218008985\pm2.1\times10^{-6}$,
-  $-0.73\sigma$ from the exact value.
-\item Double-precision brute-force quadrature (no special handling of any
-  kind): $0.2180105004$, $4.2\times10^{-9}$ from the exact value -- at that
-  method's own precision limit.
-\end{enumerate}
+That second route is delicate: the conditional probability given the leading
+coefficient has a square-root endpoint singularity as $a\to0$, and the inner
+integral's clipping breakpoints both migrate to scale $\sqrt{3a}$ and are
+lost to floating point there. All three effects are invisible to a quadrature
+routine's own convergence estimate, and all had to be handled explicitly to
+reach nineteen digits.
+
+The \texttt{dxdy.ru} thread's stated intermediate volume
+$V_0=\tfrac{766}{1215}+\tfrac{\ln3}{6}$ agrees with $V(1)=8\cdot$
+Theorem~\ref{thm:sym-cube}, and its final claimed value is confirmed exactly
+by Theorem~\ref{thm:nonmonic}; nothing here validates the specific route the
+thread took, and the derivation above is independent of it.
+
+\section{The Gaussian cubic} \label{sec:gaussian}
+
+With $(a,b,c)$ i.i.d.\ standard normal there is no cube, so nothing bounds
+the band and Lemma~\ref{lem:never-clipped} has no analogue. The route that
+works counts \emph{level crossings} instead of measuring a region.
+
+\subsection{Reduction to a crossing count}
+Write $f(x)=x^3+ax^2+bx+c$. Since $f$ has odd degree it always has at least
+one real root, and it has three (counted without multiplicity, off the null
+set $\{\disc_3=0\}$) exactly when it has a downward crossing --- a point
+where $f$ vanishes with $f'<0$. Writing $N$ for the number of real roots,
+$N\in\{1,3\}$ almost surely, so with $p$ the probability of three real roots,
+\begin{equation} \label{eq:EN}
+  \mathbb{E}[N] = 1\cdot(1-p) + 3\cdot p = 1+2p,
+  \qquad\text{i.e.}\qquad p = \tfrac12\bigl(\mathbb{E}[N]-1\bigr).
+\end{equation}
+The virtue of \eqref{eq:EN} is that $\mathbb{E}[N]$, unlike $p$, is an
+integral of a \emph{local} quantity and can be computed by a Kac--Rice
+argument.
+
+\subsection{The Kac--Rice step}
+Set $q(x)=x^4+x^2+1$ and $u(x)=(x^2,x,1)/\sqrt{q(x)}$, a unit vector, so that
+$Z(x):=(a,b,c)\cdot u(x)$ is standard normal for each fixed $x$ and
+$f(x)=\sqrt{q(x)}\,Z(x)+x^3$. The pair $(Z(x),Z'(x))$ is a linear image of
+the single fixed Gaussian vector $(a,b,c)$ -- this is what makes the argument
+elementary, and is the reason no theory of stochastic processes is needed
+anywhere. A direct computation gives $\operatorname{Cov}(Z,Z')=0$ (so the two
+are independent at each fixed $x$), together with
+\[
+  v(x)^2 := \operatorname{Var}(Z'(x)) = \frac{x^4+4x^2+1}{q(x)^2},
+  \qquad h(x) := \frac{x^3}{\sqrt{q(x)}},
+  \qquad h'(x) = \frac{x^2(x^4+2x^2+3)}{q(x)^{3/2}} .
+\]
+Counting crossings of $f$ and integrating the resulting local density over
+$x$ yields, after evaluating the inner two-dimensional Gaussian integral in
+closed form,
+\begin{equation} \label{eq:kacrice}
+  \mathbb{E}[N] = \int_{\RR} \varphi(h)\Bigl[\,2v\,\varphi(z) + h'\bigl(2\Phi(z)-1\bigr)\Bigr]dx,
+  \qquad z:=h'/v,
+\end{equation}
+with $\varphi,\Phi$ the standard normal density and distribution function.
+
+\subsection{The Owen's-T cancellation}
+Formula \eqref{eq:kacrice} still contains a normal CDF, and integrating it
+directly is unpromising. The key is that the $\Phi$ term is an exact
+derivative. With $\theta:=\arctan(z/h)$ and $T$ Owen's $T$-function, put
+\[
+  \Psi(x) := \tfrac{1}{2}\bigl(2\Phi(h)-1\bigr) + 2T\bigl(h, z/h\bigr) .
+\]
+Then $\Psi$ has the closed-form derivative
+\[
+  \Psi' = \varphi(h)h'\bigl(2\Phi(z)-1\bigr) - \tfrac{1}{\pi}e^{-(h^2+z^2)/2}\,\theta' ,
+\]
+so \eqref{eq:kacrice} splits as $\mathbb{E}[N]=\int_\RR\Psi' + \int_\RR(\text{remainder})$,
+and the boundary values of $\Psi$ give $\int_\RR\Psi'=1$ exactly --- which is
+precisely the ``$1$'' of \eqref{eq:EN}, i.e.\ the root every cubic has. What
+survives is the remainder, and two polynomial identities collapse it: over a
+common denominator,
+\begin{equation} \label{eq:eq8}
+  v+\theta' = \frac{2(x^4+6x^2+3)}{\sqrt{x^4+4x^2+1}\,(x^4+4x^2+9)},
+  \qquad
+  h^2+z^2 = \frac{x^4(x^4+4x^2+9)}{x^4+4x^2+1},
+\end{equation}
+whereupon $\tfrac12(\mathbb{E}[N]-1)$ is exactly the integral of
+Theorem~\ref{thm:gaussian}. Evenness of the integrand folds $\RR$ to
+$(0,\infty)$. \qed
 
 \begin{remark}
-This integrand carries three numerical hazards worth recording, all
-concentrated at small leading coefficient $a$ and all invisible to a
-quadrature routine's own convergence estimate: (i) the conditional
-probability given the leading coefficient has a \emph{square-root} endpoint
-singularity as $a\to0$, $p(a)=p(0)-\tfrac23\sqrt a+O(a)$ with
-$p(0)=\tfrac12+\tfrac{5}{72}+\tfrac{\ln2}{12}$ (the random-quadratic limit,
-since as $a\to0$ the third root escapes to $-b/a$), on which a fixed-degree
-Gauss rule loses roughly seven digits while reporting no warning; (ii) the
-clipping/kink structure in the inner variable migrates to scale
-$\sim\sqrt{3a}$ as $a\to0$, so any fixed panel layout eventually walks past
-it; and (iii) floating-point arithmetic loses the clipping breakpoints
-altogether for small $a$, since the relevant breakpoint cubic has a
-near-double root whose branches separate by only $O(\sqrt a)$. All three had
-to be identified and handled to reach the nineteen-digit confirmation above.
+$\theta'$ is not the nested-radical expression the quotient
+$(hz'-zh')/(h^2+z^2)$ suggests: it equals
+$(x^8+6x^6-6x^4-22x^2-3)/\bigl(q\sqrt{x^4+4x^2+1}\,(x^4+4x^2+9)\bigr)$, the
+degree-$12$ denominator of the raw quotient factoring completely. Two
+consequences: $\theta'$ is regular at the origin, with $\theta'(0)=-1/3$,
+where the quotient form is a genuine $0/0$; and the first identity of
+\eqref{eq:eq8} is \emph{rational}, reducing to the single polynomial identity
+$(x^4+4x^2+1)(x^4+4x^2+9)+(x^8+6x^6-6x^4-22x^2-3)=2(x^4+6x^2+3)q$. We
+initially verified that identity only numerically, believing it to require
+clearing two nested radicals; the closed form was found while formalizing,
+and supersedes that step entirely.
 \end{remark}
 
-\subsection{Relation to the \texttt{dxdy.ru} thread}
-The forum thread's stated intermediate volume,
-$V_0=\tfrac{766}{1215}+\tfrac{\ln3}{6}$, agrees with $V(1)=8\cdot$
-Theorem~\ref{thm:sym-cube}, and its final claimed value,
-$\tfrac{641}{2430}-\tfrac{\ln3}{24}$, is confirmed exactly by
-Theorem~\ref{thm:nonmonic}. Its remaining steps therefore do reach the right
-answer, though nothing in the present paper validates the specific route the
-thread took to get there; the derivation above is independent.
+\subsection{Verification}
+The integrand of Theorem~\ref{thm:gaussian} was evaluated to $100$ digits and
+agrees with two structurally unrelated computations of the same probability
+--- a coefficient-space quadrature of the discriminant region and a
+root-space route --- to $79$ and $54$ digits respectively, each at that
+method's own precision ceiling. Monte Carlo at $4\times10^7$ samples sits
+$0.70\sigma$ away. Independently, the Owen's-$T$ cancellation constant
+$\int_\RR\Psi'$ evaluates numerically to $1$ to $30$ digits.
+
+\begin{remark}
+The integral of Theorem~\ref{thm:gaussian} is a closed form in the sense that
+its integrand is elementary and it is a single definite integral --- not in
+the sense of being a finite combination of named constants. A calibrated
+blind PSLQ search (over $5\times10^5$ trials against a basis of the constants
+this problem's siblings produce: $\pi$, $\ln2$, $\ln3$, $\sqrt2$, $\sqrt3$
+and small rational combinations) found no such combination at $40$ digits.
+That is a negative result about a \emph{named-constant} closed form, and is
+independent of, and does not contradict, the closed form proved above. We
+have not verified the natural follow-up claim that the integrand admits no
+elementary antiderivative: the textbook Liouville criterion does not apply
+directly, since the integrand is $e^{g}f$ with $g$ rational but $f$
+algebraic, so settling it needs Risch over $\mathbb{Q}(x,\sqrt{x^4+4x^2+1})$.
+We record the question as open rather than assert either answer.
+\end{remark}
 
 \section{Formal verification in Lean} \label{sec:lean}
 
-All three theorems have been formalized and \emph{completely, machine-checked
+All four theorems have been formalized and \emph{completely, machine-checked
 proved} in Lean~4 against Mathlib (toolchain \texttt{v4.33.0}), with
 \textbf{zero} uses of \texttt{sorry} anywhere in the development and no
 unexpected axioms: \texttt{\#print axioms} on every headline theorem returns
 exactly \texttt{[propext, Classical.choice, Quot.sound]}, the three standard
-axioms used throughout Mathlib itself. The development is $3780$ lines across
-seven files (\texttt{Basic.lean}, \texttt{Integrals.lean},
-\texttt{Theorem1.lean}, \texttt{Theorem2.lean},
-\texttt{Theorem3Statement.lean}, \texttt{Theorem3Proof.lean},
-\texttt{DiscriminantRootCount.lean}), all in the accompanying repository, and
-rebuilds from a warm Mathlib cache in under a minute.
+axioms used throughout Mathlib itself. The development is roughly $7700$
+lines across $23$ files, all in the accompanying repository.
 
 \subsection*{The discriminant--root-count bridge}
 Everywhere above, ``has three real roots'' is proved as a statement about the
@@ -463,50 +561,47 @@ additionally restated and proved as \texttt{theorem1\_root\_count} and
 \texttt{theorem2\_root\_count}, in terms of \texttt{HasThreeDistinctRealRoots}
 directly, with no discriminant in the statement at all.
 
-\subsection*{Two presentational simplifications found while formalizing}
-The informal proof of Theorems~\ref{thm:sym-cube}--\ref{thm:unit-cube} above
-derives the band via the critical points $x_\pm$ of $g$. In Lean, it proved
-cheaper to skip $x_\pm$ entirely and use the single \texttt{ring}-provable
-identity
-\[
-  -27\,\disc_3(a,b,c) = (27c-9ab+2a^3)^2 - 4(a^2-3b)^3,
-\]
-which yields both branches of \eqref{eq:disc-factor} at once, and to prove
-Lemma~\ref{lem:never-clipped} from the closed forms
-$27c_{\mathrm{hi}}=(a-s)^2(a+2s)$, $27c_{\mathrm{lo}}=(a+s)^2(a-2s)$ directly,
-reducing the whole lemma to a single scalar inequality on $a\in[-1,1]$,
-$s\in[0,2]$ that \texttt{nlinarith} discharges automatically with product
-hints.
+\subsection*{The Gaussian case without Rice's formula}
+Theorem~\ref{thm:gaussian} is the substantial formalization. Mathlib has no
+Rice's formula, no coarea formula, and no theory of level crossings of random
+functions; it does not even have the normal CDF $\Phi$, let alone Owen's $T$.
+None of that machinery turned out to be necessary. Because $Z(x)$ is a linear
+functional of a single fixed three-dimensional Gaussian vector rather than a
+genuine stochastic process, the entire argument reduces to: the
+one-dimensional area formula for a cubic (three monotone pieces), Tonelli in
+$[0,\infty]$-valued integrals, a shear plus a Gaussian integral with a linear
+term, the folded-normal mean, and Owen's $T$ built from scratch --- its
+definition, both partial derivatives via differentiation under the integral
+sign, its limits, and the cancellation $\int_\RR\Psi'=1$, proved abstractly
+and then instantiated. The link back to root counts,
+$f(x_1)f(x_2)=-\disc_3/27$ and $f(x_1)-f(x_2)=(x_2-x_1)^3/2$, is two
+\texttt{ring} calls.
 
-More strikingly, the cone step of \S\ref{sec:nonmonic}
-(\eqref{eq:cone-reduction}) needs \emph{no divergence theorem at all}. The
-Lean proof of \texttt{volume\_conePiece1} establishes, for any measurable
-cone $R\subseteq\RR^4$, that the piece of $[-1,1]^4$ where coordinate $1$
-attains $\max_j|x_j|$ has volume $\tfrac14\vol_3(\text{face})$, by slicing at
-$x_1=t$, using homogeneity of $R$ to identify the slice with $t\cdot(\text{face})$,
-and integrating $\int_0^1t^3\,dt=\tfrac14$. This is Fubini plus the elementary
-scaling law $\vol_3(t\cdot E)=t^3\vol_3(E)$: no boundary integral appears
-anywhere, so the cusps of $\{\disc=0\}$ never have to be dealt with, and no
-smoothness of $\partial R$ is used or needed. The seven remaining pieces
-follow from the first by measure-preserving coordinate maps built from the
-two \texttt{ring}-provable symmetries of $\disc$. \emph{Both} simplifications
-are the same mathematics as the informal derivation, just in a form that
-turned out to need less machinery than either the critical-point picture or
-the classical divergence theorem statement suggested -- and neither changes
-any of the numbers above.
+\subsection*{Simplifications found while formalizing}
+Three of the informal arguments above turned out to need less machinery than
+they appear to. In Theorems~\ref{thm:sym-cube}--\ref{thm:unit-cube} the
+critical points $x_\pm$ can be skipped entirely in favour of the single
+\texttt{ring}-provable identity
+$-27\disc_3(a,b,c)=(27c-9ab+2a^3)^2-4(a^2-3b)^3$, which yields both branches
+of \eqref{eq:disc-factor} at once. The cone step \eqref{eq:cone-reduction}
+needs \emph{no divergence theorem}: slicing $[-1,1]^4$ at $x_1=t$, using
+homogeneity to identify the slice with $t\cdot(\text{face})$ and integrating
+$\int_0^1t^3\,dt=\tfrac14$, is Fubini plus the scaling law
+$\vol_3(t\cdot E)=t^3\vol_3(E)$ --- no boundary integral, so the cusps of
+$\{\disc=0\}$ never arise and no smoothness of $\partial R$ is used. And, as
+noted in \S\ref{sec:gaussian}, $\theta'$ has a closed form that makes
+\eqref{eq:eq8} rational. All three are the same mathematics as the informal
+derivations, and none changes any number above.
 
 \begin{remark}
-Formalizing surfaced one genuine error and confirms none of the paper's
-numerical claims were wrong. An early Lean statement of the inner integral
-$F(s)$ (\eqref{eq:naive-integral}'s companion, defined for $s\in(0,2)$) was
-false exactly at $s=1$, where $a_0=0$ and the integral genuinely diverges;
-both sides collapsed to unrelated junk values under Lean's total-function
-conventions ($0/0=0$, $\log0=0$) rather than raising an error, and only
-attempting the proof -- not merely writing the statement -- caught it. The
-fix is an $s\ne1$ hypothesis, harmless since $\{1\}$ is null. We record this
-because it is a direct illustration of why every numerical claim in this
-paper rests on multiple independent computations rather than on any one of
-them: an unchecked claim, even one that type-checks, is not yet a fact.
+Formalizing surfaced one genuine error, and confirmed that none of the
+paper's numerical claims were wrong. An early Lean statement of the inner
+integral $F(s)$ was false exactly at $s=1$, where $a_0=0$ and the integral
+genuinely diverges; both sides collapsed to unrelated junk values under
+Lean's total-function conventions ($0/0=0$, $\log0=0$) rather than raising an
+error, and only attempting the proof --- not merely writing the statement ---
+caught it. The fix is an $s\ne1$ hypothesis, harmless since $\{1\}$ is null.
+An unchecked claim, even one that type-checks, is not yet a fact.
 \end{remark}
 
 \section{Novelty and prior art} \label{sec:novelty}
@@ -539,6 +634,13 @@ found:
   appear in the \texttt{dxdy.ru} thread or anywhere else searched.
 \item \textbf{Theorem~\ref{thm:nonmonic}}: the \emph{value} is not new (see
   above); the \emph{proof} and its independent verification are.
+\item \textbf{Theorem~\ref{thm:gaussian}}: no prior statement found. The
+  Kac--Rice technique is of course standard, and the Gaussian
+  \emph{expected root count} for random polynomials is classical
+  (Kac; Edelman--Kostlan), but we found no source carrying it through to a
+  closed form for the \emph{all-roots-real} probability of the Gaussian
+  cubic, nor the specific integral of Theorem~\ref{thm:gaussian} in any
+  searchable source.
 \end{itemize}
 
 We regard the Li~\cite{li1988} question as the one genuinely open item in this
@@ -565,14 +667,11 @@ The reduction techniques used here appear to generalize.
   critical points rather than one band. Current Monte Carlo estimate:
   $0.0054749\pm9.0\times10^{-6}$; under active investigation at the time of
   writing.
-\item \textbf{Gaussian coefficients.} For the monic cubic with $(a,b,c)$
-  i.i.d.\ standard normal, there is no cube to bound the band, so
-  Lemma~\ref{lem:never-clipped} does not apply in any form; the natural
-  object is $\mathbb{E}[\Phi(c_{\mathrm{hi}})-\Phi(c_{\mathrm{lo}})]$, a smooth
-  two-dimensional integral with no case splits, but a priori no reason to
-  expect an elementary closed form. Current Monte Carlo estimate:
-  $0.169962\pm4.2\times10^{-5}$; under active investigation at the time of
-  writing.
+\item \textbf{An antiderivative for Theorem~\ref{thm:gaussian}.} Does the
+  integrand of Theorem~\ref{thm:gaussian} admit an elementary antiderivative,
+  or does the definite integral admit a named-constant closed form? We
+  believe both answers are negative but have verified neither; see the closing
+  remark of \S\ref{sec:gaussian} for what a proof of the first would require.
 \item \textbf{General degree $n$.} The probability of no real roots for a
   degree-$n$ Kac polynomial decays as $n^{-3/4}$ exactly
   (Poplavskyi--Schehr~\cite{poplavskyi-schehr}); the corresponding rate
@@ -592,15 +691,15 @@ The reduction techniques used here appear to generalize.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \hline
- & Theorem~\ref{thm:sym-cube} & Theorem~\ref{thm:unit-cube} & Theorem~\ref{thm:nonmonic} \\
+ & Thm~\ref{thm:sym-cube} & Thm~\ref{thm:unit-cube} & Thm~\ref{thm:nonmonic} & Thm~\ref{thm:gaussian} \\
 \hline
-Symbolic (\texttt{sympy}, exact) & PASS & PASS & PASS ($\Prb-\text{cand.}=0$) \\
-Independent numerical route & $\sim10^{-16}$ & $\sim10^{-13}$ & 19 sig.\ digits ($7.0\times10^{-20}$) \\
-Blind PSLQ / \texttt{identify} & --- & --- & recovers exact form \\
-Monte Carlo & $2\times10^8$: $+1.3\sigma$ & $2\times10^8$: $-0.5\sigma$ & $4\times10^{10}$: $-0.73\sigma$ \\
-Lean~4 / Mathlib & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} \\
+Symbolic (\texttt{sympy}, exact) & PASS & PASS & PASS & PASS \\
+Independent numerical route & $\sim10^{-16}$ & $\sim10^{-13}$ & 19 digits & 79 digits \\
+Blind PSLQ / \texttt{identify} & --- & --- & recovers exact form & (negative; see \S\ref{sec:gaussian}) \\
+Monte Carlo & $+1.3\sigma$ & $-0.5\sigma$ & $-0.73\sigma$ & $+0.70\sigma$ \\
+Lean~4 / Mathlib & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} \\
 \hline
 \end{tabular}
 \end{center}

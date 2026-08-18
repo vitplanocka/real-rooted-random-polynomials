@@ -1,0 +1,7 @@
+=== P_A campaign ===
+  identify: 0 hits (17.5s)
+  pslq sweeps: 49 jobs, 0 raw hits (324.5s)
+  raw=0 margin-ok=0 verified54=0 SURVIVORS=0
+=== algebraic-degree check ===
+wrote /home/vit-planocka/math/open-problems/src/../results/identify_A_50digits.json
+elapsed 343.9

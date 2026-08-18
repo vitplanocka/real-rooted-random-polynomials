@@ -1,0 +1,697 @@
+{
+  "generated": "2026-08-18 (updated: Problem B re-run at 16 digits + closed-form constants + second Li retrieval attempt) | round 3 (2026-08-18): formula + technique prior-art check",
+  "agent": "novelty-check (literature / prior-art)",
+  "scope": "Problem A = P(x^3+ax^2+bx+c has 3 distinct real roots), (a,b,c) iid N(0,1), monic. Problem B = P(x^4+bx^3+cx^2+dx+e has 4 distinct real roots), (b,c,d,e) iid U[-1,1], monic.",
+  "values_checked": {
+    "P_A": "0.16992938262347950265644315713176190213405726145463153",
+    "P_B": "0.005464330340589986 (16 digits; two arrangements agree to 17). Supersedes the 0.005475 Monte Carlo value used in the first pass.",
+    "16*P_B": "0.0874292854494397687",
+    "16*P_B_unclipped": "sqrt(3)*asinh(sqrt(6)/4)/90 + 7013*sqrt(11)/302400 = 0.088066959660626860659 (verified to 30 dps with mpmath)",
+    "C_clip": "0.00063767421118709",
+    "K": "128/105 (exact)"
+  },
+  "oeis": {
+    "access_method": "https://oeis.org/search?q=<...>&fmt=text via curl (WebFetch is 403-blocked by oeis.org; curl with a browser UA works)",
+    "verdict": "NO HIT for either constant.",
+    "queries": [
+      {
+        "q": "1,6,9,9,2,9,3,8,2,6,2,3",
+        "result": "No results."
+      },
+      {
+        "q": "1,6,9,9,2,9,3,8",
+        "result": "No results."
+      },
+      {
+        "q": "1,6,9,9,2,9,3,8,2,6,2,3,4,7,9,5,0,2",
+        "result": "No results."
+      },
+      {
+        "q": "0.169929382623",
+        "parsed_as": "seq:1,6,9,9,2,9,3,8,2,6,2,3",
+        "result": "No results."
+      },
+      {
+        "q": "169929382623479502",
+        "result": "No results."
+      },
+      {
+        "q": "1699293826234795",
+        "result": "No results."
+      },
+      {
+        "q": "seq:1,6,9,9,2,9,3",
+        "result": "No results."
+      },
+      {
+        "q": "seq:0,1,6,9,9,2,9,3,8,2,6",
+        "result": "No results."
+      },
+      {
+        "q": "0.005475",
+        "parsed_as": "seq:5,4,7,5",
+        "result": "318 hits, all unrelated (e, 1/sqrt2, plastic constant, Dottie number, ...). Query is only 4 digits long and therefore not decisive."
+      },
+      {
+        "q": "keyword:cons seq:5,4,7,5",
+        "result": "141 hits, none a random-polynomial probability."
+      },
+      {
+        "q": "0.0054749",
+        "parsed_as": "seq:5,4,7,4,9",
+        "result": "36 hits, none related."
+      },
+      {
+        "q": "keyword:cons seq:5,4,7,4,9",
+        "result": "19 hits: log_24(7), log_18(14), Landau-Kolmogorov C(3,1), Johnson-solid dihedral angles, etc. None related."
+      },
+      {
+        "q": "\"random polynomial\" \"real roots\"",
+        "result": "2 hits only: A060294 (Buffon 2/Pi), A093601 (constant in Kac's formula)."
+      },
+      {
+        "q": "random polynomial real zeros probability",
+        "result": "10 hits, all generic (primes, Fibonacci, Catalan, ... plus A060294)."
+      },
+      {
+        "q": "probability all roots real",
+        "result": "33 hits, all generic."
+      },
+      {
+        "q": "monic cubic real roots probability",
+        "result": "No results."
+      },
+      {
+        "q": "keyword:cons random polynomial real",
+        "result": "9 hits, none relevant."
+      },
+      {
+        "q": "discriminant cubic probability random",
+        "result": "1 hit, A005809 = binomial(3n,n). Irrelevant."
+      },
+      {
+        "q": "id:A093601",
+        "result": "0,6257358072052700190464746918032860... = Kac's-formula constant (E[#real zeros] additive constant). NOT P_A."
+      }
+    ],
+    "note": "OEIS contains no sequence for the probability that a random polynomial has all roots real, in any ensemble, as far as these queries reach."
+  },
+  "web_searches": {
+    "engine_available": "Claude Code WebSearch (US web index)",
+    "engine_unavailable": "DuckDuckGo html endpoint returned HTTP 202 (bot-blocked) for every query, including a control query with known results -> DuckDuckGo could NOT be searched; no DDG negative result is claimed. zbmath.org HTML and tandfonline.com, sciencedirect.com, researchgate.net, math.stackexchange.com all returned 403 to direct fetch.",
+    "digit_string_queries": [
+      "\"0.1699293826\" OR \"0.16992938\" probability random cubic real roots -> no occurrence of the digit string in any result",
+      "\"0.169929\" OR \"0.1699294\" random polynomial -> no occurrence",
+      "\"0.1699293826234795\" OR \"0.169929382623479502\" -> no occurrence",
+      "\"0.005475\" OR \"0.0054749\" probability quartic all roots real uniform coefficients -> no occurrence (top hit was Li 1988)"
+    ],
+    "phrase_queries": [
+      "probability monic cubic random Gaussian coefficients three real roots exact",
+      "\"random polynomial\" \"probability that all roots are real\" degree 3 exact value Gaussian coefficients paper",
+      "Gaussian measure hyperbolicity region random polynomial probability all roots real monic exact",
+      "\"x^3 + a x^2 + b x + c\" probability discriminant positive normal random coefficients numerical value",
+      "probability random monic quartic uniform [-1,1] coefficients four real roots value",
+      "Edelman Kostlan \"How many zeros of a random polynomial are real\" probability all roots real 2^{-n(n-1)/4}",
+      "Bharucha-Reid Sambandham Random Polynomials contents ...",
+      "closed form probability all roots real random polynomial arcsin orthant probability discriminant volume exact degree three"
+    ],
+    "verdict": "No web page found stating either constant, or a closed form for either."
+  },
+  "stackexchange": {
+    "access_method": "api.stackexchange.com/2.3 search/advanced + questions endpoints (math.stackexchange, mathoverflow)",
+    "queries": [
+      "probability cubic three real roots (math)",
+      "probability all roots real (math)",
+      "random polynomial all real roots probability (math)",
+      "random monic polynomial real roots (math)",
+      "monic cubic real roots probability Gaussian (math)",
+      "probability quartic four real roots random coefficients (math)",
+      "probability all roots real random polynomial (mathoverflow)"
+    ],
+    "relevant_threads_found": [
+      {
+        "id": "MSE 1745310",
+        "title": "The probability that a random (real) cubic has three real roots",
+        "score": 17,
+        "model": "NON-monic cubic; also Kostlan/elliptic ensemble answer ((sqrt3-1)/2). Not Problem A."
+      },
+      {
+        "id": "MSE 1745436",
+        "title": "What is the likelihood that a degree 3 monic polynomial will have 3 real roots.",
+        "score": 0,
+        "model": "monic cubic, coefficients uniform on [-n,n], n -> infinity. The single answer gives the SCALE-INVARIANT LIMIT 0.6272 = 41/72 + ln2/12, i.e. it degenerates to the quadratic problem. This is NOT the monic Gaussian constant and gives no value for it."
+      },
+      {
+        "id": "MSE 4185340",
+        "title": "Probability that all roots of a polynomial are real",
+        "score": 2,
+        "answers": 0,
+        "model": "iid U[0,1], general degree n; only the n=2 case (1/9) is worked out in the question body. No answers."
+      },
+      {
+        "id": "MSE 1550919",
+        "title": "If we randomly pick a n-degree polynomial ...",
+        "model": "answer only cites Fairley on EXPECTED counts."
+      }
+    ],
+    "verdict": "No Math.SE / MathOverflow thread states either constant, and none poses the monic-Gaussian-cubic or monic-uniform-quartic problem in the form asked here."
+  },
+  "arxiv": {
+    "access_method": "export.arxiv.org/api/query (metadata: title+abstract+comments only, NOT full text)",
+    "queries": [
+      "all:\"all roots real\" -> 14 hits, all Descartes'-rule-of-signs / hyperbolic-polynomial combinatorics, none probabilistic",
+      "all:\"all of whose roots are real\" -> 0",
+      "abs:\"probability\" AND abs:\"monic\" AND abs:\"real roots\" -> 0",
+      "all:\"real-rooted\" AND all:\"probability\" AND all:\"random coefficients\" -> 2, both about variance of the number of real roots",
+      "all:\"discriminant\" AND all:\"probability\" AND all:\"cubic\" AND all:\"random\" -> 0"
+    ],
+    "verdict": "No arXiv paper (by metadata) computes P(all roots real) for a low-degree monic random polynomial. Note: arXiv metadata search does not cover full text, so this is a weaker negative than a full-text search would be."
+  },
+  "prior_art": {
+    "li_1988": {
+      "citation": "Hung C. Li, \"The exact proability [sic] that the roots of quadratic, cubic, and quartic equations are all real if the equation coefficients are random\", Communications in Statistics - Theory and Methods 17(2):395-409 (1988). DOI 10.1080/03610928808829630. Zbl 0641.60075. MR 89j:60069.",
+      "review_text_verbatim_zbmath": "Suppose that the coefficients of a polynomial equation are independent random variables defined on subsets of real numbers. The purpose of this paper is to find the exact probability that all roots of a random polynomial equation are real. Since a polynomial equation of degree higher than four with arbitrary coefficients cannot be solved algebraically, this paper will consider quadratic, cubic and quartic equations only. The general results are obtained in each case. Also, a number of special cases are furnished.",
+      "review_source": "api.zbmath.org/v1/document/_search?search_string=an:0641.60075 (zbMATH HTML is Cloudflare-blocked; the API returns the review text)",
+      "citation_count_semantic_scholar": 0,
+      "full_text": "NOT OBTAINED - paywalled at Taylor & Francis; tandfonline returns 403; no open-access copy found; no repository copy found.",
+      "what_is_known_about_its_contents": "From the MR review (reviewer G. Samal), recovered by the predecessor campaign of this project and recorded in ~/math/nonmonic-cubic-lean/nonmonic_cubic/reference/LITERATURE.md: Li's cubic case is the family x^3 + 3a x^2 + 3b x + 2c = 0 with case (a) a,b,c uniform on symmetric intervals [-h,h],[-k,k],[-l,l]. The predecessor campaign reports that Li's cubic special cases are ALL symmetric-uniform; no Gaussian case is reported in the review. I could not independently re-verify the MR review text: the Internet Archive item sim_mathematical-reviews_1989-10_89j is lending-restricted and both its djvu.txt and its search-inside endpoints returned 'Item not available'.",
+      "relevance_to_problem_A": "LOW-TO-MODERATE. The known (uniform, symmetric-interval) special cases do not cover iid N(0,1). The phrase 'independent random variables defined on subsets of real numbers' and 'general results' leaves open that Li's general formula is distribution-free (an integral), in which case P_A would be a formal instance but almost certainly not evaluated.",
+      "relevance_to_problem_B": "HIGH / UNRESOLVED. Li explicitly claims exact results for the QUARTIC. Whether his quartic family has a fixed (monic) leading coefficient and whether any of his special cases is U[-1,1]^4 is UNKNOWN. This is the single sharpest live prior-art risk for Problem B and cannot be settled without the paper.",
+      "second_retrieval_attempt_2026_08_18": {
+        "outcome": "STILL NOT OBTAINED. The paper itself remains unread.",
+        "what_was_newly_recovered": [
+          "FULL AUTHOR ABSTRACT, verbatim, via the OpenAlex API (abstract_inverted_index reconstructed): 'Suppose that the coefficients of a polynomial equation are Independent random variables defined on subsets of real numbers, The purpose of this paper is to find the exact probability that all roots of a random polynomial equation are real. Since a polynomial equation of degree higher than four with arbitrary coefficients cannot be solved algrebraically, this paper will consider quadratic, cubic and quartic equations only. The general results are obtained in each case, Also, a number of special cases are furnished.' This is word-for-word the text zbMATH carries as its 'review', so zbMATH's entry is the author abstract, not an independent reviewer summary. It therefore adds no information about the special cases.",
+          "LI'S COMPLETE REFERENCE LIST (9 items), recovered from the Crossref record - not previously known to this campaign: (1) Dickson, 'New First Course in the Theory of Equations', Wiley 1945, pp. 46-54; (2) Ibragimov 1971, 'Coefficients with zero means', Theory Probab. Appl.; (3) Lapin, 'Probability and Statistics for Modern Engineering', Brooks/Cole 1983, pp. 384-388; (4) Kac 1949, Proc. London Math. Soc. (DOI 10.1112/plms/s2-50.5.390); (5) Mishra-Nayak-Pattanayak 1983, 'Lower bound for the number of real roots of a random algebraic polynomial', J. Austral. Math. Soc. (DOI 10.1017/S1446788700024745); (6) Neter, 'Applied Linear Statistical Models', 1974; (7) Stevens 1965 doctoral dissertation on the average number of real zeros; (8) Uspensky, 'Theory of Equations', McGraw-Hill 1948, pp. 288-290; (9) Yu Z.M. 1982, J. Math. Res. Exposition.",
+          "Unpaywall confirms the article is hard-closed: is_oa=false, oa_status='closed', has_repository_copy=false, oa_locations=[]. There is no legitimate free copy to find.",
+          "OpenAlex cited_by_count = 1. THE SINGLE CITING WORK IS IDENTIFIED: Jiri Andel, 'Mathematics of Chance', Wiley Series in Probability and Statistics, 2001 (the citation sits in the book's reference list, DOI 10.1002/9780470317075.refs). By the book's chapter structure the relevant chapter is almost certainly Ch. 11, 'Probability in Mathematics', pp. 195-210. A scanned copy exists on the Internet Archive as item 'mathematicsofcha0000ande', but it is lending-restricted: djvu.txt download and every search-inside endpoint return 'Item not available'. This is a concrete, bounded next step for a human with an IA lending account or a library copy."
+        ],
+        "inference_clearly_labelled_as_inference": "Li's bibliography is built from classical theory-of-equations sources (Dickson, Uspensky - i.e. discriminant/resolvent criteria for root reality) plus elementary probability and statistics textbooks (Lapin, Neter). It contains NO Gaussian-specific or measure-theoretic machinery and NO work on Gaussian coefficient ensembles. That is weak supporting evidence that his 'special cases' are elementary bounded (uniform-type) distributions, consistent with the MR review's report of symmetric-uniform cubic cases. IT IS NOT PROOF, and it says nothing at all about whether his quartic special cases include a monic U[-1,1]^4 model.",
+        "routes_tried_and_failed": [
+          "Taylor & Francis full text - 403 / paywall",
+          "Unpaywall - confirms no OA or repository copy exists",
+          "archive.org Mathematical Reviews 89j (sim_mathematical-reviews_1989-10_89j) - lending-restricted; djvu.txt, fulltext/inside.php, BookReaderSearch.php, api.archivelab.org and ia-pub-fts-api all returned 'Item not available', 404 or empty",
+          "archive.org full-text search (services/search/beta/page_production/scrape.json) - 404",
+          "HathiTrust full-text search - 403",
+          "Google Books API full-text phrase search for '\"the roots of quadratic, cubic, and quartic equations are all real\"' - HTTP 429, 'Quota exceeded ... Queries per day'. THIS WAS A FAILED SEARCH, NOT A NEGATIVE RESULT; Google Books indexes Mathematical Reviews volumes and is the most promising untried route.",
+          "archive.org search for the journal 'Communications in Statistics' - only unrelated DTIC items; the journal is not archived",
+          "Semantic Scholar citations endpoint - returns 0 citing papers (OpenAlex's 1 is the Andel book reference list)"
+        ]
+      }
+    },
+    "edelman_kostlan_1995": {
+      "citation": "A. Edelman, E. Kostlan, \"How many zeros of a random polynomial are real?\", Bull. Amer. Math. Soc. 32(1):1-37 (1995); arXiv:math/9501224.",
+      "checked_how": "Downloaded the arXiv PDF and grepped the extracted text (81988 chars).",
+      "finding": "The paper contains NO result on the probability that all roots are real. Grep for 'all (the) (n) (roots|zeros|eigenvalues)', 'probability that all', and 'n(n-1)/4' returns ZERO matches. The paper is entirely about the EXPECTED NUMBER of real zeros (its headline constant is 0.6257358072..., = OEIS A093601, the Kac-formula constant).",
+      "correction_to_task_brief": "The task brief attributes 'P(all n roots real) = 2^{-n(n-1)/4}' to Edelman-Kostlan for the Kostlan/Shub-Smale ensemble. That appears to be a misattribution on two counts: (i) it is not in Edelman-Kostlan 1995; (ii) 2^{-n(n-1)/4} is Edelman's result for the probability that ALL EIGENVALUES OF AN n x n REAL GAUSSIAN (GINIBRE) MATRIX are real (A. Edelman, J. Multivariate Anal. 60:203-232, 1997). For the Kostlan POLYNOMIAL ensemble at n=3 the all-real probability is (sqrt(3)-1)/2 = 0.36603, whereas 2^{-3*2/4} = 0.35355 - different numbers. (The n=3 Kostlan value and the Edelman matrix result are both recorded as verified anchors in the predecessor campaign's LITERATURE.md.)"
+    },
+    "waring_todhunter": {
+      "finding": "18th-century: Waring considered random cubics and bounded the probability of three real roots by 2/3; discussed by Todhunter. A bound in an unspecified model, not a value; no bearing on either constant."
+    },
+    "bharucha_reid_sambandham_1986": {
+      "citation": "A. T. Bharucha-Reid, M. Sambandham, 'Random Polynomials', Academic Press, 1986.",
+      "status": "COULD NOT SEARCH. No copy on archive.org (advancedsearch returns 0 docs); ScienceDirect and Google Books full text not retrievable (403 / no items). This is the standard comprehensive pre-1995 monograph and is the most likely place for an unindexed low-degree exact result. Its contents, as described in secondary sources, are about the NUMBER and EXPECTED NUMBER of real zeros, not about all-real probabilities - but that is a description, not a check."
+    },
+    "predecessor_campaign_sweep": {
+      "source": "~/math/nonmonic-cubic-lean/nonmonic_cubic/reference/LITERATURE.md (read-only; not modified)",
+      "content": "Records an 8-agent, ~614-query literature sweep (2026-08-17) on the neighbouring uniform-coefficient cubic problems. It independently reports: Math.SE/MathOverflow return zero threads on the monic case; the published EXACT literature stops at degree 2; and it explicitly lists 'Monic N(0,1): 0.169962 +- 4.2e-5 (our MC) - nobody has this' and the monic U(-1,1)^4 quartic as having only Monte Carlo values. That sweep is independent evidence pointing the same way as mine, but it is the same research programme, not an outside source."
+    }
+  },
+  "closed_form_search": {
+    "finding": "No paper found giving a closed form, integral expression, arcsin form, or orthant-probability form for either quantity. The nearest structural precedents found are: (i) Li 1988's unrecovered 'general results'; (ii) Bhargava-Cremona-Fisher arXiv:2004.12085, which certifies (by interval subdivision, to width 1.7e-4) the volume of a quartic sign condition for a binary quartic with coefficients iid U[-1,1] - a different quantity, but methodological prior art for rigorous quartic bounds."
+  },
+  "verdict": {
+    "problem_A_monic_gaussian_cubic": {
+      "status": "No prior art found for the value or for any closed form.",
+      "confidence": "Moderate-to-good for the modern indexed literature; weak for paywalled and pre-1995 literature.",
+      "positive_claims_supported": [
+        "The 54-digit value does not appear anywhere in OEIS.",
+        "The digit strings do not appear anywhere in the indexed web.",
+        "No Math.SE / MathOverflow thread poses or answers this problem.",
+        "Edelman-Kostlan 1995 does not contain any all-roots-real result (verified by full-text grep of the paper)."
+      ],
+      "open_risks": [
+        "Li (1988) full text still unread. New, weak, clearly-inferential evidence against it covering the Gaussian case: his complete reference list (recovered from Crossref) contains no Gaussian-ensemble or measure-theoretic sources at all.",
+        "Bharucha-Reid & Sambandham (1986) could not be full-text searched.",
+        "arXiv was searched by metadata only, not full text.",
+        "Google Books full-text search (the best untried route to the MR review) failed on an API quota error, not on a null result."
+      ]
+    },
+    "problem_B_monic_uniform_quartic": {
+      "status": "No prior art found. With the 16-digit value the search is now a genuine negative, of the same quality as Problem A's - EXCEPT that Li (1988) still explicitly claims exact quartic results and is still unread.",
+      "confidence": "Moderate. Upgraded from low-to-moderate: the digit search is no longer vacuous, and the distinctive closed-form ingredients (asinh(sqrt(6)/4), 7013*sqrt(11)/302400) have no prior appearance anywhere searchable.",
+      "what_changed_since_the_first_pass": [
+        "0.005464330340589986 and 16*P_B = 0.0874292854494397687: eight OEIS queries, all 'No results.'; web digit searches find no occurrence.",
+        "The closed-form pieces are absent from OEIS, from the web, and from arXiv metadata. asinh(sqrt(6)/4) = log((sqrt(6)+sqrt(22))/4) has no prior appearance in the random-polynomial literature that any search could find.",
+        "128/105 was checked but is a Wallis-type rational and carries no evidential weight either way."
+      ],
+      "remaining_risk": "Li (1988) claims exact QUARTIC probabilities and remains unread. Novelty for Problem B should still not be asserted flatly; state it as 'not found in any searchable source; Li (1988) unverified'."
+    },
+    "honest_framing": "Everything above is 'I searched X and found nothing', not 'this does not exist'. Absence of evidence from web/OEIS search is weak evidence about (a) paywalled journals, (b) pre-1995 literature, (c) full text of books, (d) full text of arXiv preprints. The one genuinely decisive document for both problems - Li (1988) - remains unread."
+  },
+  "recommended_next_actions": [
+    "Read Ch. 11 'Probability in Mathematics' (pp. 195-210) of Jiri Andel, 'Mathematics of Chance' (Wiley 2001) - it is the ONLY work anywhere that cites Li (1988), and a popular-level restatement of Li's special cases is exactly the kind of thing such a chapter contains. Internet Archive item 'mathematicsofcha0000ande' (lending-restricted), or any library copy.",
+    "Retry the Google Books full-text phrase search for '\"the roots of quadratic, cubic, and quartic equations are all real\"' once the daily API quota resets - Google Books indexes Mathematical Reviews and could surface the MR review text.",
+    "Obtain Li (1988) itself by interlibrary loan or T&F purchase. Still the decisive document, and now the ONLY remaining material risk to either novelty claim.",
+    "On write-up, submit P_A, P_B and the constant asinh(sqrt(6)/4)-based combination to OEIS as decimal-expansion sequences - this also creates a dated priority record.",
+    "Correct the campaign's internal note attributing P(all real) = 2^{-n(n-1)/4} to Edelman-Kostlan for the Kostlan ensemble; it is Edelman (1997) for real Ginibre eigenvalues."
+  ],
+  "could_not_search": [
+    "DuckDuckGo (HTTP 202 bot-block on every query, including a control)",
+    "zbMATH web interface (Cloudflare; API used instead, successfully)",
+    "MathSciNet (subscription)",
+    "Taylor & Francis full text of Li 1988 (paywall, 403)",
+    "Mathematical Reviews 89j full text on archive.org (lending-restricted; djvu.txt and search-inside both 'Item not available')",
+    "Bharucha-Reid & Sambandham (1986) full text",
+    "arXiv full text (only metadata search was available)",
+    "Google Scholar (no direct access)",
+    "sequencedb.net constants database (host unreachable, http 000)",
+    "Google Books full-text (HTTP 429, daily quota exceeded) - the most promising untried route to the MR review",
+    "HathiTrust full-text search (HTTP 403)",
+    "Internet Archive full-text / search-inside, on both the Mathematical Reviews 89j volume and the Andel book (lending-restricted; all endpoints 404 / 'Item not available')"
+  ],
+  "oeis_rerun_problem_B": {
+    "why": "The first pass could only query 0.005475, which OEIS parses as the 4-term sequence 5,4,7,5 (318 unrelated hits) - a vacuous search. With 16 digits the query is decisive.",
+    "verdict": "NO HIT. Every query returned literally 'No results.'",
+    "queries": [
+      {
+        "q": "0.005464330340589986",
+        "parsed_as": "seq:5,4,6,4,3,3,0,3,4,0,5,8,9,9,8,6",
+        "result": "No results."
+      },
+      {
+        "q": "5464330340589986",
+        "result": "No results."
+      },
+      {
+        "q": "5,4,6,4,3,3,0,3,4,0,5,8,9,9,8,6",
+        "result": "No results."
+      },
+      {
+        "q": "0.00546433034",
+        "parsed_as": "seq:5,4,6,4,3,3,0,3,4",
+        "result": "No results."
+      },
+      {
+        "q": "5,4,6,4,3,3,0,3,4",
+        "result": "No results."
+      },
+      {
+        "q": "0.0874292854494398",
+        "parsed_as": "seq:8,7,4,2,9,2,8,5,4,4,9,4,3,9,8",
+        "result": "No results."
+      },
+      {
+        "q": "874292854494397687",
+        "result": "No results."
+      },
+      {
+        "q": "8,7,4,2,9,2,8,5,4,4,9,4,3,9,7,6,8,7",
+        "result": "No results."
+      }
+    ],
+    "note": "This is now a meaningful negative for Problem B, of the same quality as the Problem A negative."
+  },
+  "closed_form_constants_search": {
+    "verified_numerically": "sqrt(3)*asinh(sqrt(6)/4)/90 = 0.0111506578922326174654; 7013*sqrt(11)/302400 = 0.0769163017683942431939; sum = 0.0880669596606268606594 (mpmath, 30 dps). asinh(sqrt(6)/4) = log((sqrt(6)+sqrt(22))/4) = 0.579405180214973405865 - the two forms agree to 30 dps, confirming they are the same constant.",
+    "oeis": {
+      "verdict": "NO HIT on any of them.",
+      "queries": [
+        {
+          "q": "0.0880669596606269",
+          "result": "No results."
+        },
+        {
+          "q": "8,8,0,6,6,9,5,9,6,6,0,6,2,6,8,6",
+          "result": "No results."
+        },
+        {
+          "q": "880669596606268606",
+          "result": "No results."
+        },
+        {
+          "q": "0.00063767421118709",
+          "parsed_as": "seq:6,3,7,6,7,4,2,1,1,1,8,7,0,9",
+          "result": "No results."
+        },
+        {
+          "q": "6,3,7,6,7,4,2,1,1,1,8,7,0,9",
+          "result": "No results."
+        },
+        {
+          "q": "0.5794051802149734 (= asinh(sqrt(6)/4))",
+          "result": "No results."
+        },
+        {
+          "q": "5,7,9,4,0,5,1,8,0,2,1,4,9,7,3,4",
+          "result": "No results."
+        },
+        {
+          "q": "0.0111506578922326 (= sqrt(3)*asinh(sqrt(6)/4)/90)",
+          "result": "No results."
+        },
+        {
+          "q": "0.0769163017683942 (= 7013*sqrt(11)/302400)",
+          "result": "No results."
+        },
+        {
+          "q": "7013 sqrt(11)",
+          "result": "No results."
+        },
+        {
+          "q": "\"arcsinh\" \"sqrt(6)\"",
+          "result": "17 hits, all unrelated (Chebyshev-type recurrences, quartic-root decimal expansions). Nothing probabilistic."
+        }
+      ]
+    },
+    "web": {
+      "queries": [
+        "\"0.005464330340589986\" OR \"0.00546433034\" OR \"0.0874292854494398\" -> no occurrence of any digit string anywhere in the results",
+        "\"0.0880669596606269\" OR \"0.088066959660627\" OR \"0.00063767421118709\" -> no occurrence",
+        "\"arcsinh(sqrt(6)/4)\" OR \"asinh(sqrt(6)/4)\" OR \"log((sqrt(6)+sqrt(22))/4)\" constant -> no page identifies any such constant; results were generic asinh documentation and calculators",
+        "\"asinh\" OR \"arcsinh\" \"sqrt(6)/4\" random polynomial real roots probability closed form -> nothing"
+      ],
+      "verdict": "No prior appearance found of asinh(sqrt(6)/4) (equivalently log((sqrt(6)+sqrt(22))/4)), nor of any sqrt(11) combination, in the random-polynomial / real-rootedness literature."
+    },
+    "arxiv_metadata": {
+      "queries": [
+        "all:\"arcsinh\" AND all:\"random polynomial\" -> 0",
+        "all:\"sqrt{11}\" AND all:\"real roots\" -> 0",
+        "all:\"128/105\" -> 1 hit, a coding-theory paper (PAC code rate-profile design). Irrelevant."
+      ]
+    },
+    "caveat_on_K_128_over_105": "128/105 = 2^7/105 is a Wallis-type rational (the family that ordinary beta/Wallis integrals produce). It is NOT a distinguishing fingerprint, and searching for it as prior art is close to meaningless: any hit would almost certainly be a coincidence. For the record, one hit of this shape did occur - arXiv:2208.14711 ('On real roots of polynomials in the context of group theory') contains a Wallis-type sequence beta_n = 2/3, pi/8, 4/15, pi/16, 16/105, 5*pi/128, ... whose fifth term 16/105 is 128/105 divided by 8. NO INFERENCE IS DRAWN FROM THIS. It is the expected behaviour of Wallis rationals, not evidence of prior art."
+  },
+  "round3_formula_and_technique": {
+    "date": "2026-08-18",
+    "what_is_new_this_round": "Previous rounds searched for the DECIMAL VALUES of two constants. This round searches for (i) the closed-form one-dimensional integral for P(3 real roots) of the monic Gaussian cubic x^3+ax^2+bx+c, a,b,c iid N(0,1), and (ii) the derivation technique (Kac-Rice / Rice level-crossing on Z(x)=(a,b,c).u(x), u(x)=(x^2,x,1)/sqrt(x^4+x^2+1), plus an exact cancellation via Owen's T-function that removes the normal-CDF/erf term a naive Rice formula leaves behind, plus E[N] = 1 + 2 P(3 real)).",
+    "formula_under_test": "P = (1/pi) int_0^inf exp(-x^4(x^4+4x^2+9)/(2(x^4+4x^2+1))) * 2(x^4+6x^2+3) / (sqrt(x^4+4x^2+1)*(x^4+4x^2+9)) dx = 0.16992938262347950265644315713176190213...",
+    "new_capability_this_round": {
+      "tool": "scholar.archive.org (IA Scholar) full-text search, reached via the WebFetch tool",
+      "why_it_matters": "This is a FULL-TEXT index over archived scholarly PDFs (arXiv, OA journals, and some scanned serials incl. Mathematical Reviews), not a title/abstract index. Every previous round's arXiv negative was metadata-only. curl is bot-blocked by scholar.archive.org (JS session-verification page); WebFetch is not.",
+      "coverage_caveat": "Strong on arXiv and open-access journals; thin-to-absent on paywalled 1940s-1990s journals and on book interiors. A zero here is NOT a zero over the whole literature."
+    },
+    "a_formula": {
+      "digit_string_searches": {
+        "oeis_reconfirm": [
+          {
+            "query": "1,6,9,9,2,9,3,8,2,6,2,3,4,7,9,5",
+            "parsed": "seq:1,6,9,9,2,9,3,8,2,6,2,3,4,7,9,5",
+            "result": "No results."
+          },
+          {
+            "query": "0.16992938262347950",
+            "parsed": "seq:1,6,9,9,2,9,3,8,2,6,2,3,4,7,9,5,0",
+            "result": "No results."
+          }
+        ],
+        "oeis_derived_constants_NEW": [
+          {
+            "constant": "E[N_real] = 1 + 2P = 1.3398587652469590053128863142635238...",
+            "query": "1,3,3,9,8,5,8,7,6,5,2,4,6,9,5,9",
+            "result": "No results."
+          },
+          {
+            "constant": "2P = 0.3398587652469590053...",
+            "query": "3,3,9,8,5,8,7,6,5,2,4,6,9,5,9",
+            "result": "No results."
+          },
+          {
+            "constant": "1-P = 0.8300706173765204973...",
+            "query": "8,3,0,0,7,0,6,1,7,3,7,6,5,2,0,4",
+            "result": "No results."
+          }
+        ],
+        "websearch": [
+          {
+            "query": "\"0.169929382623\" OR \"0.1699293826\" OR \"0.16992938262347950\"",
+            "result": "no page contains any of the strings"
+          },
+          {
+            "query": "\"0.169929\" OR \"0.16993\" probability cubic three real roots normal",
+            "result": "nothing containing the values"
+          },
+          {
+            "query": "\"1.3398587652\" OR \"1.33985876\" OR \"0.3398587652\"",
+            "result": "no occurrence"
+          }
+        ],
+        "ia_scholar_fulltext_NEW": [
+          {
+            "query": "\"0.1699293826\"",
+            "result": "0 results (explicit 'No results found')"
+          }
+        ]
+      },
+      "integrand_shape_searches": {
+        "status": "COULD NOT BE PERFORMED AS INTENDED - record as a failed search, not as a negative",
+        "reason": "No available engine does literal matching on ASCII math strings. IA Scholar tokenises: the phrase query \"x^4+4x^2+1\" returned 97 irrelevant hits (Apery limits, hyperelliptic curves, wavelets, ...), i.e. it matched tokens, not the expression. Google/Bing return integral-calculator landing pages. Google Scholar and Google Books are unavailable (see could_not_search).",
+        "queries_run": [
+          "WebSearch: random polynomial real roots Kac-Rice \"x^4+4x^2+1\" integral -> only generic Kac-Rice papers",
+          "WebSearch: \"x^4+4x^2+9\" \"x^4+6x^2+3\" integral -> integral-calculator sites only",
+          "IA Scholar: \"x^4+4x^2+1\" -> 97 tokenised, irrelevant hits"
+        ]
+      },
+      "verdict": "No prior appearance of the value or of the closed form was found. The digit-string negative is now stronger than in round 2 because IA Scholar full text also returns zero. The integrand-shape search was NOT successfully executed."
+    },
+    "b_technique_kac_rice_plus_owens_T": {
+      "ia_scholar_fulltext_queries": [
+        {
+          "query": "\"Owen's T function\" \"random polynomial\"",
+          "result": "0 results"
+        },
+        {
+          "query": "\"Owen's T function\" \"real roots\"",
+          "result": "0 results"
+        },
+        {
+          "query": "\"Owen's T function\" \"Rice formula\"",
+          "result": "3 results, all stochastic-process level-crossing papers (see below)"
+        },
+        {
+          "query": "\"Owen's T\" \"level crossings\"",
+          "result": "2 results (Schwalger 2021; Rawat et al. 2026)"
+        },
+        {
+          "query": "\"Owen's T function\" \"Kac\"",
+          "result": "7 results, none about random polynomials"
+        },
+        {
+          "query": "\"random monic polynomial\" \"Kac-Rice\"",
+          "result": "0 results"
+        },
+        {
+          "query": "\"three real roots\" \"Kac-Rice\"",
+          "result": "0 results"
+        }
+      ],
+      "the_three_owen_plus_rice_papers": [
+        {
+          "cite": "S. Rawat, F. Morone, D. J. Heeger, S. Martiniani, 'Exact Variance and Fano Factor for Arbitrary Level Crossings in Stationary Gaussian Processes', arXiv:2605.25278 (24 May 2026)",
+          "what_it_does": "Goes beyond the mean Kac-Rice rate to the exact VARIANCE and Fano factor of level crossings of smooth STATIONARY Gaussian processes. Owen's T appears in the second-moment formulae; snippet: 'when u = 0 (mean-level crossings), the parameter gamma vanishes and Owen's T function reduces to an arctangent.'",
+          "relation_to_our_move": "Different: stationary process, second moment, no polynomial, no erf-cancellation in a mean-rate integral."
+        },
+        {
+          "cite": "T. Schwalger, 'Mapping input noise to escape noise in integrate-and-fire neurons: a level-crossing approach', arXiv:2109.07416 (2021)",
+          "what_it_does": "Verified directly: I downloaded the PDF and grepped it. 'Owen' occurs exactly once, as a parenthetical remark that a double-integral quantity f_2 arising in his level-crossing computation 'can also be expressed in terms of Owen's T function'.",
+          "relation_to_our_move": "Establishes the Owen's-T / Rice-formula adjacency, but as a passing representation remark, not a cancellation device."
+        },
+        {
+          "cite": "A. van Meegen, S. J. van Albada, 'A Microscopic Theory of Intrinsic Timescales in Spiking Neural Networks' (2021)",
+          "relation_to_our_move": "Neuroscience; Owen's T in integral formulations. Not polynomial real-rootedness."
+        }
+      ],
+      "other_channels": [
+        {
+          "channel": "arXiv metadata API",
+          "queries": [
+            "all:\"Owen T function\" -> 4 hits, none random-polynomial",
+            "all:\"Owen T\" AND all:\"random polynomial\" -> 0",
+            "abs:\"Kac-Rice\" AND abs:\"cubic\" -> 0"
+          ]
+        },
+        {
+          "channel": "Stack Exchange API",
+          "queries": [
+            "math.SE 'Owen T function' -> 15 threads, all about the function itself / Gaussian integrals",
+            "MathOverflow \"Owen's T\" -> 3 threads, none relevant"
+          ]
+        },
+        {
+          "channel": "WebSearch",
+          "queries": [
+            "\"Owen's T function\" \"Rice formula\" random polynomial real zeros -> nothing",
+            "\"Owen's T\" \"expected number of real zeros\" Gaussian -> nothing",
+            "site:arxiv.org \"Owen's T\" \"random polynomial\" real roots -> nothing"
+          ]
+        }
+      ],
+      "verdict": "Neither INGREDIENT is novel; the COMBINATION was not found. (1) Non-central Kac-Rice leaving an erf term is Edelman-Kostlan Corollary 5.1 verbatim (see below). (2) Owen's T inside a Rice / level-crossing computation is established (Schwalger 2021; Rawat et al. 2026). (3) No source found uses Owen's T to cancel the erf term and close a Rice-formula computation for a random polynomial, nor to obtain a probability of real-rootedness."
+    },
+    "c_edelman_kostlan_1995_reread_MAJOR": {
+      "what_i_did": "Re-downloaded arXiv:math/9501224, ran pdftotext (84 kB), and read Sections 5.2-5.3 in full instead of only grepping for 'probability that all'.",
+      "corollary_5_1_verbatim_structure": "The expected number of real roots of sum a_i f_i(t) = 0 on [a,b] is (1/pi) int_a^b ||gamma'(t)|| e^{-m_0^2(t)/2} [ e^{-m_1^2(t)/2} + sqrt(pi/2) m_1(t) erf(m_1(t)/sqrt2) ] dt, with w = C^{1/2} v, gamma = w/||w||, m_0 = mu/||w||, m_1 = m_0'/||gamma'||.",
+      "the_key_sentence_verbatim": "'The reader may use this corollary to compute the expected number of roots of a random monic polynomial. In this case m = e_n and C is singular, but this singularity causes no trouble.'",
+      "implications": [
+        "The exact non-central Rice setup for the MONIC ensemble is explicitly flagged in Edelman-Kostlan 1995 as an available application - but is NOT carried out there.",
+        "The 'erf/CDF term a naive Rice formula leaves behind' IS literally the erf term of E-K Corollary 5.1. That term is 31 years old and standard.",
+        "E-K then isolate exactly two cases where the integral closes: Case I (m_1 == 0: density = constant x mean-zero density) and Case II (m_0 == m_1: closed form (1/4)erf^2(m_0/sqrt2) - (1/(2 sqrt(2 pi))) Gamma[0, m_0^2]). The monic polynomial is in NEITHER case - so E-K closed the easy ones and left the monic one alone.",
+        "grep of the full E-K text: ZERO occurrences of 'Owen'. Also zero occurrences of any all-roots-real result (re-confirms round 1)."
+      ],
+      "did_anyone_follow_up": {
+        "query": "IA Scholar full text: \"expected number of roots of a random monic polynomial\"",
+        "result": "2 hits, both being the two copies (BAMS + arXiv) of Edelman-Kostlan itself. No follow-up paper found."
+      },
+      "honest_reading": "This does NOT anticipate the closed form or the Owen's-T cancellation, but it does mean the problem was publicly signposted in a Bulletin of the AMS survey. Any novelty claim must say so, and must not present non-central Kac-Rice as the new part."
+    },
+    "d_p_all_roots_real_for_monic_gaussian_cubic": {
+      "searches": [
+        {
+          "query": "IA Scholar: \"probability that all roots are real\"",
+          "result": "10 hits, ALL Riemann-hypothesis texts quoting Riemann's 'es ist sehr wahrscheinlich, dass alle Wurzeln reell sind'. None probabilistic-polynomial."
+        },
+        {
+          "query": "IA Scholar: \"probability that all its roots are real\"",
+          "result": "0 results"
+        },
+        {
+          "query": "IA Scholar: \"random monic polynomial\" \"real roots\" Gaussian",
+          "result": "3 hits: 2x Edelman-Kostlan, 1x Forrester-Rains (unitary Hessenberg, unrelated)"
+        },
+        {
+          "query": "IA Scholar: \"totally real\" \"monic\" \"Gaussian\" probability polynomial roots",
+          "result": "55 hits, all algebraic number theory / lattice coding. None relevant."
+        },
+        {
+          "query": "IA Scholar: \"three real roots\" \"normally distributed\" probability cubic",
+          "result": "63 hits, all applied-statistics uses of the cubic discriminant (Behrens-Fisher, likelihood equations, ...). None is this problem."
+        },
+        {
+          "query": "arXiv metadata: abs:\"all roots are real\" AND abs:\"random polynomial\"; abs:\"all real roots\" AND abs:\"probability\"; ti:\"monic\" AND abs:\"Gaussian\" AND abs:\"roots\"",
+          "result": "0, 0, 0"
+        }
+      ],
+      "nearby_ensembles_ruled_out": [
+        {
+          "cite": "S. Akiyama, A. Petho, 'On the distribution of polynomials with bounded roots, I. Polynomials with real coefficients', J. Math. Soc. Japan 66(3) (2014); and II (integer coefficients), Unif. Distrib. Theory 9 (2014)",
+          "status": "NEW to this campaign",
+          "what_they_do": "They DO compute exactly, via Selberg-type multiple integrals, the 'probability' that a monic real polynomial is TOTALLY REAL - but in the CONTRACTIVE ensemble (all roots in the unit disc, uniform measure on the coefficient body), with rational answers. Quote from the paper: 'within contractive polynomials, the \"probability\" of picking a totally real polynomial decreases rapidly when its degree becomes large.'",
+          "why_it_is_not_our_result": "Different ensemble: bounded-roots/uniform, not iid Gaussian coefficients. Different technique: root-space change of variables + Selberg integrals, not Kac-Rice.",
+          "how_found": "Cited in the sole answer to MSE 1745310."
+        },
+        {
+          "cite": "Y. Q. Do, N. D. V. Nguyen, S. O'Rourke, 'Real roots of non-centered random polynomials', arXiv:2605.26402 (26 May 2026)",
+          "status": "closest modern ensemble in spirit (independent coefficients with NON-ZERO means)",
+          "what_they_do": "Variance asymptotics and CLTs for the number of real roots of non-centered Kac and 'hyperbolic' ensembles; leading variance constant = half the centered one.",
+          "checked_how": "Downloaded the PDF and grepped: ZERO occurrences of 'monic', ZERO of 'Owen', no all-roots-real probability. Cites Edelman-Kostlan only in the bibliography.",
+          "why_it_is_not_our_result": "Asymptotic in degree n; no exact low-degree closed form; 'hyperbolic' there means a coefficient ensemble, not real-rootedness."
+        },
+        {
+          "cite": "P. Yatsyna, B. Zmija, 'Counting polynomials with positive roots', arXiv:2509.14501 (2025)",
+          "why_not": "Monic INTEGER polynomials with all roots real and positive; a counting/asymptotic problem, not a Gaussian probability."
+        },
+        {
+          "cite": "S. A. Sheikh, M. I. Mir, 'Probabilistic Zero Bounds of Certain Random Polynomials', arXiv:2605.25017 (2026)",
+          "why_not": "Probabilistic Cauchy-type bounds on zero moduli for iid standard-normal coefficients; says nothing about real-rootedness."
+        }
+      ],
+      "stack_exchange_recheck": [
+        {
+          "thread": "MSE 1745310",
+          "note": "Coefficients uniform on [-N,N], N -> infinity. The single answer sets up the monic cubic x^3+bx^2+cx+d via Vieta and integrates over ROOT space, gets P_3 ~ 0.218 by Monte Carlo, no closed form. Credits the method to Akiyama-Petho."
+        },
+        {
+          "thread": "MSE 1745436",
+          "note": "Uniform [-n,n], n -> infinity; answer gives 41/72 + ln2/12 = 0.6272 (degenerates to the quadratic problem). Not Gaussian."
+        },
+        {
+          "thread": "MSE 4185340",
+          "note": "iid U[0,1]; still zero answers."
+        }
+      ],
+      "verdict": "NO source found gives P(all roots real) for the monic i.i.d. Gaussian cubic, in any form (value, integral, or asymptotic)."
+    },
+    "e_li_1988_and_andel_round3": {
+      "outcome": "Still unread. One genuine advance (exact MR page located), one route still blocked by quota.",
+      "advance": {
+        "what": "IA Scholar full-text search located the Mathematical Reviews review of Li (1988) at page level.",
+        "query": "IA Scholar: \"quartic equations are all real\"",
+        "hits": [
+          "archive.org/details/sim_mathematical-reviews_1989-10_89j/page/5639 (MR 1989-10, issue 89j) - snippet is exactly Li's title line",
+          "archive.org/details/sim_mathematical-reviews_1989_index_0/page/936",
+          "archive.org/details/sim_mathematical-reviews_1989_index_1/page/665"
+        ],
+        "but": "archive.org metadata for sim_mathematical-reviews_1989-10_89j confirms access-restricted-item: true. I resolved the item's servers (ia601806/ia801806, dir /4/items/...) and called fulltext/inside.php on both: HTTP 403 'Item not available'. BookReaderSearch.php: 404. ia-fts.archive.org and ia-pub-fts-api.archive.org: DNS failure. api.archivelab.org: DNS failure. So only the title-line snippet leaks; the review BODY is still unreachable."
+      },
+      "google_books_retry": {
+        "status": "FAILED AGAIN - not a negative, a failure",
+        "detail": "Google Books API retried 5 times today (3 distinct phrase queries plus country=US and country=CZ variants). Every call: HTTP 429, \"Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'books.googleapis.com' for consumer 'project_number:624717413613'\". The quota has NOT reset.",
+        "html_fallbacks_also_failed": "books.google.com/books?q=... -> 302 to google.com/search?tbm=bks -> 302 to consent.google.com (EU consent wall). Direct google.com/search via curl returns a JS-only shell."
+      },
+      "andel_mathematics_of_chance": {
+        "found": "archive.org item mathematicsofcha0000ande exists (confirmed via advancedsearch)",
+        "blocked": "access-restricted-item: true; fulltext/inside.php on ia601403 -> HTTP 403 'Item not available'",
+        "ia_scholar": "\"Mathematics of Chance\" Andel \"real roots\" -> 0 results (IA Scholar does not index this book)"
+      },
+      "books_still_unsearchable": {
+        "bharucha_reid_sambandham_1986": "archive.org advancedsearch title:\"random polynomials\" -> 64 hits, all arXiv preprints. Book not archived.",
+        "farahmand_topics_in_random_polynomials": "archive.org advancedsearch -> 0 hits. Not archived."
+      }
+    },
+    "f_search_engines_status_round3": {
+      "worked": [
+        "OEIS via curl + browser UA (fmt=text)",
+        "Claude Code WebSearch",
+        "arXiv API over https with -L (note: http:// returns 301 with an empty body under curl; must use https and follow redirects). METADATA ONLY.",
+        "Stack Exchange API 2.3",
+        "archive.org /metadata/ and /advancedsearch.php",
+        "scholar.archive.org (IA Scholar) FULL TEXT - via WebFetch only"
+      ],
+      "blocked_or_dead": [
+        "search.arxiv.org - connection refused (service is dead); arXiv has no public full-text search",
+        "scholar.archive.org via curl - JS session-verification bot wall (use WebFetch)",
+        "core.ac.uk - HTTP 403",
+        "mojeek.com - HTTP 403 automated-queries block",
+        "lite.duckduckgo.com - HTTP 202 bot challenge (unchanged)",
+        "bing.com via curl - returns 200 but SILENTLY DROPS the phrase query; a control search for a known paper title also failed, so NO Bing negative is claimed anywhere in this report",
+        "google.com / books.google.com via curl or WebFetch - JS shell or EU consent redirect",
+        "Google Books API - HTTP 429 daily quota, all day",
+        "HathiTrust babel full-text search - HTTP 403",
+        "archive.org search-inside for lending-restricted items - HTTP 403 / 404 / DNS failure on every endpoint tried"
+      ]
+    },
+    "g_verdict_round3": {
+      "formula": {
+        "status": "No prior appearance found.",
+        "confidence": "Good for arXiv/OA full text and the indexed web; still weak for paywalled pre-1995 journals and for books.",
+        "supported_by": [
+          "0 hits for the digit string in OEIS (2 fresh queries), on the web, and in IA Scholar full text",
+          "0 hits for the derived constants E[N]=1+2P, 2P, 1-P in OEIS and on the web",
+          "0 hits in IA Scholar for every phrasing of 'probability that all roots are real' in a polynomial context",
+          "the only paper phrase-matching 'expected number of roots of a random monic polynomial' is Edelman-Kostlan itself"
+        ],
+        "open_risks": [
+          "The integrand-shape search was never actually executed - no engine matches literal math strings.",
+          "Edelman-Kostlan 1995 explicitly invites the reader to do the monic computation; a textbook exercise, lecture note, or short note doing it would very likely be invisible to every channel I have.",
+          "Li (1988) remains unread (uniform coefficients, so low risk here, but nonzero).",
+          "Bharucha-Reid & Sambandham (1986) and Farahmand's book remain entirely unsearchable."
+        ]
+      },
+      "technique": {
+        "status": "The combination was not found; but BOTH ingredients are prior art and the claim must be scoped accordingly.",
+        "not_novel": [
+          "Non-central Kac-Rice for a Gaussian process with a moving level, leaving an erf term: Edelman-Kostlan 1995, Corollary 5.1 - and they name the monic random polynomial as the intended application.",
+          "Closing a non-central Rice integral in closed form: E-K do exactly that for their Case II (erf^2 minus incomplete Gamma).",
+          "Owen's T appearing inside Rice / level-crossing computations: Schwalger 2021 (arXiv:2109.07416), Rawat-Morone-Heeger-Martiniani 2026 (arXiv:2605.25278), van Meegen-van Albada 2021.",
+          "E[N] = 1 + 2 P(3 real) for a cubic: elementary parity identity, folklore."
+        ],
+        "not_found_anywhere": [
+          "Owen's T used as the device that CANCELS the erf/CDF term of the non-central Rice density.",
+          "Any Kac-Rice computation of a real-rootedness PROBABILITY (as opposed to an expected count) for a random polynomial.",
+          "Any exact evaluation of the monic-Gaussian Kac-Rice integral at any degree."
+        ],
+        "recommended_phrasing": "Claim novelty for the closed form and for the Owen's-T cancellation that produces it. Do NOT claim novelty for 'applying Kac-Rice to the monic Gaussian cubic' - Edelman-Kostlan signposted that in a BAMS survey in 1995 - nor for 'using Owen's T in a Rice-formula context'."
+      },
+      "honest_framing": "Every statement above is of the form 'I ran query X against corpus Y and it returned nothing'. IA Scholar makes the arXiv/OA negative substantially stronger than in earlier rounds, but it is thin on paywalled mid-20th-century journals and on books, and the one search that would most directly settle the question - literal matching on the integrand - could not be run at all."
+    }
+  }
+}

@@ -2545,4 +2545,49 @@ theorem theorem3_probability :
     ENNReal.toReal_ofReal hnn]
   ring
 
+/-! ## Theorem 3 in root-count form
+
+`theorem3` is a statement about the *sign of `Δ₄`*.  The English statement talks
+about *roots*.  `DiscriminantRootCount.lean` bridges the two for `a ≠ 0`, and the
+hyperplane `{a = 0}` is Lebesgue-null in `ℝ⁴`, so the two sets have equal measure.
+This is the analogue of `theorem1_root_count` / `theorem2_root_count`. -/
+
+theorem volume_fst_eq_zero_four :
+    (volume : Measure (ℝ × ℝ × ℝ × ℝ)) {p : ℝ × ℝ × ℝ × ℝ | p.1 = 0} = 0 := by
+  have h : {p : ℝ × ℝ × ℝ × ℝ | p.1 = 0}
+      = ({0} : Set ℝ) ×ˢ (Set.univ : Set (ℝ × ℝ × ℝ)) := by
+    ext p; simp
+  rw [h, show (volume : Measure (ℝ × ℝ × ℝ × ℝ))
+      = (volume : Measure ℝ).prod volume from rfl, Measure.prod_prod]
+  simp
+
+/-- **THEOREM 3, root-count form, fully proved.**  The set of `(a,b,c,d) ∈ [-1,1]⁴`
+for which `a x³ + b x² + c x + d` genuinely *has three distinct real roots* has
+measure `16 · (641/2430 − log 3 / 24)`; dividing by `vol([-1,1]⁴) = 16` gives the
+probability `641/2430 − log 3 / 24`.
+
+No `Δ₄` appears in the statement: this is `reference/VERDICT.md`'s Theorem 3 as
+originally worded, machine-checked end to end. -/
+theorem theorem3_root_count :
+    volume {p : ℝ × ℝ × ℝ × ℝ | p.1 ∈ Icc (-1 : ℝ) 1 ∧ p.2.1 ∈ Icc (-1 : ℝ) 1 ∧
+      p.2.2.1 ∈ Icc (-1 : ℝ) 1 ∧ p.2.2.2 ∈ Icc (-1 : ℝ) 1 ∧
+      HasThreeDistinctRealRoots p.1 p.2.1 p.2.2.1 p.2.2.2}
+      = ENNReal.ofReal ((641 / 2430 - Real.log 3 / 24) * 16) := by
+  rw [← theorem3]
+  refine measure_congr ?_
+  rw [MeasureTheory.ae_eq_set]
+  constructor
+  · refine measure_mono_null (fun p hp => ?_) volume_fst_eq_zero_four
+    obtain ⟨⟨h1, h2, h3, h4, hroots⟩, hout⟩ := hp
+    rw [Set.mem_ofPred_eq]
+    by_contra hne
+    exact hout ⟨h1, h2, h3, h4,
+      (Δ₄_pos_iff_three_distinct_real_roots hne).2 hroots⟩
+  · refine measure_mono_null (fun p hp => ?_) volume_fst_eq_zero_four
+    obtain ⟨⟨h1, h2, h3, h4, hΔ⟩, hout⟩ := hp
+    rw [Set.mem_ofPred_eq]
+    by_contra hne
+    exact hout ⟨h1, h2, h3, h4,
+      (Δ₄_pos_iff_three_distinct_real_roots hne).1 hΔ⟩
+
 end NonmonicCubic

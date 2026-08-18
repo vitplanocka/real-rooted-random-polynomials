@@ -18,3 +18,6 @@ lean/**/.lake/
 # OS
 .DS_Store
 Thumbs.db
+
+# Numeric cache artifacts
+*.pkl

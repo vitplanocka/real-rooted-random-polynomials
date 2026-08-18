@@ -1,0 +1,26 @@
+{
+ "problem": "A: P(x^3+ax^2+bx+c has 3 real roots), (a,b,c) iid N(0,1)",
+ "closed_form": "(1/pi) Int_0^inf exp(-x^4(x^4+4x^2+9)/(2(x^4+4x^2+1))) * 2(x^4+6x^2+3)/(sqrt(x^4+4x^2+1)(x^4+4x^2+9)) dx",
+ "value_100dps": "0.1699293826234795026564431571317619021340572614546315315327419707570687910330741791889359856870862579",
+ "verification": {
+  "u_unit_vector": "exact 0",
+  "cov_Z_Zprime": "exact 0 (so Z,Z' independent)",
+  "v2_formula": "residual exact 0",
+  "hprime_formula": "residual exact 0",
+  "eq7": "residual exact 0",
+  "eq8": "EXACT: squared identity A*B^2-C^2*D=0 with both pre-squared sides positive",
+  "eq9_vs_our_Delta3": "residual exact 0 (equals the Lean-proved Delta_3)",
+  "vs_method_C": "79 agreeing digits (C's own internal precision limit)",
+  "vs_method_R": "54 agreeing digits (R's own limit)",
+  "bridge_p_eq_EN_minus_1_over_2": "algebraic identity for cubics; MC N=2e7 confirms at 1.7 sigma"
+ },
+ "runs": {
+  "dps60": "0.169929382623479502656443157131761902134057261454631531532742",
+  "dps90": "0.169929382623479502656443157131761902134057261454631531532741970757068791033074179188935986",
+  "selfdiff_90": "4.371e-83",
+  "dps120": "0.16992938262347950265644315713176190213405726145463153153274197075706879103307417918893598568708625794213461568018845207",
+  "selfdiff_120": "4.53e-113",
+  "dps150": "0.169929382623479502656443157131761902134057261454631531532741970757068791033074179188935985687086257942134615680188452070451057180796905068029165146492",
+  "selfdiff_150": "2.848e-142"
+ }
+}

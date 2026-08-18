@@ -1,0 +1,13 @@
+=== supplementary transforms ===
+  identify: 0 hits (8.0s)
+  pslq sweeps: 15 jobs, 0 raw hits (146.0s)
+  raw=0 margin-ok=0 verified54=0 SURVIVORS=0
+   pi 65.72 -11.72
+   log2 68.76 -14.76
+   log3 64.86 -10.86
+   sqrt3 66.94 -12.94
+   catalan 65.78 -11.78
+   zeta(3) 64.91 -10.91
+   gamma(1/3) 68.03 -14.03
+supplement: raw hits 0 survivors 0
+wrote results/identify_A_50digits.json

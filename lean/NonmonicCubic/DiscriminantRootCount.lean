@@ -149,7 +149,7 @@ private theorem cubic_at_crit {a b c d s t : ℝ} (hu : 3 * a * t + b = s)
 
 /-- With positive leading coefficient the cubic is eventually negative to the
 left: an explicit point `L ≤ m` with `f L < 0`. -/
-private theorem exists_le_cubic_neg {a b c d : ℝ} (ha : 0 < a) (m : ℝ) :
+theorem exists_le_cubic_neg {a b c d : ℝ} (ha : 0 < a) (m : ℝ) :
     ∃ L : ℝ, L ≤ m ∧ a * L ^ 3 + b * L ^ 2 + c * L + d < 0 := by
   have ha' : a ≠ 0 := ha.ne'
   obtain ⟨T, hT1, haT, hTm⟩ :
@@ -180,7 +180,7 @@ private theorem exists_le_cubic_neg {a b c d : ℝ} (ha : 0 < a) (m : ℝ) :
 
 /-- Mirror image of `exists_le_cubic_neg`: an explicit point `R ≥ M` with
 `f R > 0`. -/
-private theorem exists_ge_cubic_pos {a b c d : ℝ} (ha : 0 < a) (M : ℝ) :
+theorem exists_ge_cubic_pos {a b c d : ℝ} (ha : 0 < a) (M : ℝ) :
     ∃ R : ℝ, M ≤ R ∧ 0 < a * R ^ 3 + b * R ^ 2 + c * R + d := by
   obtain ⟨L, hLle, hLneg⟩ := exists_le_cubic_neg (a := a) (b := -b) (c := c) (d := -d) ha (-M)
   exact ⟨-L, by linarith, by nlinarith [hLneg]⟩

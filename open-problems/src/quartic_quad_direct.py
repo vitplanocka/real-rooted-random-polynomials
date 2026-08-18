@@ -5,6 +5,16 @@ critical points obtained by numerically solving the cubic f'=0.
 
   L = g(x2) - max(g(x1),g(x3)),  x1<x2<x3 roots of 4x^3+3bx^2+2cx+d.
 
+BUG HISTORY (2026-08-18): an earlier revision of this file declared the middle
+integrand as `def inner_d(b, c, tol)` while calling
+`quad(inner_d, -1.0, 3*b*b/8, args=(b, tol))`.  scipy.quad binds the integration
+variable to the FIRST parameter, so the c-sweep was fed into the `b` slot and the
+outer b into the `c` slot -- integrating d_band(c_variable, b_outer) instead of
+d_band(b_outer, c_variable).  That produced the bogus I16 = 0.050200627707
+recorded in an earlier results/quartic_quad_direct.json (43% low).  The parameter
+order below (`inner_d(c, b, tol)`) is the fix; see src/quartic_diag4.py, which
+reproduces the wrong number exactly from that hypothesis.
+
 Shares no algebra with quartic_quad.py beyond the cubic solver: no reduction to
 (u,s), no Lam, no Psi, no Jacobians.  Inner integral is split at the kink
 d* = bc/2 - b^3/8 (where g(x1)=g(x3)) and uses scipy.quad, which copes with the
@@ -56,7 +66,8 @@ def mid_c(b, tol):
 if __name__ == "__main__":
     tol = float(sys.argv[1]) if len(sys.argv) > 1 else 1e-10
     # kinks in b where the d-band starts poking outside [-1,1]
-    bk = 0.6143021014162962
+    # exact: b* is the unique real root of  27 b^3 + 9 b^2 + 108 b - 76 = 0
+    bk = 0.61430210141629608275214779415296427736
     tot = 0.0
     for a, z in [(-1.0, -bk), (-bk, 0.0), (0.0, bk), (bk, 1.0)]:
         v, err = quad(mid_c, a, z, args=(tol,), epsabs=tol, epsrel=tol, limit=200)

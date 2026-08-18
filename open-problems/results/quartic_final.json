@@ -1,0 +1,54 @@
+{
+  "problem": "P(x^4+bx^3+cx^2+dx+e has 4 distinct real roots), (b,c,d,e) iid U[-1,1])",
+  "P_B_50": "0.0054643303405899855451944032832877411463288609119348",
+  "P_B_float": 0.005464330340589986,
+  "I16_50": "0.087429285449439768723110452532603858341261774590957",
+  "decomposition": "16 P_B = U - C_clip",
+  "U_closed_form": "sqrt(3)*asinh(sqrt(6)/4)/90 + 7013*sqrt(11)/302400  (= (4K/9) 2^-18 Int_{-1}^1 (3b^2+8)^{9/2} db, K=128/105); verified symbolically by sympy",
+  "U_50": "0.088066959660626860659361388065043886357478194205026",
+  "C_clip_50": "0.00063767421118709193625093553244002801621641961406921",
+  "C_clip_closed_form": "NONE FOUND (PSLQ at 190 digits: no algebraic relation deg<=10 coeff<=1e14; no hit against a 17-constant pool)",
+  "b_star": "unique real root of 27 b^3 + 9 b^2 + 108 b - 76 = 0",
+  "b_star_40": "0.6143021014162960827521477941529642773635",
+  "methods": {
+    "A_exact_tau_integral_(b,m) mpmath": "C_clip via T(z)=(4/105)u^{5/2}(21-5u); dps=200",
+    "B_exact_m_integral_(b,y) mpmath": "C_clip via (2/9)(M^{9/2}-n0^9); agrees with A to ~1e-190 at dps=200, ~1e-104 at dps=110",
+    "C_raw_bcd_mpmath (src/quartic_raw_mp.py)": "16P_B = 0.0874292854494383849 (dps45, 60 nodes); diff -1.38e-15 -> 14 digits, no reduction used",
+    "D_raw_bcd_float64_scipy (src/quartic_quad_direct.py, fixed)": "16P_B = 0.087429285455853; diff 6.4e-12 -> 11 digits",
+    "E_reduction_route (src/quartic_quad.py, first successful run)": "16P_B = 0.0874292854494398; diff ~1e-16 -> 15 digits",
+    "F_monte_carlo_560M (src/quartic_gt_mc.py)": "16P_B = 0.0874217921 +/- 1.33e-05 -> 0.57 sigma"
+  },
+  "monte_carlo": {
+    "N": 560000000,
+    "I16": 0.0874217920906968,
+    "I16_sigma": 1.3252573200099117e-05,
+    "PB": 0.00546386200566855,
+    "PB_sigma": 8.282858250061948e-07,
+    "I16_clipped": 0.0874217920906968,
+    "n_samples_with_e_clipping": 0,
+    "min_e_lo_seen": -0.2835448131803671,
+    "max_e_hi_seen": 0.3890694415144978,
+    "sec": 344.6923816204071
+  },
+  "e_window_extrema": {
+    "min_e_lo": -0.2840024343025303,
+    "min_e_lo_30": "-0.284002434302530329680378939166",
+    "min_e_lo_exact": "-(3y^2-24y+1)/64 with 8y^3+3y^2+1=0, y=-0.66104980290069921853",
+    "min_e_lo_at_bcd": [
+      1.0,
+      -0.6387716427882221,
+      -1.0
+    ],
+    "max_e_hi": 0.390625,
+    "max_e_hi_exact": "25/64",
+    "max_e_hi_at_bcd": [
+      1.0,
+      -1.0,
+      -0.625
+    ],
+    "margin_e_lo_to_minus1": 0.7159975656974696,
+    "margin_e_hi_to_plus1": 0.609375
+  },
+  "bug": "quartic_quad_direct.py earlier revision: inner_d declared (b,c,tol) but called via quad(inner_d,...,args=(b,tol)); scipy.quad binds the integration variable to the first parameter, swapping b and c. Reproduces I16=0.05020062770699 exactly (src/quartic_diag4.py).",
+  "digits_defensible": "15 digits confirmed by structurally independent routes (raw (b,c,d) quadrature and the (b,u,s) reduction route); ~190 digits available internally from methods A+B, whose only shared inputs are the (b,m,tau) reduction (verified 0/2e6 mismatches) and U (verified symbolically by sympy)."
+}
