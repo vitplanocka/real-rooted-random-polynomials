@@ -21,3 +21,7 @@ import NonmonicCubic.OwenCancellation
 import NonmonicCubic.CubicLimits
 import NonmonicCubic.BandRoots
 import NonmonicCubic.FinalAssembly
+import NonmonicCubic.Theorem4Statement
+import NonmonicCubic.Theorem4Proof
+import NonmonicCubic.Face4B
+import NonmonicCubic.Theorem4

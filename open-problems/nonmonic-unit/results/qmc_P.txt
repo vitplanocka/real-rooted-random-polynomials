@@ -1,0 +1,5 @@
+randomized Sobol': R=32 replicates x 2^22 = 134,217,728 points total
+P (QMC)      = 0.01860360902235
+P (empirical se) = 2.174e-07
+P (closed)   = 0.01860371759113
+difference   = -1.086e-07   (-0.50 sigma)

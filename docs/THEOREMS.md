@@ -38,6 +38,25 @@ calibrated blind PSLQ search at 40 digits found no such combination). Fully
 machine-checked in Lean 4 / Mathlib, zero `sorry`, with Owen's T built from
 scratch and no appeal to any general Rice's formula.*
 
+**Theorem 5.** Let (a,b,c,d) be i.i.d. **uniform on [0,1]**. Then
+
+> P( a x³ + b x² + c x + d has three real roots ) = **719/2880 − ln(2)/3**
+> = 0.01860371759112934130536707062510…
+
+*Theorem 5 added 2026-08-18. Completes the 2×2 uniform table (monic/non-monic ×
+[−1,1]/[0,1]) — the missing "non-monic, one-sided" corner. Proved by the same cone
+reduction as Theorem 3, restricted to the positive orthant: only four cone faces
+(not eight), the a=1 and d=1 faces are Theorem 2 (1/2880 each), and the b=1 face S
+= 479/960 − (2/3)ln2 comes from the Theorem-3 band integral with s ∈ (0,1] and the
+window floor at 0 — which makes the inner integrand rational, so the ln3 that
+appears mid-derivation cancels and only ln2 survives. Verified by nine independent
+routes (raw MC, root-count MC, reduction-free QMC, two symbolic derivations, a
+40-digit substitution-free quadrature agreeing to 2.5e-39, and blind PSLQ returning
+a zero coefficient on ln3), and fully machine-checked in Lean 4 / Mathlib (zero
+`sorry`, standard axioms), reusing the Theorem-3 cone machinery. Full record in
+`open-problems/nonmonic-unit/VERDICT.md`. Likely new — no prior appearance found;
+Li (1988) is symmetric-intervals only (unread caveat as for Theorems 1–2).*
+
 Unlike Theorems 1 and 2, this *value* is not new — it is the closed form an
 unrefereed, AI-assisted forum thread (dxdy.ru, June 2026) had already guessed.
 What Theorem 3 supplies is the first verified derivation of it, and the

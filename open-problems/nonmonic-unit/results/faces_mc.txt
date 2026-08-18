@@ -1,0 +1,56 @@
+Independent Monte-Carlo of the four face volumes
+========================================================================
+numpy 2.5.2, N per face = 2,000,000,000, 6 worker processes, chunk = 5,000,000
+base seed entropy = 20260818314159; per-worker SeedSequence([BASE_SEED, ord(face), stream])
+test: B^2-3AC>0 and f(x_-)>=0>=f(x_+) with stable x_+ = -C/(B+s)
+
+Cross-check vs numpy.roots (20,000 independent samples per face):
+  face a: critical-point test      2/20000, numpy.roots      2/20000, disagreements = 0
+  face b: critical-point test    760/20000, numpy.roots    760/20000, disagreements = 0
+  face c: critical-point test    716/20000, numpy.roots    716/20000, disagreements = 0
+  face d: critical-point test      1/20000, numpy.roots      1/20000, disagreements = 0
+
+F_a = 0.000346848  +/- 4.164e-07   (hits 693,696 / 2,000,000,000, A==0 draws: 0, 635s)
+F_b = 0.036859558  +/- 4.213e-06   (hits 73,719,116 / 2,000,000,000, A==0 draws: 0, 731s)
+F_c = 0.036862920  +/- 4.213e-06   (hits 73,725,839 / 2,000,000,000, A==0 draws: 0, 599s)
+F_d = 0.000347471  +/- 4.167e-07   (hits 694,943 / 2,000,000,000, A==0 draws: 0, 551s)
+
+Symmetry checks (reciprocal map (a,b,c,d)->(d,c,b,a)):
+  F_a - F_d = -6.235e-07 +/- 5.891e-07   (1.06 sigma)
+  F_b - F_c = -3.362e-06 +/- 5.958e-06   (0.56 sigma)
+
+Comparison of F_a against Theorem 2 = 1/2880 = 0.000347222:
+  F_a - 1/2880 = -3.742e-07 +/- 4.164e-07  (0.90 sigma)
+
+Reference 4-D value          P = 0.018603554 +/- 3.0e-06
+(1/4)(F_a+F_b+F_c+F_d)         = 0.018604199 +/- 1.497e-06
+    difference from P          = +6.453e-07 +/- 3.353e-06  (0.19 sigma)
+1/5760 + F_b/2                 = 0.018603390 +/- 2.107e-06
+    difference from P          = -1.639e-07 +/- 3.666e-06  (0.04 sigma)
+
+raw sum F_a+F_b+F_c+F_d        = 0.074416797 +/- 5.987e-06
+
+========================================================================
+EXTRA (unrequested but decisive): deterministic nested-quadrature check
+src/faces_quad_check.py -- structurally different from the MC.  On each of
+the faces a,b,c the constant term d enters LINEARLY, so the real-rooted set
+is a d-band  d in [-g(x_-), -g(x_+)] cap [0,1],  g(x)=A x^3+B x^2+C x,
+and F reduces to a 2-D integral done with scipy.integrate.quad
+(epsabs 1e-12, epsrel 1e-11).  Face d has no linear coefficient and is
+covered by the reciprocal symmetry F_d = F_a.
+
+  F_a (quad)  = 0.000347222222      1/2880 = 0.000347222222   diff = -3.7e-16
+  F_b (quad)  = 0.036860213815
+  F_c (quad)  = 0.036860212960      (F_b - F_c = +8.5e-10, i.e. equal)
+  (1/4)(F_a+F_b+F_c+F_d) = 0.018603717805
+  1/5760 + F_b/2         = 0.018603718019
+  1/5760 + F_c/2         = 0.018603717591
+
+  vs reference P = 0.018603554 +/- 3.0e-06 :  difference +1.6e-07 = 0.05 sigma
+
+  MC vs quadrature:
+    F_a: MC-quad = -3.74e-07 (0.90 sigma)
+    F_b: MC-quad = -6.56e-07 (0.16 sigma)
+    F_c: MC-quad = +2.71e-06 (0.64 sigma)
+    F_d: MC-quad = +2.49e-07 (0.60 sigma)   [quad value = F_a by symmetry]
+========================================================================

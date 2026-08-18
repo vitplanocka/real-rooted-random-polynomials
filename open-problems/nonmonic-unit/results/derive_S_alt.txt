@@ -1,0 +1,18 @@
+K_p * r/(1-r^2)^2 = (2*r**2 + r)/(r**2 + 2*r + 1)
+antiderivative (hi): ((r + 1)*(2*r - 3*log(r + 1)) - 1)/(r + 1)
+antiderivative (lo): (-2*r + (r**2 - 1)*(4*r + 3*log(r - 1) - 3*log(r + 1)))/(r**2 - 1)
+inner (r_lo>1/2): ((rl + 1)*(-4*rl + log((rl + 1)**6/64) + 3) + 2)/(2*(rl + 1))
+inner (r_lo<1/2): (4*rl + (rl**2 - 1)*(-8*rl - 6*log(rl - 1) + log((rl + 1)**6/4096) + 9 + 6*I*pi))/(2*(rl**2 - 1))
+J1 (c in (0,1/4))  = -log(2)/24 + 191/25920 + log(3)/48
+J2 (c in (1/4,1/3))= -log(3)/48 - 7*log(2)/216 + 611/12960
+J3 (c in (1/3,1))  = 4/9 - 16*log(2)/27
+
+S (alt route) = 479/960 - 2*log(2)/3
+S numeric     = 0.0368602129600364603885119190279
+S_alt - (479/960 - (2/3)ln2) = 0  -> equal: True
+P = 1/5760 + S/2 = 719/2880 - log(2)/3 = 0.0186037175911293413053670706251
+
+NOTE: sympy's antiderivative for the r<1/2 branch carries a formal 3*I*pi term
+(log(r-1) with r<1); it cancels identically in every definite integral used.
+Verified numerically: the inner integral is real and matches direct quadrature to 1e-16
+for r_lo = 0, 1/10, 3/10.

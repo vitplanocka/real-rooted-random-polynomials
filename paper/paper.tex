@@ -27,7 +27,7 @@
 \newcommand{\Prb}{\mathbb{P}}
 \newcommand{\disc}{\Delta}
 
-\title[Real-rootedness of a random cubic]{The real-rootedness probability of a random cubic polynomial: four closed forms}
+\title[Real-rootedness of a random cubic]{The real-rootedness probability of a random cubic polynomial: five closed forms}
 
 \author{Vít Plánočka}
 \thanks{With assistance from Claude (Anthropic). Machinery, proofs, and their
@@ -40,28 +40,30 @@ are recorded in the accompanying repository.}
 
 \begin{abstract}
 We compute, in closed form, the probability that a random cubic polynomial
-has three real roots, in four related models. For a \emph{monic} cubic
+has three real roots, in five related models. For a \emph{monic} cubic
 $x^3+ax^2+bx+c$ with $(a,b,c)$ independent and uniform on $[-1,1]$, this
 probability is $\tfrac{383}{4860}+\tfrac{\ln 3}{48}$; on $[0,1]$ it is exactly
 $\tfrac{1}{2880}$. For the \emph{non-monic} cubic $ax^3+bx^2+cx+d$ with all
 four coefficients independent and uniform on $[-1,1]$, it is
-$\tfrac{641}{2430}-\tfrac{\ln 3}{24}$. For the monic cubic with $(a,b,c)$
-i.i.d.\ \emph{standard normal}, it is a single one-dimensional integral of
-elementary functions, Theorem~\ref{thm:gaussian}, obtained via a Kac--Rice
-level-crossing argument with an exact Owen's-$T$-function cancellation. The
-first two values appear to be new; the third confirms, with a first proof, a
-closed form that had circulated unproved in an informal online forum thread
-since June~2026; the fourth resolves a question with no cube to bound any
-band, where the elementary methods of the first three do not apply at all.
-All four results are verified by independent symbolic and numerical
-computation and by a complete, zero-\texttt{sorry} machine-checked proof in
-Lean~4 / Mathlib -- which along the way proves, from scratch, the classical
-fact connecting a real cubic's discriminant sign to its real-root count
-(seemingly absent from Mathlib until now), and formalizes the Gaussian case's
-entire probabilistic argument without appeal to any general Rice's formula,
-coarea formula, or theory of stochastic processes -- none of which Mathlib
-has -- by exploiting that the relevant process is really just a fixed
-three-dimensional Gaussian vector composed with a deterministic curve.
+$\tfrac{641}{2430}-\tfrac{\ln 3}{24}$, and on $[0,1]$ it is
+$\tfrac{719}{2880}-\tfrac{\ln 2}{3}$ -- the four uniform values completing a
+$2\times2$ table over $\{\text{monic},\text{non-monic}\}\times\{[-1,1],[0,1]\}$.
+For the monic cubic with $(a,b,c)$ i.i.d.\ \emph{standard normal}, it is a
+single one-dimensional integral of elementary functions,
+Theorem~\ref{thm:gaussian}, obtained via a Kac--Rice level-crossing argument
+with an exact Owen's-$T$-function cancellation. Four of the five values
+appear to be new; the remaining one (non-monic, $[-1,1]$) confirms, with a
+first proof, a closed form that had circulated unproved in an informal online
+forum thread since June~2026. All five results are verified by independent
+symbolic and numerical computation and by a complete, zero-\texttt{sorry}
+machine-checked proof in Lean~4 / Mathlib -- which along the way proves, from
+scratch, the classical fact connecting a real cubic's discriminant sign to
+its real-root count (seemingly absent from Mathlib until now), and formalizes
+the Gaussian case's entire probabilistic argument without appeal to any
+general Rice's formula, coarea formula, or theory of stochastic processes --
+none of which Mathlib has -- by exploiting that the relevant process is
+really just a fixed three-dimensional Gaussian vector composed with a
+deterministic curve.
 \end{abstract}
 
 \maketitle
@@ -87,7 +89,7 @@ symmetric-interval distributions that does not include the one-sided case of
 our Theorem~\ref{thm:unit-cube} at all, and reaches our Theorem~\ref{thm:sym-cube}
 only as an unverifiable special case.
 
-This note settles four instances of the cubic question completely.
+This note settles five instances of the cubic question completely.
 
 \begin{theorem}[Monic cubic, symmetric cube] \label{thm:sym-cube}
 Let $(a,b,c)$ be independent and uniform on $[-1,1]$. Then
@@ -125,24 +127,51 @@ Let $(a,b,c)$ be independent, standard normal. Then
 \end{align*}
 \end{theorem}
 
-Theorems~\ref{thm:sym-cube}, \ref{thm:unit-cube} and \ref{thm:gaussian} are,
-to our knowledge, new: an eight-agent literature sweep together with a
-targeted search for the exact constants (Section~\ref{sec:novelty}) found no
-prior publication of any of the three values, digit strings, or exact
-expressions. Theorem~\ref{thm:nonmonic} is more subtle: the exact value
-$\tfrac{641}{2430}-\tfrac{\ln3}{24}$ already existed, unproved, as the
-terminus of a long, informally written, partly AI-assisted derivation posted
-to a Russian mathematics forum (\texttt{dxdy.ru}) in June 2026;
-Section~\ref{sec:nonmonic} gives the first proof.
+\begin{theorem}[Non-monic cubic, unit cube] \label{thm:nonmonic-unit}
+Let $(a,b,c,d)$ be independent and uniform on $[0,1]$. Then
+\[
+  \Prb\bigl(ax^3+bx^2+cx+d \text{ has three real roots}\bigr)
+  = \frac{719}{2880}-\frac{\ln 2}{3}
+  = 0.01860371759112934130536707062510\ldots
+\]
+\end{theorem}
 
-Theorem~\ref{thm:gaussian} is qualitatively different from the first three:
-with no cube to bound anything, the elementary band/discriminant argument
-behind Theorems~\ref{thm:sym-cube}--\ref{thm:nonmonic} does not apply in any
-form, and the natural object is instead a probabilistic level-crossing count.
-Its ``closed form'' is a single definite integral of elementary functions --
-the same sense in which the error function or Owen's $T$-function are
-accepted as closed forms in the literature -- rather than a finite
-combination of named constants; Section~\ref{sec:gaussian} gives the proof.
+The four uniform results, Theorems~\ref{thm:sym-cube}--\ref{thm:nonmonic}
+and \ref{thm:nonmonic-unit}, exhaust the natural $2\times2$ grid of
+\{monic, non-monic\} against \{symmetric, one-sided\} coefficient cubes:
+\[
+\renewcommand{\arraystretch}{1.4}
+\begin{array}{r|cc}
+ & \text{uniform }[-1,1] & \text{uniform }[0,1] \\ \hline
+\text{monic } x^3+ax^2+bx+c & \tfrac{383}{4860}+\tfrac{\ln3}{48} & \tfrac{1}{2880} \\
+\text{non-monic } ax^3+bx^2+cx+d & \tfrac{641}{2430}-\tfrac{\ln3}{24} & \tfrac{719}{2880}-\tfrac{\ln2}{3}
+\end{array}
+\]
+The two one-sided values carry $\ln 2$ and the two symmetric values $\ln 3$;
+in Theorem~\ref{thm:nonmonic-unit} a $\ln 3$ does appear mid-derivation but
+cancels between the two branches of the reduced integral, leaving only
+$\ln 2$ -- the same constant as the one-sided \emph{quadratic}
+$\tfrac{5}{36}+\tfrac{\ln 2}{6}$.
+
+Theorems~\ref{thm:sym-cube}, \ref{thm:unit-cube}, \ref{thm:gaussian}
+and \ref{thm:nonmonic-unit} are, to our knowledge, new: an eight-agent
+literature sweep together with a targeted search for the exact constants
+(Section~\ref{sec:novelty}) found no prior publication of any of the four
+values, digit strings, or exact expressions. Theorem~\ref{thm:nonmonic} is
+more subtle: the exact value $\tfrac{641}{2430}-\tfrac{\ln3}{24}$ already
+existed, unproved, as the terminus of a long, informally written, partly
+AI-assisted derivation posted to a Russian mathematics forum
+(\texttt{dxdy.ru}) in June 2026; Section~\ref{sec:nonmonic} gives the first
+proof.
+
+Theorem~\ref{thm:gaussian} is qualitatively different from the four uniform
+cases: with no cube to bound anything, the elementary band/discriminant
+argument behind them does not apply in any form, and the natural object is
+instead a probabilistic level-crossing count. Its ``closed form'' is a single
+definite integral of elementary functions -- the same sense in which the
+error function or Owen's $T$-function are accepted as closed forms in the
+literature -- rather than a finite combination of named constants;
+Section~\ref{sec:gaussian} gives the proof.
 
 \subsection*{Motivation}
 The cubic question is the tractable sibling of a harder open problem: for an
@@ -427,6 +456,77 @@ Theorem~\ref{thm:sym-cube}, and its final claimed value is confirmed exactly
 by Theorem~\ref{thm:nonmonic}; nothing here validates the specific route the
 thread took, and the derivation above is independent of it.
 
+\subsection{The one-sided cube: proof of Theorem~\ref{thm:nonmonic-unit}}
+\label{sec:nonmonic-unit}
+
+The same cone reduction applies over $[0,1]^4$, and reuses the face
+computation of \S\ref{sec:nonmonic} almost verbatim -- with two changes, each
+of which makes the calculation \emph{simpler} than its $[-1,1]$ counterpart.
+
+The discriminant \eqref{eq:disc4} is still homogeneous of degree $4$, so
+$R=\{\disc>0\}$ is a cone; slicing $[0,1]^4$ by which coordinate is largest
+and using $\vol_3(t\cdot E)=t^3\vol_3(E)$, $\int_0^1t^3\,dt=\tfrac14$, gives
+$\vol_4(R\cap[0,1]^4)=\tfrac14(F_a+F_b+F_c+F_d)$, where $F_j$ is the
+three-dimensional volume of the real-rooted region on the face $x_j=1$.
+\textbf{The first change: four faces, not eight}, because on the positive
+orthant $\max_j|x_j|=\max_j x_j$, so the central symmetry $x\mapsto-x$ of
+\S\ref{sec:nonmonic} contributes nothing. The face $a=1$ is the monic cubic
+$x^3+bx^2+cx+d$ on $[0,1]^3$ -- exactly Theorem~\ref{thm:unit-cube} -- so
+$F_a=\tfrac{1}{2880}$; coefficient reversal $(a,b,c,d)\mapsto(d,c,b,a)$ gives
+$F_d=F_a$ and $F_c=F_b$. Hence
+\begin{equation} \label{eq:cone-reduction-unit}
+  \Prb(\text{non-monic},[0,1]) = \frac{1}{4}\Bigl(2\cdot\tfrac{1}{2880}+2F_b\Bigr)
+  = \frac{1}{5760}+\frac{S}{2}, \qquad S:=F_b.
+\end{equation}
+
+$S$ is the volume on the face $b=1$, i.e.\ the same face integral as $S_b$ of
+\S\ref{sec:nonmonic} -- the polynomial $ax^3+x^2+cx+d$ with band
+$[-K_-/u,K_+/u]$, $u=27a^2$, $K_\pm$ and $s=\sqrt{1-3ac}$ exactly as there --
+but now with $(a,c,d)\in[0,1]^3$. \textbf{The second change: $s$ ranges only
+over $(0,1]$}, since $a,c\ge0$ forces $ac\ge0$; and the admissible-$d$ window
+is $[0,1]$ rather than $[-1,1]$. Lemma~\ref{lem:L1} (top never clips) holds
+unchanged. The bottom of the band now clips against $d=0$, not $d=-1$: since
+$d_{\mathrm{lo}}=-K_-/u$ and $K_-=(s+1)^2(2s-1)$, one has $d_{\mathrm{lo}}<0$
+exactly for $s>\tfrac12$. So the clipped band length is $L=C(s)/(27a^2)$ with
+\[
+  C(s)=K_++\min(K_-,0)=
+  \begin{cases} 4s^3, & s\le\tfrac12,\\[1ex] K_+=(s-1)^2(2s+1), & \tfrac12<s\le1.\end{cases}
+\]
+Because the floor is exactly $0$ -- where $c_{\mathrm{lo}}$ itself vanishes,
+an algebraic locus -- the $(s-1)^2$ factor of $K_+$ cancels the $(1-s^2)^{-2}$
+pole of the domain, and the inner $a$-integral
+$F(s)=\int_{a_0(s)}^1 L/a\,da=\tfrac{C(s)}{54}\bigl(9/(1-s^2)^2-1\bigr)$,
+$a_0(s)=(1-s^2)/3$, is a \emph{rational} function of $s$ with no logarithm at
+all (contrast \eqref{eq:cone-reduction}'s $F(s)$, which carries an
+$\ln(\alpha_-/a_0)$). With the Jacobian $dc=-(2s/3a)\,ds$,
+\[
+  S=\frac{2}{3}\int_0^1 s\,F(s)\,ds
+   =\frac{2}{3}\Bigl(\underbrace{\tfrac{1199}{2160}-\tfrac{\ln3}{2}}_{\int_0^{1/2}}
+   +\underbrace{\tfrac{3341}{17280}+\tfrac{\ln3}{2}-\ln2}_{\int_{1/2}^{1}}\Bigr)
+   =\frac{479}{960}-\frac{2}{3}\ln 2.
+\]
+The $\ln 3$ produced by the $s\le\tfrac12$ branch is cancelled exactly by the
+$s>\tfrac12$ branch, leaving only $\ln 2$. Substituting into
+\eqref{eq:cone-reduction-unit},
+\[
+  \Prb(\text{non-monic},[0,1])=\frac{1}{5760}+\frac12\Bigl(\frac{479}{960}-\frac{2}{3}\ln2\Bigr)
+  =\frac{719}{2880}-\frac{\ln 2}{3}. \qedhere
+\]
+
+This closed form was checked by nine mutually independent routes before being
+formalized: a raw $2\times10^9$-sample discriminant-sign Monte Carlo
+($0.05\sigma$); an independent root-counting Monte Carlo that never forms
+$\disc$ (cross-checked per-sample against companion-matrix eigenvalues, and
+re-run on the three known cells, all reproduced); a reduction-free randomized
+QMC of the full four-dimensional volume ($-0.50\sigma$); a second symbolic
+derivation with the opposite integration order (identical closed form); a
+$40$-digit substitution-free quadrature of $S$ agreeing to $2.5\times10^{-39}$;
+a deterministic quadrature confirming $F_a=\tfrac{1}{2880}$ with residual
+exactly $0$ (decisively fixing the cone/face reduction); and blind
+\texttt{PSLQ} on both $S$ and $P$, each returning the exact relation with a
+\emph{zero} coefficient on $\ln 3$ -- an independent confirmation that the
+$\ln 3$ genuinely cancels rather than being assumed away.
+
 \section{The Gaussian cubic} \label{sec:gaussian}
 
 With $(a,b,c)$ i.i.d.\ standard normal there is no cube, so nothing bounds
@@ -535,13 +635,13 @@ We record the question as open rather than assert either answer.
 
 \section{Formal verification in Lean} \label{sec:lean}
 
-All four theorems have been formalized and \emph{completely, machine-checked
+All five theorems have been formalized and \emph{completely, machine-checked
 proved} in Lean~4 against Mathlib (toolchain \texttt{v4.33.0}), with
 \textbf{zero} uses of \texttt{sorry} anywhere in the development and no
 unexpected axioms: \texttt{\#print axioms} on every headline theorem returns
 exactly \texttt{[propext, Classical.choice, Quot.sound]}, the three standard
-axioms used throughout Mathlib itself. The development is roughly $7700$
-lines across $23$ files, all in the accompanying repository.
+axioms used throughout Mathlib itself. The development is roughly $9000$
+lines across $27$ files, all in the accompanying repository.
 
 \subsection*{The discriminant--root-count bridge}
 Everywhere above, ``has three real roots'' is proved as a statement about the
@@ -576,6 +676,24 @@ sign, its limits, and the cancellation $\int_\RR\Psi'=1$, proved abstractly
 and then instantiated. The link back to root counts,
 $f(x_1)f(x_2)=-\disc_3/27$ and $f(x_1)-f(x_2)=(x_2-x_1)^3/2$, is two
 \texttt{ring} calls.
+
+\subsection*{The one-sided cube by reuse}
+Theorem~\ref{thm:nonmonic-unit}, by contrast, was cheap: its four files
+(roughly $1300$ lines) reuse the Theorem~\ref{thm:nonmonic} cone
+infrastructure -- \texttt{IsCone}, the slice-volume law $\vol_3(t\cdot E)=t^3\vol_3(E)$,
+the coefficient-reversal measure-preservation, and the band lemmas of
+\texttt{Basic.lean}/\texttt{Integrals.lean} -- almost verbatim, together with
+$\texttt{volume\_T2Set}=\tfrac{1}{2880}$ for the $a=1$ face. The two genuine
+differences flagged in \S\ref{sec:nonmonic-unit} -- four cone pieces rather
+than eight, and $s\in(0,1]$ with the band clipping at $s=\tfrac12$ -- are
+exactly the two places where copying the Theorem~\ref{thm:nonmonic} proof
+would have produced a false statement, and the formalization pins both down.
+The headline lemma (named \texttt{theorem4} in the source -- the Lean
+development numbers its uniform theorems and does not count the Gaussian
+case) states
+$\texttt{volume }T4Set=\texttt{ENNReal.ofReal }(719/2880-\log 2/3)$, and
+\texttt{theorem4\_root\_count} restates it with
+\texttt{HasThreeDistinctRealRoots} and no discriminant.
 
 \subsection*{Simplifications found while formalizing}
 Three of the informal arguments above turned out to need less machinery than
@@ -634,6 +752,15 @@ found:
   appear in the \texttt{dxdy.ru} thread or anywhere else searched.
 \item \textbf{Theorem~\ref{thm:nonmonic}}: the \emph{value} is not new (see
   above); the \emph{proof} and its independent verification are.
+\item \textbf{Theorem~\ref{thm:nonmonic-unit}}: no prior appearance found. A
+  targeted 2026 search returned zero full-text hits for $719/2880$,
+  $479/960$, or the decimal on Math StackExchange or MathOverflow (with
+  $1/2880$ as a working control returning matches), nothing on OEIS or the
+  general web, and nothing relevant on arXiv; the two known prior threads are
+  both symmetric-interval only. Li's furnished special cases are again all
+  symmetric intervals, so as with Theorem~\ref{thm:unit-cube} the one-sided
+  value is not among them -- subject to the same standing caveat that Li's
+  text is unread.
 \item \textbf{Theorem~\ref{thm:gaussian}}: no prior statement found. The
   Kac--Rice technique is of course standard, and the Gaussian
   \emph{expected root count} for random polynomials is classical
@@ -691,15 +818,15 @@ The reduction techniques used here appear to generalize.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \hline
- & Thm~\ref{thm:sym-cube} & Thm~\ref{thm:unit-cube} & Thm~\ref{thm:nonmonic} & Thm~\ref{thm:gaussian} \\
+ & Thm~\ref{thm:sym-cube} & Thm~\ref{thm:unit-cube} & Thm~\ref{thm:nonmonic} & Thm~\ref{thm:gaussian} & Thm~\ref{thm:nonmonic-unit} \\
 \hline
-Symbolic (\texttt{sympy}, exact) & PASS & PASS & PASS & PASS \\
-Independent numerical route & $\sim10^{-16}$ & $\sim10^{-13}$ & 19 digits & 79 digits \\
-Blind PSLQ / \texttt{identify} & --- & --- & recovers exact form & (negative; see \S\ref{sec:gaussian}) \\
-Monte Carlo & $+1.3\sigma$ & $-0.5\sigma$ & $-0.73\sigma$ & $+0.70\sigma$ \\
-Lean~4 / Mathlib & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} \\
+Symbolic (\texttt{sympy}, exact) & PASS & PASS & PASS & PASS & PASS \\
+Independent numerical route & $\sim10^{-16}$ & $\sim10^{-13}$ & 19 digits & 79 digits & $2.5{\times}10^{-39}$ \\
+Blind PSLQ / \texttt{identify} & --- & --- & exact form & (neg.; \S\ref{sec:gaussian}) & exact form \\
+Monte Carlo & $+1.3\sigma$ & $-0.5\sigma$ & $-0.73\sigma$ & $+0.70\sigma$ & $+0.05\sigma$ \\
+Lean~4 / Mathlib & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} & \textbf{0 \texttt{sorry}} \\
 \hline
 \end{tabular}
 \end{center}

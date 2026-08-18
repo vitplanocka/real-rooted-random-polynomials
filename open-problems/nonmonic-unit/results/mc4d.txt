@@ -1,0 +1,16 @@
+Step 1 -- independent raw Monte Carlo target for
+   P = Pr( a x^3 + b x^2 + c x + d has three real roots ), (a,b,c,d) iid U[0,1]
+Criterion: sign of the cubic discriminant
+   Delta = 18abcd - 4b^3 d + b^2c^2 - 4ac^3 - 27a^2d^2 > 0
+Code: src/mc4d.py, seed 12345, 10 processes, PCG64.
+
+N = 2,000,000,000
+hits = 37,207,108
+phat = 1.8603554000e-02
+se   = 3.021e-06
+95% CI = [1.8597632e-02, 1.8609476e-02]
+
+Note 1/5760 = 1.7361111e-04, so the claimed reduction P = 1/5760 + S/2 implies
+   S = 2*(phat - 1/5760) = 3.6859886e-02  (se 6.0e-06)
+
+TARGET (to be reproduced by every later step):  P = 0.0186036 +/- 0.0000030

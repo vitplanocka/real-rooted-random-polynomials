@@ -1,0 +1,22 @@
+mpmath dps = 40
+S  (quadrature, 40 dps) = 0.036860212960036460388511919027882
+S  (closed form)        = 0.036860212960036460388511919027882
+difference              = -2.4874505e-39
+
+blind identify on S with basis {ln2, ln3}:
+   ((479/960) + (-2/3)*log(2))
+blind identify on S with basis {ln2}:
+   ((479/960) + (-2/3)*log(2))
+blind PSLQ on [1, S, ln2, ln3]:
+   [-479, 960, 640, 0]
+
+P  (from quadrature)    = 0.018603717591129341305367070625052
+P  (closed form)        = 0.018603717591129341305367070625052
+difference              = -1.2451602e-39
+blind identify on P:     None
+
+S at dps=25             = 0.03686021296003646038851  (delta vs dps=40: -2.97524e-27 )
+
+Extra PSLQ on P (from the quadrature value of S, blind):
+  pslq([1, P, ln2, ln3]) = [-719, 2880, 960, 0]  ->  P = (719 - 960 ln2)/2880 = 719/2880 - ln2/3
+  mp.identify(P, ['log(2)'], maxcoeff=10000) = ((719/2880) + (-1/3)*log(2))

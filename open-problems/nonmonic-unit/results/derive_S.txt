@@ -1,0 +1,30 @@
+=== exact algebraic identities ===
+  [PASS] x_- is a critical point
+  [PASS] x_+ is a critical point
+  [PASS] s^2 = 1-3ac under c=(1-s^2)/(3a)
+  [PASS] d_hi = K_p/(27a^2)
+  [PASS] d_lo = -K_m/(27a^2)
+  [PASS] K_p + K_m = 4 s^3
+  [PASS] Delta = -27 a^2 (d-d_lo)(d-d_hi)
+  [PASS] L1: K_p/27 < a0^2 on 0<s<1
+   a0^2 - K_p/27 factored: (s - 1)**2*(3*s**2 + 4*s + 2)/27
+   3(1+s)^2-(2s+1) = 3*s**2 + 4*s + 2 (positive for s>=0)
+  [PASS] L2: K_m sign flips exactly at s=1/2 on (0,1)
+
+=== the s-integral ===
+  F_low  = -2*s**3/27 + 2*s**3/(3*(s**2 - 1)**2)
+  F_high = (-2*s**5 - s**4 + 4*s**3 + 2*s**2 + 16*s + 8)/(54*(s**2 + 2*s + 1))
+  [PASS] F continuous at s=1/2
+  lim_{s->1-} s*F_high = 1/8  (finite: pole cancels)
+  I1 = 1199/2160 - log(3)/2
+  I2 = -log(2) + 3341/17280 + log(3)/2
+
+S exact   = 479/960 - 2*log(2)/3
+S numeric = 0.0368602129600364603885119190279
+P = 1/5760 + S/2 = 719/2880 - log(2)/3
+P numeric        = 0.0186037175911293413053670706251
+
+MC target        = 1.8603554e-02 +/- 3.0e-06
+P - MC           = 1.635911293e-7
+
+ALL IDENTITY CHECKS PASS
