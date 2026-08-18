@@ -19,15 +19,22 @@ prior publication of either value anywhere searchable. Theorem 3's *value* was
 not new (it circulated unproved on a forum since June 2026); what's new is the
 first proof and its five-way independent verification.
 
+**All three theorems are now fully machine-checked in Lean 4 / Mathlib — zero
+`sorry`, zero unexpected axioms.** The formalization also produced a proof of
+independent interest: a from-scratch, calculus-free proof that a real cubic's
+discriminant sign determines its real-root count, a classical fact apparently
+missing from Mathlib until now.
+
 ## Contents
 
 | Folder | What's in it |
 |---|---|
 | [`paper/`](paper/) | The paper (`paper.tex`, `paper.pdf`) — full statements, proofs, novelty discussion, open problems |
 | [`code/`](code/) | All Python source and results behind the paper (sympy exact proofs, high-precision quadrature, Monte Carlo) |
-| [`lean/`](lean/) | Lean 4 / Mathlib formalization — Theorems 1 & 2 are **fully machine-checked, zero `sorry`**; Theorem 3 is in progress |
+| [`lean/`](lean/) | Lean 4 / Mathlib formalization — **all three theorems fully machine-checked, zero `sorry`** (`REPORT.md` has the full account, including the classical discriminant/root-count bridge proved along the way) |
 | [`docs/`](docs/) | Extended write-ups: full proof derivations (`THEOREMS.md`), literature review (`LITERATURE.md`), and the complete investigation record for Theorem 3 (`VERDICT.md`, `PROGRESS.md`) |
 | [`explainer/`](explainer/) | An interactive HTML visualization of the monic-cubic case (open `cusp-and-cube.html` in a browser — no build step, no dependencies) |
+| [`open-problems/`](open-problems/) | Active research on two open follow-on questions (Gaussian-coefficient monic cubic, uniform monic quartic); see `PROGRESS.md` there for status |
 
 ## Quick start
 
@@ -45,17 +52,19 @@ python src/face_exact.py    # Theorem 3, symbolic proof
 cd lean
 curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
 lake exe cache get   # pulls prebuilt Mathlib .olean files
-lake build           # Theorem1.lean and Theorem2.lean compile with zero sorry
+lake build           # all three theorems compile with zero sorry, ~1 minute from a warm cache
 ```
 
 ## Status
 
-This is an active project. Theorem 3's Lean formalization is ongoing; `lean/PROGRESS.md`
-has the latest state, and the paper will be updated as it completes. See
-`docs/LITERATURE.md` for the ranked list of open follow-on problems (the
-monic quartic via the same divergence-theorem trick, Gaussian-coefficient
-cubics, and the still-unsolved parent problem — real eigenvalues of a random
-$n\times n$ matrix with uniform entries, for $n\ge3$).
+The core project is done: three theorems, three closed forms, all fully
+machine-checked. Active follow-on work is in `open-problems/` — two genuinely
+open questions (a Gaussian-coefficient monic cubic, and the uniform monic
+quartic) attacked with the same reduce/verify methodology; see
+`open-problems/PROGRESS.md` for the latest state. See `docs/LITERATURE.md` for
+the full ranked list of open problems, including the still-unsolved parent
+problem — real eigenvalues of a random $n\times n$ matrix with uniform
+entries, for $n\ge3$.
 
 ## License
 

@@ -10,13 +10,15 @@ in `reference/THEOREMS.md`, "Statements".)
 
 ## Word-by-word transcription check
 
-| informal | formal |
-|---|---|
-| `(a,b,c,d)` i.i.d. uniform on `[−1,1]` | Lebesgue measure on `Icc (-1) 1` in each of the four coordinates of `ℝ × ℝ × ℝ × ℝ`, in the order `(a,b,c,d)` |
-| `a x³ + b x² + c x + d` | leading coefficient is the **first** coordinate `a`; constant term is the **last**, `d` |
-| "has three real roots" | `0 < Δ₄ a b c d` — see the caveat below |
-| `Δ = 18abcd − 4b³d + b²c² − 4ac³ − 27a²d²` (`VERDICT.md`, line 69) | `Δ₄` in `Basic.lean`, character for character |
-| `P = 641/2430 − ln(3)/24` | `ENNReal.ofReal ((641/2430 - Real.log 3 / 24) * 16)`, the `16` being `vol([−1,1]⁴)` |
+* `(a,b,c,d)` i.i.d. uniform on `[−1,1]`  ↦  Lebesgue measure on `Icc (-1) 1`
+  in each of the four coordinates of `ℝ × ℝ × ℝ × ℝ`, in the order `(a,b,c,d)`.
+* `a x³ + b x² + c x + d`  ↦  leading coefficient is the **first** coordinate
+  `a`; the constant term is the **last**, `d`.  (Not reversed.)
+* "has three real roots"  ↦  `0 < Δ₄ a b c d`.  See the caveat below.
+* `Δ = 18abcd − 4b³d + b²c² − 4ac³ − 27a²d²` (`VERDICT.md`, line 69)  ↦  `Δ₄` in
+  `Basic.lean`, character for character, same variable order.
+* `P = 641/2430 − ln(3)/24`  ↦  `ENNReal.ofReal ((641/2430 - Real.log 3/24) * 16)`,
+  the factor `16` being `vol([−1,1]⁴)`.
 
 Two independent confirmations that `Δ₄` is the right polynomial:
 
@@ -29,10 +31,10 @@ Two independent confirmations that `Δ₄` is the right polynomial:
 ## Caveat on "three real roots" (this is Stage 5, `DiscriminantRootCount.lean`)
 
 `0 < Δ₄ a b c d` is the classical criterion for *three distinct real roots* when
-`a ≠ 0`.  The equivalence itself is **not** proved here and is **not** in Mathlib
-(Mathlib has `Cubic.discr` and `Cubic.discr_ne_zero_iff_roots_nodup`, but nothing
-linking the *sign* of the discriminant to the *number of real* roots).  It is
-stated as its own theorem, with `sorry`, in `DiscriminantRootCount.lean`.  Note:
+`a ≠ 0`.  The equivalence is **not** in Mathlib (Mathlib has `Cubic.discr` and
+`Cubic.discr_ne_zero_iff_roots_nodup`, but nothing linking the *sign* of the
+discriminant to the *number of real* roots); it is proved from scratch in
+`DiscriminantRootCount.lean`.  Note:
 
 * the set where `Δ₄ = 0` (repeated roots) and the set where `a = 0` (not a cubic)
   are both Lebesgue-null, so they cannot change the value of the probability;
@@ -83,7 +85,8 @@ theorem measurableSet_T3Set : MeasurableSet T3Set := by
 theorem volume_cube4 :
     volume (Icc (-1 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1)
       = ENNReal.ofReal 16 := by
-  rw [show (volume : Measure (ℝ × ℝ × ℝ × ℝ)) = (volume : Measure ℝ).prod volume from rfl,
+  rw [show (volume : Measure (ℝ × ℝ × ℝ × ℝ))
+      = (volume : Measure ℝ).prod volume from rfl,
     Measure.prod_prod,
     show (volume : Measure (ℝ × ℝ × ℝ)) = (volume : Measure ℝ).prod volume from rfl,
     Measure.prod_prod,
@@ -91,32 +94,10 @@ theorem volume_cube4 :
     Measure.prod_prod, Real.volume_Icc]
   norm_num
 
-/-- **THEOREM 3 (volume form).**  The set of `(a,b,c,d) ∈ [-1,1]⁴` for which the
-cubic `a x³ + b x² + c x + d` has three distinct real roots (equivalently
-`Δ₄ > 0`) has Lebesgue measure `16 · (641/2430 − log 3 / 24)`.
+/-! ## Where the theorem itself lives
 
-**UNPROVED — the proof below is `sorry`.**  What is missing is exactly Stage 4:
-the cone/face decomposition reducing this to `V(1) + S_b`, and the closed-form
-evaluation of `S_b`.  See `Theorem3Proof.lean` for the decomposition into
-sub-lemmas and for which of them *are* proved. -/
-theorem theorem3 :
-    volume T3Set = ENNReal.ofReal ((641 / 2430 - Real.log 3 / 24) * 16) := by
-  sorry
-
-/-- **THEOREM 3 (probability form).**  `P = 641/2430 − log 3 / 24`.
-
-**UNPROVED**: this is a two-line consequence of `theorem3` (which is `sorry`d)
-and `volume_cube4` (which is proved). -/
-theorem theorem3_probability :
-    (volume T3Set).toReal
-      / (volume (Icc (-1 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1)).toReal
-      = 641 / 2430 - Real.log 3 / 24 := by
-  have hlog : Real.log 3 ≤ 1 := by
-    have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 3)
-    nlinarith [Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 3)]
-  have hnn : (0 : ℝ) ≤ (641 / 2430 - Real.log 3 / 24) * 16 := by nlinarith
-  rw [theorem3, volume_cube4, ENNReal.toReal_ofReal (by norm_num : (0 : ℝ) ≤ 16),
-    ENNReal.toReal_ofReal hnn]
-  ring
+`theorem3` and `theorem3_probability` are stated *and proved* in
+`Theorem3Proof.lean`, which imports this file.  They cannot live here, because
+their proof needs the cone/face decomposition developed there. -/
 
 end NonmonicCubic

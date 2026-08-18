@@ -1,0 +1,10 @@
+  deg_in=6 deg_out=4 [19s]
+    0.1699293826234795026564431571317619021340571850379
+    T - C(150) = -7.64167e-44   -> 42 agreeing digits
+  deg_in=7 deg_out=5 [39s]
+    0.1699293826234795026564431571317619021340572614546
+    T - C(150) = 2.61012e-54   -> 52 agreeing digits
+  deg_in=8 deg_out=6 [44s]
+    0.1699293826234795026564431571317619021340572614546
+    T - C(150) = 2.61012e-54   -> 52 agreeing digits
+wrote results/gaussian_cubic_quad_ts.json

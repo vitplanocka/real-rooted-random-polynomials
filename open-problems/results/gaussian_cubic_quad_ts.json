@@ -1,0 +1,33 @@
+{
+  "method": "METHOD T: coefficient space, mpmath-native tanh-sinh (inner) + mpmath-native Gauss-Legendre (outer); shares no numerical code with methods C and R",
+  "reference_value_method_C": "0.16992938262347950265644315713176190213405726145463153058296654041594331723048367392195",
+  "runs": [
+    {
+      "deg_in": 6,
+      "deg_out": 4,
+      "dps": 52,
+      "value": "0.1699293826234795026564431571317619021340571850379",
+      "diff_vs_C": "-7.64167e-44",
+      "agreeing_digits": 42,
+      "seconds": 19.1
+    },
+    {
+      "deg_in": 7,
+      "deg_out": 5,
+      "dps": 52,
+      "value": "0.1699293826234795026564431571317619021340572614546",
+      "diff_vs_C": "2.61012e-54",
+      "agreeing_digits": 52,
+      "seconds": 38.9
+    },
+    {
+      "deg_in": 8,
+      "deg_out": 6,
+      "dps": 52,
+      "value": "0.1699293826234795026564431571317619021340572614546",
+      "diff_vs_C": "2.61012e-54",
+      "agreeing_digits": 52,
+      "seconds": 43.5
+    }
+  ]
+}

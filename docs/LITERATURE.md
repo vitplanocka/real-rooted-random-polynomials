@@ -205,14 +205,25 @@ and §3 above, and THEOREMS.md / VERDICT.md for the full derivation.)*
    document — its cubic family x³+3ax²+3bx+2c with symmetric uniform
    coefficients contains our Theorem 1 model at h=k=1/3, l=1/2; possibly also
    hands us the quartic answer.
-2. **Monic quartic U[−1,1]⁴** (0.005475 ± 9e-6): try the never-clipped question in
-   the (a,b,c | d)-band decomposition; if geometry is clean, repeat the pipeline;
-   else Bhargava-style certified interval bounds. The cone/divergence-theorem
-   trick behind Theorem 3 is worth trying here too — the quartic discriminant is
-   also homogeneous (degree 6), so the all-real-roots region is also a cone.
+2. **Monic quartic U[−1,1]⁴** (0.005475 ± 9e-6): **correction, 2026-08-18** —
+   the cone/divergence-theorem trick does *not* apply directly here as
+   previously suggested. It needs homogeneity across *all* coefficients
+   scaled together, including the leading one; fixing the leading coefficient
+   at 1 (the monic case) breaks that. The quartic discriminant is homogeneous
+   of degree 6 in the *five* coefficients a,b,c,d,e, so the trick correctly
+   targets the *non-monic* quartic (2×5=10 faces, not 2×4=8) — and even there
+   one of the resulting face volumes *is* the monic quartic probability, so
+   that route needs this problem solved first as an input, not the other way
+   around. Attack the monic case directly instead, by genuine generalization
+   of the Theorem 1/2 band method (complicated by a quartic's derivative
+   being itself a cubic, with up to three real critical points rather than
+   one band); if that doesn't reduce cleanly, Bhargava-style certified
+   interval bounds. **Active investigation**: see `../open-problems/`.
 3. **Monic cubic Gaussian** (0.169962 ± 4.2e-5): different geometry (no cube), needs
    Gaussian measure of the band — 2D integral of Φ-differences; PSLQ candidates
-   after high-precision quadrature.
+   after high-precision quadrature. **Active investigation**: see
+   `../open-problems/` — a root-space reparametrization already reaches 12
+   digits (0.169929382623…), pending constant recognition.
 4. **Write-up**: three theorems (two genuinely new values, one new proof of a
    forum-guessed value that retracts a wrong published-here quadrature) plus the
    folklore-status depressed anchor make a self-contained note (arXiv math.PR);

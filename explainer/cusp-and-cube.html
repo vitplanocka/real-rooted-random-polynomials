@@ -505,8 +505,17 @@
         <td class="num">0.10172336 &plusmn; 2.3e-5 &nbsp;(+1.3&sigma;)</td>
         <td class="num">0.00034664 &plusmn; 1.3e-6 &nbsp;(&minus;0.5&sigma;)</td>
       </tr>
+      <tr>
+        <td>Lean 4 / Mathlib, machine-checked proof</td>
+        <td class="num"><span class="ok">0 sorry</span></td>
+        <td class="num"><span class="ok">0 sorry</span></td>
+      </tr>
     </table>
     </div>
+    <p class="caption" style="border-top:none;margin-top:0;padding-top:6px;">
+      All three theorems, including Theorem&nbsp;3 below, are now fully
+      machine-checked &mdash; see section&nbsp;7.
+    </p>
   </section>
 
   <!-- ================================================================ -->
@@ -652,6 +661,9 @@
       faces to exactly Theorem&nbsp;1&rsquo;s volume plus one new, purely
       3-dimensional piece &mdash; which has an elementary closed form once the
       leading coefficient is integrated out first.
+      (Formalizing this in Lean found it needs no divergence theorem at all
+      &mdash; just Fubini and the scaling law vol(t&middot;E) = t&sup3;vol(E),
+      sliced at each coordinate&rsquo;s value; see below.)
     </p>
 
     <div class="theorem">
@@ -678,6 +690,24 @@
       way: a &radic;a endpoint singularity as the leading coefficient vanishes,
       and float64 silently losing track of the clipping boundary nearby.
     </p>
+
+    <div class="theorem">
+      <span class="eyebrow">Machine-checked &middot; Lean 4 / Mathlib &middot; completed 2026-08-18</span>
+      <div class="stmt">All three theorems &mdash; not just this one &mdash; are now fully
+        formally verified: <span class="mono">0 sorry</span>, clean axioms.</div>
+      <div class="dec" style="margin-top:8px;">
+        The formalization also proved, from scratch and with no calculus at all,
+        the classical fact this whole page has been quietly assuming &mdash;
+        that a real cubic&rsquo;s discriminant sign determines its real-root
+        count &mdash; which turned out to be missing from Mathlib. And in
+        proving Theorem 3, it found the simplification noted above: the
+        &ldquo;cone&rdquo; step needs no divergence theorem, just slicing plus
+        the elementary volume-scaling law. One genuine error in an earlier
+        draft of the proof was caught only by attempting the formal proof,
+        not by writing the formal statement &mdash; the same lesson this
+        page&rsquo;s retraction story teaches, one level deeper.
+      </div>
+    </div>
   </section>
 
   <div class="footnote">

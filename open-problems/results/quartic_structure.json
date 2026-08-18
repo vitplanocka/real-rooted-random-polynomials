@@ -1,0 +1,38 @@
+{
+  "discriminant_max_rel_diff_vs_sympy": 1.5742071429395526e-14,
+  "step1_N": 200000,
+  "step1_mismatches": 0,
+  "step1_pred_count": 1096,
+  "step1_truth_count": 1096,
+  "step1_mc_estimate": 0.00548,
+  "step2_crit_vs_sign_mismatches": 0,
+  "step2_crit_vs_roots_mismatches": 0,
+  "step2_dband_mismatches": 0,
+  "frac_bcd_three_crit": 0.146955,
+  "min_unclipped_len": 7.895291477891253e-10,
+  "clip": {
+    "M": 4000000,
+    "band_frac": 0.1460495,
+    "clip_any_frac_of_band": 0.0,
+    "clip_lo_frac_of_band": 0.0,
+    "clip_hi_frac_of_band": 0.0,
+    "clip_both_frac_of_band": 0.0,
+    "empty_after_clip_frac_of_band": 0.0,
+    "mean_raw_len": 0.010923897875255443,
+    "mean_kept_len": 0.010923897875255443,
+    "measure_lost_frac": 0.0,
+    "PB_from_this_mc": 0.0054619489376277214,
+    "min_e_lo": -0.27833424072422125,
+    "min_e_lo_at": [
+      -0.9829807738884244,
+      -0.6621907410202164,
+      0.9990024864125144
+    ],
+    "max_e_hi": 0.3819271613699498,
+    "max_e_hi_at": [
+      0.9857827503742604,
+      -0.9955437233185114,
+      -0.6077836596508766
+    ]
+  }
+}

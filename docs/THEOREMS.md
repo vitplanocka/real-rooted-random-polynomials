@@ -207,6 +207,20 @@ regardless.)
 | blind constant recognition | — | — | PSLQ on 22-digit S_b returns 1454/405 − (5/6)ln3 unprompted |
 | Monte Carlo | 2×10⁸: 0.10172336 ± 2.31e-5 (+1.26σ) | 2×10⁸: 0.00034664 ± 1.30e-6 (−0.45σ) | 4×10¹⁰, raw sign(Δ): 0.218008985 ± 2.1e-6 (−0.73σ) |
 | pipeline calibration | depressed-cubic anchor reproduced to 26 digits (2√3/45) | same pipeline | V(1), depressed anchor, and p(1)=Theorem 1 all reproduced through the new code paths to ≥1.1e-41 before any new number was believed |
+| Lean 4 / Mathlib | **0 sorry** | **0 sorry** | **0 sorry** |
+
+All three theorems are now fully machine-checked in Lean 4 (Mathlib v4.33.0),
+zero `sorry`, clean axiom list (`#print axioms` returns only `propext`,
+`Classical.choice`, `Quot.sound`). See `../lean/REPORT.md` for the full
+account — including a genuinely useful classical result proved along the
+way (a from-scratch, calculus-free proof that a real cubic's discriminant
+sign determines its real-root count, closing a gap Mathlib didn't already
+have), two places where formalizing found the proof could be made simpler
+than the informal derivation below (skipping critical points entirely via
+a single `ring`-provable identity; and Theorem 3's cone step needing only
+Fubini + the scaling law `vol(t·E) = t³vol(E)`, no divergence theorem at
+all), and one genuine error the informal proof had that only got caught by
+attempting the formal proof, not by writing the formal statement.
 
 Theorem 3's verification is unusually thorough because it corrected a wrong
 number this project had itself produced: a literature-sweep quadrature had
